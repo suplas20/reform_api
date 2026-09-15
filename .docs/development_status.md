@@ -1,7 +1,7 @@
 # 개발 진행 상태
 
 - 기준일: 2026-09-14
-- 현재 단계: Phase 2 — DB / Core Domain 구조 준비
+- 현재 단계: Phase 2 — 초기 DB Schema 완료
 - 구현 기준: `AGENTS.MD`, `.docs/reform_platform_system_design.md`
 
 ## 완료된 항목
@@ -25,6 +25,13 @@
   - `src/Http/Middleware/`
   - `views/`, `public/assets/`
 - 로컬 설정·의존성·런타임 파일 Git 제외 규칙
+- MariaDB 10.6 연결 및 `utf8mb4_unicode_ci` 확인
+- `001_initial_schema.sql`
+  - 설계 문서의 Domain Table 27개
+  - Migration 이력 Table 1개
+  - Index, Unique Constraint, Foreign Key Delete Rule
+- DB Migration Runner 및 상태 확인 명령
+- 실제 DB Schema 검증 Test
 
 ## 검증 상태
 
@@ -37,27 +44,32 @@ composer validate --strict
 
 composer audit
 → No security vulnerability advisories found.
+
+composer test:database
+→ Database schema tests passed.
+
+composer db:status
+→ [applied] 001_initial_schema
 ```
 
 로컬 PHP는 8.4.25, Composer는 2.10.3에서 검증했다.
 
 ## 아직 구현하지 않은 항목
 
-- DB Migration 및 Schema
 - Business 등 Core Domain
 - Repository/Service/Controller 실제 구현
+- Reference Seed Data
 - Search, SNS Auth, Favorite, Admin, Mobile, Public SEO Web
 
 ## 다음 작업
 
-디렉터리 구조만 준비된 상태다. 시스템 설계서 Phase 2의 Core DB Schema를 시작하기 전에 다음 미확정 항목을 사용자와 결정한다.
+초기 Schema와 Migration 적용이 완료됐다. 다음 작업은 Reference Seed Data의 실제 값을 확정한 뒤, 설계서에 따라 Business Domain의 첫 Vertical Slice를 구현한다.
 
-- 최종 Column Type
-- Index
-- Foreign Key Delete Rule
-- Soft Delete 적용 범위
-
-첫 Vertical Slice는 설계서에 따라 Business Domain으로 진행한다.
+```text
+BusinessRepository
+→ BusinessService
+→ API BusinessController
+```
 
 ## 로컬 DB 설정
 
@@ -69,6 +81,13 @@ config/database.local.php.example
 ```
 
 실제 접속 정보와 비밀번호는 Git에 포함하지 않는다.
+
+```bash
+composer db:check
+composer db:status
+composer db:migrate
+composer test:database
+```
 
 ## 폴더 이동
 

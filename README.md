@@ -2,7 +2,7 @@
 
 리폼·수선·복원 업체 검색 플랫폼의 PHP 백엔드, Public Web, Admin 애플리케이션입니다.
 
-현재 구현 범위는 시스템 설계서의 **Phase 1 — Foundation 완료 및 Phase 2 디렉터리 구조 준비**입니다.
+현재 구현 범위는 시스템 설계서의 **Phase 1 — Foundation 및 Phase 2 초기 DB Schema**입니다.
 
 ## 요구사항
 
@@ -40,9 +40,26 @@ LOG_LEVEL
 
 ```bash
 composer test
+composer test:database
 ```
 
-테스트는 라우팅, HttpFoundation 요청/응답, API 응답 규격, 중앙 예외 처리와 `pdo_mysql` 사용 가능 여부를 확인합니다. 실제 DB에는 쿼리를 실행하지 않습니다.
+`composer test`는 라우팅, HttpFoundation 요청/응답, API 응답 규격, 중앙 예외 처리와 `pdo_mysql` 사용 가능 여부를 확인하며 실제 DB에는 쿼리를 실행하지 않습니다.
+
+`composer test:database`는 설정된 개발 DB에 초기 Schema가 올바르게 적용됐는지 확인합니다.
+
+## 데이터베이스
+
+```bash
+composer db:check
+composer db:status
+composer db:migrate
+```
+
+- `db:check`: MariaDB 연결, 버전, Charset, Collation 확인
+- `db:status`: Migration 적용 상태 확인
+- `db:migrate`: 적용되지 않은 Migration 실행
+
+Schema 변경은 `database/migrations/`의 버전 관리 SQL 파일로만 기록합니다. 운영 환경에서 애플리케이션 요청 중 Migration을 자동 실행하지 않습니다.
 
 ## 로컬 서버
 

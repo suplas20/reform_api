@@ -471,7 +471,7 @@ users
              ┌─────────────────────┼──────────────────────┐
              │                     │                      │
              ▼                     ▼                      ▼
-    business_locations     business_categories     business_services
+    business_locations     business_categories     business_offerings
              │                     │                      │
              ▼                     ▼                      ▼
           regions               categories              services
@@ -634,6 +634,22 @@ created_at
 updated_at
 ```
 
+## 12.5.1 category_services
+
+카테고리에 적용할 수 있는 서비스 조합을 정의한다.
+
+```text
+category_id
+service_id
+sort_order
+```
+
+Constraint:
+
+```text
+PRIMARY KEY(category_id, service_id)
+```
+
 ## 12.6 business_categories
 
 ```text
@@ -647,18 +663,34 @@ Constraint:
 UNIQUE(business_id, category_id)
 ```
 
-## 12.7 business_services
+## 12.7 business_offerings
 
 ```text
+id
 business_id
+category_id
 service_id
+title
+description
+price_min
+price_max
+price_note
+duration_min_days
+duration_max_days
+is_primary
+status
+created_at
+updated_at
 ```
 
 Constraint:
 
 ```text
-UNIQUE(business_id, service_id)
+UNIQUE(business_id, category_id, service_id)
 ```
+
+업체가 실제로 제공하는 Category + Service 조합을 저장한다.
+별도의 `business_services` 테이블은 사용하지 않는다.
 
 ## 12.8 brands
 
