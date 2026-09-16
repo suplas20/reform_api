@@ -104,6 +104,7 @@ The default runtime dependencies are:
 symfony/routing:^7.4
 symfony/http-foundation:^7.4
 monolog/monolog:^3
+swagger-api/swagger-ui:^5.32.15
 PDO
 ```
 
@@ -261,10 +262,15 @@ reform-platform/
 │       ├── js/
 │       └── images/
 │
+├── bin/
+│   ├── check-database.php
+│   └── migrate.php
+│
 ├── src/
 │   ├── Controller/
 │   │   ├── Api/
-│   │   │   └── V1/
+│   │   │   ├── V1/
+│   │   │   └── ApiDocumentationController.php
 │   │   ├── Web/
 │   │   └── Admin/
 │   │
@@ -312,6 +318,9 @@ reform-platform/
 ├── database/
 │   ├── migrations/
 │   └── seeds/
+│
+├── openapi/
+│   └── openapi.json
 │
 ├── storage/
 │   ├── logs/
@@ -902,6 +911,10 @@ Favorite
 BusinessSource
 BusinessVerification
 BusinessClaim
+BusinessExternalRef
+BusinessExternalRating
+BusinessReputationStats
+Review
 SearchLog
 EventLog
 Admin
@@ -967,6 +980,12 @@ work_cases
 work_case_images
 work_case_services
 
+business_external_refs
+business_external_ratings
+reviews
+review_images
+business_reputation_stats
+
 guides
 ```
 
@@ -975,11 +994,53 @@ The current initial schema source of truth is:
 ```text
 .docs/reform_platform_database_design.md
 database/migrations/001_initial_schema.sql
+database/migrations/002_add_reputation_schema.sql
 ```
 
 Exact final columns are still subject to ERD refinement.
 
 Do not silently treat the current draft as immutable schema.
+
+## 29.1 Reputation and Review Rules
+
+The authoritative reputation design is:
+
+```text
+.docs/reform_platform_reputation_design_change.md
+```
+
+Keep internal and external reputation data separate.
+
+Never store external review:
+
+```text
+body
+author
+photo
+```
+
+Provider policy:
+
+```text
+GOOGLE = official Places API reference and permitted rating statistics
+NAVER = Place ID and external URL only until officially permitted
+```
+
+`business_links` stores channels operated by the Business.
+`business_external_refs` stores identifiers and URLs owned by external platforms.
+Do not merge these tables.
+
+`business_sources` stores provenance and verification history.
+Its migration and source-of-truth relationship with `business_external_refs` remains unresolved.
+Do not copy or move provider identifiers between these tables without an explicit decision.
+
+Update `business_reputation_stats` synchronously in the same transaction as the related Review or Favorite write.
+Do not introduce a queue or background worker for this aggregation.
+
+The qualifying WorkCase statuses and update points for `work_case_count` remain unresolved.
+
+Review creation, uniqueness, editing, deletion (`status = DELETED` versus `deleted_at`), verification, moderation, reporting, reply, and image-limit policies remain unresolved.
+Do not invent these rules during implementation.
 
 ---
 
@@ -1086,6 +1147,29 @@ Do not make breaking changes to existing v1 contracts without explicit approval.
 
 If a breaking contract is necessary, introduce a new version.
 
+## 34.1 API Documentation
+
+The version-controlled OpenAPI source is:
+
+```text
+openapi/openapi.json
+```
+
+Swagger UI is available at:
+
+```text
+GET /api/docs
+GET /api/docs/openapi.json
+```
+
+Rules:
+
+- Update the OpenAPI document in the same change as every API contract change.
+- Never include credentials, tokens, provider secrets, internal paths, or private Admin details.
+- Serve only explicitly allowlisted Swagger UI assets; never expose the `vendor/` directory.
+- Keep `swagger-api/swagger-ui` pinned to a reviewed version.
+- The OpenAPI document defines the external API contract; database rows and internal DTOs are not the contract.
+
 ---
 
 # 35. API Response Rules
@@ -1169,6 +1253,28 @@ Business:
 GET /api/v1/businesses
 GET /api/v1/businesses/{id}
 ```
+
+The implemented Business detail v1 contract is defined in `.docs/reform_platform_system_design.md`.
+
+Public Business detail queries must require:
+
+```text
+status = ACTIVE
+deleted_at IS NULL
+published_at is not null and not in the future
+```
+
+Business list v1 pagination:
+
+```text
+page default = 1
+perPage default = 20
+perPage maximum = 100
+sort = published_at DESC, id DESC
+```
+
+Business list external reputation must be loaded with a batch query.
+Do not introduce an N+1 query per Business.
 
 Work cases:
 
@@ -1407,6 +1513,12 @@ WEBSITE_CLICK
 SNS_CLICK
 CASE_VIEW
 SHARE
+EXTERNAL_GOOGLE_CLICK
+EXTERNAL_NAVER_CLICK
+REVIEW_VIEW
+REVIEW_CREATE
+REVIEW_UPDATE
+REVIEW_DELETE
 ```
 
 Do not block critical user requests on complex analytics processing.
@@ -1722,6 +1834,36 @@ Database schema changes must be represented by version-controlled migration file
 
 Do not manually change production schema without recording the change.
 
+The approved migration structure is:
+
+```text
+database/migrations/*.sql
+src/Database/MigrationRunner.php
+bin/migrate.php
+schema_migrations
+```
+
+`bin/` contains local maintenance CLI entry points only.
+
+Migration and database-check commands:
+
+```text
+composer db:check
+composer db:status
+composer db:migrate
+```
+
+These commands must never:
+
+```text
+run during an HTTP request
+be exposed as a Public Web or API route
+be required for normal application runtime
+assume production shell access
+```
+
+Cafe24 production schema changes must use the reviewed SQL migration files through an explicitly approved deployment procedure.
+
 Migration SQL must be reviewed for:
 
 ```text
@@ -1914,6 +2056,13 @@ sitemap generation strategy
 admin role matrix
 backup policy
 monitoring policy
+review creation requirements
+one-review-per-user-and-business policy
+review image limit
+review reporting and moderation
+business review reply policy
+review usage verification
+Google rating cache and refresh policy
 ```
 
 When implementation reaches one of these unresolved areas, surface the decision explicitly instead of silently choosing a permanent architecture.

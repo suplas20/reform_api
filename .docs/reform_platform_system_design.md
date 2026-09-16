@@ -216,7 +216,8 @@ Full Stack Framework는 사용하지 않는다.
     "php": "^8.4",
     "symfony/routing": "^7.4",
     "symfony/http-foundation": "^7.4",
-    "monolog/monolog": "^3.0"
+    "monolog/monolog": "^3.0",
+    "swagger-api/swagger-ui": "^5.32.15"
   },
   "config": {
     "platform": {
@@ -233,6 +234,7 @@ Full Stack Framework는 사용하지 않는다.
 | Symfony Routing | Routing |
 | Symfony HttpFoundation | Request / Response / Cookie / Session |
 | Monolog | Logging |
+| Swagger UI | OpenAPI 기반 API 문서 화면 |
 | PDO | Database Access |
 
 새 라이브러리는 Cafe24 호환성 검토 후 추가한다.
@@ -252,10 +254,15 @@ reform-platform/
 │       ├── js/
 │       └── images/
 │
+├── bin/
+│   ├── check-database.php
+│   └── migrate.php
+│
 ├── src/
 │   ├── Controller/
 │   │   ├── Api/
-│   │   │   └── V1/
+│   │   │   ├── V1/
+│   │   │   └── ApiDocumentationController.php
 │   │   ├── Web/
 │   │   └── Admin/
 │   ├── Service/
@@ -293,6 +300,9 @@ reform-platform/
 │   ├── migrations/
 │   └── seeds/
 │
+├── openapi/
+│   └── openapi.json
+│
 ├── storage/
 │   ├── logs/
 │   ├── cache/
@@ -303,6 +313,28 @@ reform-platform/
 ├── composer.json
 └── composer.lock
 ```
+
+## 6.1 로컬 관리 CLI
+
+`bin/`은 API나 Public Web 실행 경로가 아닌 로컬 관리 명령의 진입점이다.
+
+```text
+bin/check-database.php
+= DB 연결 및 MariaDB 환경 확인
+
+bin/migrate.php
+= Version 관리 SQL Migration 상태 확인 및 적용
+```
+
+실행 명령:
+
+```bash
+composer db:check
+composer db:status
+composer db:migrate
+```
+
+이 명령은 HTTP 요청에서 호출하지 않으며, 애플리케이션의 정상 실행이나 Cafe24 운영 Shell에 의존하지 않는다.
 
 ---
 
@@ -501,6 +533,13 @@ users
                               ├── business_sources
                               ├── business_verifications
                               └── business_claims
+
+                              businesses
+                              ├── business_external_refs
+                              │       └── business_external_ratings
+                              ├── reviews
+                              │       └── review_images
+                              └── business_reputation_stats
 
 search_logs
 event_logs
@@ -805,6 +844,87 @@ close_time
 created_at
 ```
 
+## 12.15 business_external_refs
+
+외부 플랫폼의 업체 식별자와 페이지 URL을 저장한다.
+
+```text
+id
+business_id
+provider
+external_id
+external_url
+status
+created_at
+updated_at
+```
+
+`business_links`와 합치지 않는다.
+
+## 12.16 business_external_ratings
+
+공식적으로 사용 가능한 외부 평점 통계만 저장한다.
+
+```text
+id
+business_id
+provider
+rating
+review_count
+fetched_at
+expires_at
+created_at
+updated_at
+```
+
+외부 리뷰 원문·작성자·사진은 저장하지 않는다.
+
+## 12.17 reviews
+
+Reform Platform 자체 사용자 리뷰다.
+
+```text
+id
+business_id
+user_id
+rating
+content
+status
+created_at
+updated_at
+deleted_at
+```
+
+`rating`은 1부터 5까지 허용하며, 작성·수정·삭제·신고 정책은 별도 설계에서 확정한다.
+
+## 12.18 review_images
+
+```text
+id
+review_id
+storage_type
+file_path
+sort_order
+created_at
+```
+
+## 12.19 business_reputation_stats
+
+검색 결과용 자체 평판 집계값을 저장한다.
+
+```text
+business_id
+review_count
+rating_avg
+favorite_count
+work_case_count
+updated_at
+```
+
+Review와 Favorite 변경 시 같은 Transaction에서 동기식으로 갱신한다.
+`work_case_count`의 집계 대상 Status와 갱신 시점은 WorkCase 상세 설계에서 확정한다.
+자체 평판과 외부 평판은 합산하지 않는다.
+
 ---
 
 # 13. User / Authentication 설계
@@ -1069,6 +1189,27 @@ REJECTED
 }
 ```
 
+## 17.1 OpenAPI / Swagger UI
+
+API 계약 원본:
+
+```text
+openapi/openapi.json
+```
+
+문서 Endpoint:
+
+```text
+GET /api/docs
+GET /api/docs/openapi.json
+```
+
+Swagger UI는 고정된 공식 Composer Package의 Asset을 사용한다.
+`vendor/`를 직접 공개하지 않고 허용 목록에 포함된 Asset만 Controller를 통해 전달한다.
+
+API Endpoint, Field, Status Code 또는 Error Code를 변경할 때 같은 변경에서 OpenAPI 명세를 갱신한다.
+OpenAPI 파일에는 Credential, Token, Provider Secret, 내부 파일 경로를 포함하지 않는다.
+
 ---
 
 # 18. HTTP Status
@@ -1106,6 +1247,95 @@ GET /api/v1/brands
 GET /api/v1/businesses
 GET /api/v1/businesses/{id}
 ```
+
+### Business List v1 Contract
+
+```text
+GET /api/v1/businesses?page=1&perPage=20
+```
+
+Pagination:
+
+```text
+page: 기본 1, 최소 1
+perPage: 기본 20, 최소 1, 최대 100
+totalPages: 조회 결과가 없으면 0
+```
+
+공개 조건은 Business Detail과 동일하다.
+
+정렬:
+
+```text
+published_at DESC
+id DESC
+```
+
+목록 Item은 상세 응답에서 `description`과 `phone`을 제외한 핵심 정보와 자체·외부 평판을 포함한다.
+검색어·카테고리·서비스·지역·브랜드 Filter 및 사용자 지정 정렬은 Phase 3에서 구현한다.
+
+### Business Detail v1 Contract
+
+첫 Vertical Slice는 다음 Endpoint만 구현한다.
+
+```text
+GET /api/v1/businesses/{id}
+```
+
+공개 조건:
+
+```text
+status = ACTIVE
+deleted_at IS NULL
+published_at IS NOT NULL
+published_at <= 현재 UTC 시각
+```
+
+응답 Field:
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 123,
+    "name": "ABC 가죽공방",
+    "slug": "abc-leather",
+    "shortDescription": "가죽 제품을 복원합니다.",
+    "description": null,
+    "phone": "02-1234-5678",
+    "supports": {
+      "shipping": true,
+      "visit": false,
+      "pickup": true
+    },
+    "publishedAt": "2026-09-15T00:00:00Z",
+    "reputation": {
+      "internal": {
+        "rating": 4.8,
+        "reviewCount": 24,
+        "favoriteCount": 52,
+        "workCaseCount": 18
+      },
+      "external": [
+        {
+          "provider": "GOOGLE",
+          "rating": 4.6,
+          "reviewCount": 128,
+          "url": "https://example.com/google-place"
+        },
+        {
+          "provider": "NAVER",
+          "rating": null,
+          "reviewCount": null,
+          "url": "https://example.com/naver-place"
+        }
+      ]
+    }
+  }
+}
+```
+
+업체가 공개 조건을 만족하지 않거나 존재하지 않으면 `BUSINESS_NOT_FOUND` 오류와 HTTP 404를 반환한다.
 
 ## Work Case
 

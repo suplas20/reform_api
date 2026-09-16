@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace App\Support;
 
+use App\Controller\Api\ApiDocumentationController;
+use App\Controller\Api\V1\BusinessController;
+use App\Database\ConnectionFactory;
 use App\Http\Application;
 use App\Http\ExceptionHandler;
+use App\Repository\BusinessRepository;
+use App\Service\BusinessService;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
@@ -19,13 +24,26 @@ final class ApplicationFactory
     public static function create(string $rootPath): Application
     {
         $appConfig = self::loadConfig($rootPath . '/config/app.php');
+        $databaseConfig = self::loadConfig($rootPath . '/config/database.php');
         $servicesConfig = self::loadConfig($rootPath . '/config/services.php');
 
         date_default_timezone_set((string) $appConfig['timezone']);
         ini_set('display_errors', '0');
 
         $logger = self::createLogger($servicesConfig);
-        $routes = self::loadRoutes($rootPath);
+        $connection = (new ConnectionFactory($databaseConfig))->connection();
+        $businessRepository = new BusinessRepository($connection);
+        $businessService = new BusinessService($businessRepository);
+        $businessController = new BusinessController($businessService);
+        $apiDocumentationController = new ApiDocumentationController(
+            $rootPath . '/openapi/openapi.json',
+            $rootPath . '/vendor/swagger-api/swagger-ui/dist',
+        );
+        $routes = self::loadRoutes(
+            $rootPath,
+            $businessController,
+            $apiDocumentationController,
+        );
         $matcher = new UrlMatcher($routes, new RequestContext());
 
         return new Application($matcher, new ExceptionHandler($logger));
@@ -66,11 +84,27 @@ final class ApplicationFactory
         return $logger;
     }
 
-    private static function loadRoutes(string $rootPath): RouteCollection
+    private static function loadRoutes(
+        string $rootPath,
+        BusinessController $businessController,
+        ApiDocumentationController $apiDocumentationController,
+    ): RouteCollection
     {
         $routes = new RouteCollection();
 
-        foreach (['api.php', 'web.php', 'admin.php'] as $routeFile) {
+        $apiRegistrar = require $rootPath . '/routes/api.php';
+
+        if (!is_callable($apiRegistrar)) {
+            throw new RuntimeException('Route file must return a callable: api.php');
+        }
+
+        $apiRegistrar(
+            $routes,
+            $businessController,
+            $apiDocumentationController,
+        );
+
+        foreach (['web.php', 'admin.php'] as $routeFile) {
             $registrar = require $rootPath . '/routes/' . $routeFile;
 
             if (!is_callable($registrar)) {

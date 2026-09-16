@@ -44,6 +44,37 @@ function assertSameMap(array $expected, array $actual, string $message): void
     }
 }
 
+/**
+ * @param list<string> $requiredIndexes
+ */
+function assertRequiredIndexes(
+    PDO $connection,
+    string $table,
+    array $requiredIndexes,
+): void {
+    $statement = $connection->prepare(
+        <<<'SQL'
+            SELECT INDEX_NAME
+            FROM information_schema.STATISTICS
+            WHERE TABLE_SCHEMA = DATABASE()
+              AND TABLE_NAME = :table_name
+            GROUP BY INDEX_NAME
+            SQL,
+    );
+    $statement->execute(['table_name' => $table]);
+    $actualIndexes = $statement->fetchAll(PDO::FETCH_COLUMN);
+
+    foreach ($requiredIndexes as $requiredIndex) {
+        if (!in_array($requiredIndex, $actualIndexes, true)) {
+            throw new RuntimeException(sprintf(
+                'Required index is missing from %s: %s',
+                $table,
+                $requiredIndex,
+            ));
+        }
+    }
+}
+
 $expectedTables = [
     'admins',
     'auth_sessions',
@@ -51,11 +82,14 @@ $expectedTables = [
     'business_brands',
     'business_categories',
     'business_claims',
+    'business_external_ratings',
+    'business_external_refs',
     'business_hours',
     'business_images',
     'business_links',
     'business_locations',
     'business_offerings',
+    'business_reputation_stats',
     'business_sources',
     'business_verifications',
     'businesses',
@@ -67,6 +101,8 @@ $expectedTables = [
     'schema_migrations',
     'search_logs',
     'services',
+    'review_images',
+    'reviews',
     'user_favorites',
     'user_social_accounts',
     'users',
@@ -84,6 +120,8 @@ $expectedDeleteRules = [
     'fk_business_claims_admin' => 'SET NULL',
     'fk_business_claims_business' => 'CASCADE',
     'fk_business_claims_user' => 'CASCADE',
+    'fk_business_external_ratings_ref' => 'CASCADE',
+    'fk_business_external_refs_business' => 'CASCADE',
     'fk_business_hours_business' => 'CASCADE',
     'fk_business_images_business' => 'CASCADE',
     'fk_business_links_business' => 'CASCADE',
@@ -92,6 +130,7 @@ $expectedDeleteRules = [
     'fk_business_offerings_business' => 'CASCADE',
     'fk_business_offerings_category' => 'RESTRICT',
     'fk_business_offerings_service' => 'RESTRICT',
+    'fk_business_reputation_stats_business' => 'CASCADE',
     'fk_business_sources_business' => 'CASCADE',
     'fk_business_verifications_admin' => 'SET NULL',
     'fk_business_verifications_business' => 'CASCADE',
@@ -100,6 +139,9 @@ $expectedDeleteRules = [
     'fk_category_services_category' => 'RESTRICT',
     'fk_category_services_service' => 'RESTRICT',
     'fk_regions_parent' => 'RESTRICT',
+    'fk_review_images_review' => 'CASCADE',
+    'fk_reviews_business' => 'CASCADE',
+    'fk_reviews_user' => 'CASCADE',
     'fk_social_accounts_user' => 'CASCADE',
     'fk_user_favorites_business' => 'CASCADE',
     'fk_user_favorites_user' => 'CASCADE',
@@ -169,7 +211,7 @@ try {
     }
 
     assertSameList(
-        ['businesses', 'guides', 'users', 'work_cases'],
+        ['businesses', 'guides', 'reviews', 'users', 'work_cases'],
         $softDeleteStatement->fetchAll(PDO::FETCH_COLUMN),
         'The soft-delete table set is invalid.',
     );
@@ -194,34 +236,60 @@ try {
 
     assertSameMap($expectedDeleteRules, $actualDeleteRules, 'The foreign-key delete rules are invalid.');
 
-    $offeringIndexStatement = $connection->query(
-        <<<'SQL'
-            SELECT INDEX_NAME
-            FROM information_schema.STATISTICS
-            WHERE TABLE_SCHEMA = DATABASE()
-              AND TABLE_NAME = 'business_offerings'
-            GROUP BY INDEX_NAME
-            SQL,
+    assertRequiredIndexes(
+        $connection,
+        'business_offerings',
+        [
+            'uq_business_offerings_combination',
+            'idx_business_offerings_category_service',
+            'idx_business_offerings_service_id',
+            'idx_business_offerings_status',
+        ],
+    );
+    assertRequiredIndexes(
+        $connection,
+        'business_external_refs',
+        [
+            'uq_business_external_refs_business_provider',
+            'uq_business_external_refs_provider_external_id',
+        ],
+    );
+    assertRequiredIndexes(
+        $connection,
+        'business_external_ratings',
+        [
+            'uq_business_external_ratings_business_provider',
+            'idx_business_external_ratings_provider',
+            'idx_business_external_ratings_rating',
+            'idx_business_external_ratings_review_count',
+            'idx_business_external_ratings_fetched_at',
+            'idx_business_external_ratings_expires_at',
+        ],
+    );
+    assertRequiredIndexes(
+        $connection,
+        'reviews',
+        [
+            'idx_reviews_business_id',
+            'idx_reviews_user_id',
+            'idx_reviews_status',
+            'idx_reviews_created_at',
+            'idx_reviews_business_status',
+        ],
     );
 
-    if ($offeringIndexStatement === false) {
-        throw new RuntimeException('Unable to inspect business offering indexes.');
-    }
+    $ratingCheckStatement = $connection->prepare(
+        <<<'SQL'
+            SELECT COUNT(*)
+            FROM information_schema.CHECK_CONSTRAINTS
+            WHERE CONSTRAINT_SCHEMA = DATABASE()
+              AND CONSTRAINT_NAME = :constraint_name
+            SQL,
+    );
+    $ratingCheckStatement->execute(['constraint_name' => 'chk_reviews_rating']);
 
-    $offeringIndexes = $offeringIndexStatement->fetchAll(PDO::FETCH_COLUMN);
-
-    foreach ([
-        'uq_business_offerings_combination',
-        'idx_business_offerings_category_service',
-        'idx_business_offerings_service_id',
-        'idx_business_offerings_status',
-    ] as $requiredIndex) {
-        if (!in_array($requiredIndex, $offeringIndexes, true)) {
-            throw new RuntimeException(sprintf(
-                'Required business offering index is missing: %s',
-                $requiredIndex,
-            ));
-        }
+    if ((int) $ratingCheckStatement->fetchColumn() !== 1) {
+        throw new RuntimeException('The reviews rating check constraint is missing.');
     }
 
     fwrite(STDOUT, "Database schema tests passed.\n");

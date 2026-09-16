@@ -157,6 +157,16 @@ deleted_at
 
 users ───── business_claims ───── businesses
 
+                              businesses
+                                  │
+             ┌────────────────────┼─────────────────────┐
+             │                    │                     │
+             ▼                    ▼                     ▼
+ business_external_refs        reviews     business_reputation_stats
+             │                    │
+             ▼                    ▼
+ business_external_ratings  review_images
+
 admins
 
 search_logs
@@ -1208,6 +1218,7 @@ users
 businesses
 work_cases
 guides
+reviews
 ```
 
 다음 컬럼을 사용한다.
@@ -1350,6 +1361,16 @@ work_case_services
 user_favorites
 ```
 
+## Reputation
+
+```text
+business_external_refs
+business_external_ratings
+reviews
+review_images
+business_reputation_stats
+```
+
 ## Analytics
 
 ```text
@@ -1366,7 +1387,7 @@ guides
 예상 총 테이블 수:
 
 ```text
-27
+32
 ```
 
 ---
@@ -1384,6 +1405,8 @@ services
 regions
 work_cases
 users
+reviews
+business_reputation_stats
 ```
 
 그 외 테이블은 인증, 운영, 관계, 분석, SEO 기능을 지원한다.
@@ -1555,6 +1578,22 @@ work_cases.brand_id
 work_cases.status
 work_cases.published_at
 
+business_external_refs(business_id, provider)
+business_external_refs(provider, external_id)
+
+business_external_ratings(business_id, provider)
+business_external_ratings.provider
+business_external_ratings.rating
+business_external_ratings.review_count
+business_external_ratings.fetched_at
+business_external_ratings.expires_at
+
+reviews.business_id
+reviews.user_id
+reviews.status
+reviews.created_at
+reviews(business_id, status)
+
 auth_sessions.user_id
 auth_sessions.refresh_expires_at
 
@@ -1568,28 +1607,28 @@ event_logs.created_at
 
 ---
 
-# 43. 다음 설계 단계
+# 43. 설계 및 구현 순서
 
 논리 ERD 이후 다음 순서로 진행한다.
 
 ```text
-1. Cafe24 MariaDB Version 확인
+1. MariaDB Version 확인 — 완료
 
-2. 실제 Column Type 확정
+2. 실제 Column Type 확정 — 완료
 
-3. FK / ON DELETE 정책 최종 확정
+3. FK / ON DELETE 정책 최종 확정 — 완료
 
-4. Index 최종 설계
+4. Index 최종 설계 — 완료
 
-5. 001_initial_schema.sql 작성
+5. 001_initial_schema.sql 작성 및 적용 — 완료
 
-6. Seed Data 작성
+6. Seed Data 작성 — 다음 작업
 
-7. 대표 검색 Query 작성
+7. 대표 검색 Query 작성 — 예정
 
-8. EXPLAIN 기반 Index 검증
+8. EXPLAIN 기반 Index 검증 — 예정
 
-9. Repository 구현
+9. Repository 구현 — 예정
 ```
 
 첫 Migration 파일 예상명:
@@ -1672,3 +1711,91 @@ nullable 소유자·검토자 FK
 - `business_offerings`의 Unique Index 선두 Column이 `business_id` 조회를 지원하므로 중복 단일 Index는 만들지 않는다.
 - `schema_migrations`는 27개 Domain Table과 별도로 Migration 버전과 SHA-256 Checksum을 기록한다.
 - `business_offerings`가 Category + Service 조합의 기준이며 별도 `business_services` 테이블은 사용하지 않는다.
+
+---
+
+# 46. Migration 실행 구조
+
+초기 Schema와 이후 변경사항은 다음 구조로 관리한다.
+
+```text
+database/migrations/*.sql
+= Version 관리되는 Schema 변경 원본
+
+src/Database/MigrationRunner.php
+= Migration 탐색, SHA-256 Checksum 검증, 적용 이력 기록
+
+bin/migrate.php
+= 로컬 CLI 실행 진입점
+
+schema_migrations
+= 적용된 Version, Checksum, 적용 시각 기록
+```
+
+보조 연결 확인 명령:
+
+```text
+bin/check-database.php
+```
+
+Composer 명령:
+
+```bash
+composer db:check
+composer db:status
+composer db:migrate
+composer test:database
+```
+
+운영 원칙:
+
+- `bin/`은 로컬 관리 CLI 전용이며 HTTP Route에 연결하지 않는다.
+- API와 Public Web의 정상 요청 처리에서 Migration을 자동 실행하지 않는다.
+- Cafe24의 운영 Shell 사용 가능 여부를 전제로 애플리케이션을 설계하지 않는다.
+- 운영 Schema 변경은 검토된 SQL Migration을 별도의 승인된 배포 절차로 적용한다.
+- 적용된 Migration 파일의 내용이 변경되면 Checksum 오류로 중단한다.
+
+---
+
+# 47. 평판 및 리뷰 설계 반영
+
+세부 정책은 다음 변경 설계서를 우선한다.
+
+```text
+.docs/reform_platform_reputation_design_change.md
+```
+
+적용 Migration:
+
+```text
+database/migrations/002_add_reputation_schema.sql
+```
+
+추가된 Domain Table:
+
+```text
+business_external_refs
+business_external_ratings
+reviews
+review_images
+business_reputation_stats
+```
+
+DDL 적용 결정:
+
+- MariaDB가 Unique Index에서 여러 NULL을 허용하므로 `(provider, external_id)` Unique Index를 적용한다.
+- 외부 평점은 `(business_id, provider)` Composite FK로 `business_external_refs`를 참조한다.
+- 자체 리뷰의 `rating`은 CHECK Constraint로 1부터 5까지만 허용한다.
+- `reviews`는 `deleted_at`을 사용하는 Soft Delete 대상이다.
+- 새 Child Table은 부모가 실제 Hard Delete될 때 `ON DELETE CASCADE`를 적용한다.
+- 기존 업체의 평판 통계 Row는 Migration 시 생성하며 기존 즐겨찾기·미삭제 작업사례 수를 반영한다.
+- 외부 리뷰 원문·작성자·사진은 저장하지 않는다.
+- Naver 평점과 리뷰 수는 공식 사용이 허용되기 전까지 저장하지 않는다.
+- 자체 평판과 외부 평판은 합산하지 않는다.
+
+후속 설계에서 확정할 항목:
+
+- `business_sources`와 `business_external_refs` 사이 Provider 식별자의 Source of Truth 및 기존 데이터 이관 여부
+- `reviews.status = DELETED`와 `deleted_at`의 역할 구분
+- `work_case_count`에 포함할 WorkCase Status와 생성·게시·숨김·Soft Delete 시 갱신 규칙
+- 신규 Business 생성 시 `business_reputation_stats` Row 생성 Transaction

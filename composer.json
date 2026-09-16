@@ -8,6 +8,7 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "monolog/monolog": "^3.0",
+        "swagger-api/swagger-ui": "^5.32.15",
         "symfony/http-foundation": "^7.4",
         "symfony/routing": "^7.4"
     },
@@ -17,12 +18,19 @@
         }
     },
     "scripts": {
-        "test": "@php tests/smoke.php",
+        "test": [
+            "@php tests/smoke.php",
+            "@php tests/business_api.php",
+            "@php tests/api_documentation.php"
+        ],
         "db:check": "@php bin/check-database.php",
         "db:migrate": "@php bin/migrate.php migrate",
         "db:status": "@php bin/migrate.php status",
         "test:database": "@php tests/database_schema.php",
-        "serve": "@php -S 127.0.0.1:8080 -t public"
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php -S 127.0.0.1:8080 -t public"
+        ]
     },
     "config": {
         "platform": {
