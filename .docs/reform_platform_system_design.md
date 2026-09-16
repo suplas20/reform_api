@@ -1353,6 +1353,8 @@ GET /api/v1/search
 GET /api/v1/search/suggestions
 ```
 
+현재 `GET /api/v1/search/suggestions`를 먼저 구현했으며 공개 업체와 ACTIVE 서비스·브랜드 이름을 반환한다. 통합 검색 본문은 Business 전체 검색 계약과 함께 구현한다.
+
 ## Authentication
 
 ```text

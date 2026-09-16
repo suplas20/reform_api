@@ -6,7 +6,7 @@ namespace App\Repository;
 
 use PDO;
 
-final class ServiceRepository
+final class ServiceRepository implements ServiceSuggestionRepository
 {
     public function __construct(private readonly PDO $connection)
     {
@@ -56,6 +56,31 @@ final class ServiceRepository
             $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
         }
 
+        $statement->execute();
+
+        /** @var list<array<string, mixed>> $services */
+        $services = $statement->fetchAll();
+
+        return $services;
+    }
+
+    public function findActiveSuggestions(string $keyword, int $limit): array
+    {
+        $statement = $this->connection->prepare(
+            <<<'SQL'
+                SELECT
+                    services.id,
+                    services.name
+                FROM services
+                WHERE services.status = :status
+                  AND services.name LIKE :keyword ESCAPE '!'
+                ORDER BY services.name ASC, services.id ASC
+                LIMIT :limit
+                SQL,
+        );
+        $statement->bindValue(':status', 'ACTIVE');
+        $statement->bindValue(':keyword', SqlLikePattern::contains($keyword));
+        $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
         $statement->execute();
 
         /** @var list<array<string, mixed>> $services */

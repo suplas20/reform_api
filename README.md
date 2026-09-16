@@ -101,6 +101,7 @@ GET /api/v1/regions?parentId=&level=
 GET /api/v1/brands?keyword=&page=1&perPage=20
 GET /api/v1/businesses?page=1&perPage=20
 GET /api/v1/businesses/{id}
+GET /api/v1/search/suggestions?keyword=&limit=10
 POST /api/v1/events
 ```
 

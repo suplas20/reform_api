@@ -6,12 +6,14 @@ use App\Controller\Api\ApiDocumentationController;
 use App\Controller\Api\V1\BusinessController;
 use App\Controller\Api\V1\EventController;
 use App\Controller\Api\V1\ReferenceController;
+use App\Controller\Api\V1\SearchController;
 use App\Http\Application;
 use App\Http\ExceptionHandler;
 use App\Repository\BusinessReadRepository;
 use App\Service\BusinessService;
 use App\Service\EventRecorder;
 use App\Service\ReferenceDataProvider;
+use App\Service\SearchDataProvider;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\Request;
@@ -97,6 +99,14 @@ $eventController = new EventController(
         }
     },
 );
+$searchController = new SearchController(
+    new class implements SearchDataProvider {
+        public function getSuggestions(string $keyword, int $limit): array
+        {
+            return ['businesses' => [], 'services' => [], 'brands' => []];
+        }
+    },
+);
 $routes = new RouteCollection();
 $registerRoutes = require dirname(__DIR__) . '/routes/api.php';
 $registerRoutes(
@@ -104,6 +114,7 @@ $registerRoutes(
     $referenceController,
     $businessController,
     $eventController,
+    $searchController,
     $controller,
 );
 
@@ -168,6 +179,10 @@ foreach ([
 assertApiDocumentation(
     isset($specification['paths']['/api/v1/events']['post']),
     'Event create operation is missing from OpenAPI.',
+);
+assertApiDocumentation(
+    isset($specification['paths']['/api/v1/search/suggestions']['get']),
+    'Search suggestions operation is missing from OpenAPI.',
 );
 
 $assetRequest = Request::create('/api/docs/assets/swagger-ui.css', 'GET');

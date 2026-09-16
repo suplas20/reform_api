@@ -1,0 +1,13 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Repository;
+
+interface BrandSuggestionRepository
+{
+    /**
+     * @return list<array<string, mixed>>
+     */
+    public function findActiveSuggestions(string $keyword, int $limit): array;
+}

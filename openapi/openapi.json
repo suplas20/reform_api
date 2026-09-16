@@ -23,6 +23,10 @@
     {
       "name": "Event",
       "description": "사용자 행동 이벤트"
+    },
+    {
+      "name": "Search",
+      "description": "통합 검색 및 검색어 제안"
     }
   ],
   "paths": {
@@ -236,6 +240,58 @@
         }
       }
     },
+    "/api/v1/search/suggestions": {
+      "get": {
+        "tags": ["Search"],
+        "summary": "검색어 제안 조회",
+        "operationId": "getSearchSuggestions",
+        "parameters": [
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": true,
+            "schema": {"type": "string", "minLength": 1}
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "업체·서비스·브랜드 검색어 제안",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/SearchSuggestionsSuccessResponse"}
+              }
+            }
+          },
+          "422": {
+            "description": "검색어 또는 제한 수 검증 실패",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/ErrorResponse"}
+              }
+            }
+          },
+          "500": {
+            "description": "서버 오류",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/ErrorResponse"}
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/businesses": {
       "get": {
         "tags": [
@@ -393,6 +449,39 @@
   },
   "components": {
     "schemas": {
+      "SearchSuggestionsSuccessResponse": {
+        "type": "object",
+        "required": ["success", "data"],
+        "properties": {
+          "success": {"type": "boolean", "const": true},
+          "data": {
+            "type": "object",
+            "required": ["businesses", "services", "brands"],
+            "properties": {
+              "businesses": {
+                "type": "array",
+                "items": {"$ref": "#/components/schemas/SearchSuggestion"}
+              },
+              "services": {
+                "type": "array",
+                "items": {"$ref": "#/components/schemas/SearchSuggestion"}
+              },
+              "brands": {
+                "type": "array",
+                "items": {"$ref": "#/components/schemas/SearchSuggestion"}
+              }
+            }
+          }
+        }
+      },
+      "SearchSuggestion": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": {"type": "integer", "format": "int64"},
+          "name": {"type": "string"}
+        }
+      },
       "EventCreateRequest": {
         "type": "object",
         "additionalProperties": false,

@@ -6,6 +6,7 @@ use App\Controller\Api\ApiDocumentationController;
 use App\Controller\Api\V1\BusinessController;
 use App\Controller\Api\V1\EventController;
 use App\Controller\Api\V1\ReferenceController;
+use App\Controller\Api\V1\SearchController;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -14,6 +15,7 @@ return static function (
     ReferenceController $referenceController,
     BusinessController $businessController,
     EventController $eventController,
+    SearchController $searchController,
     ApiDocumentationController $apiDocumentationController,
 ): void {
     $routes->add(
@@ -72,6 +74,14 @@ return static function (
         new Route(
             '/api/v1/brands',
             ['_controller' => [$referenceController, 'brands']],
+            methods: ['GET'],
+        ),
+    );
+    $routes->add(
+        'api.v1.search.suggestions',
+        new Route(
+            '/api/v1/search/suggestions',
+            ['_controller' => [$searchController, 'suggestions']],
             methods: ['GET'],
         ),
     );

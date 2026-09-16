@@ -8,6 +8,7 @@ use App\Controller\Api\ApiDocumentationController;
 use App\Controller\Api\V1\BusinessController;
 use App\Controller\Api\V1\EventController;
 use App\Controller\Api\V1\ReferenceController;
+use App\Controller\Api\V1\SearchController;
 use App\Database\ConnectionFactory;
 use App\Http\Application;
 use App\Http\ExceptionHandler;
@@ -20,6 +21,7 @@ use App\Repository\ServiceRepository;
 use App\Service\BusinessService;
 use App\Service\EventService;
 use App\Service\ReferenceService;
+use App\Service\SearchService;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
@@ -58,6 +60,12 @@ final class ApplicationFactory
         $businessRepository = new BusinessRepository($connection);
         $businessService = new BusinessService($businessRepository);
         $businessController = new BusinessController($businessService);
+        $searchService = new SearchService(
+            $businessRepository,
+            $serviceRepository,
+            $brandRepository,
+        );
+        $searchController = new SearchController($searchService);
         $apiDocumentationController = new ApiDocumentationController(
             $rootPath . '/openapi/openapi.json',
             $rootPath . '/vendor/swagger-api/swagger-ui/dist',
@@ -67,6 +75,7 @@ final class ApplicationFactory
             $referenceController,
             $businessController,
             $eventController,
+            $searchController,
             $apiDocumentationController,
         );
         $matcher = new UrlMatcher($routes, new RequestContext());
@@ -114,6 +123,7 @@ final class ApplicationFactory
         ReferenceController $referenceController,
         BusinessController $businessController,
         EventController $eventController,
+        SearchController $searchController,
         ApiDocumentationController $apiDocumentationController,
     ): RouteCollection
     {
@@ -130,6 +140,7 @@ final class ApplicationFactory
             $referenceController,
             $businessController,
             $eventController,
+            $searchController,
             $apiDocumentationController,
         );
 

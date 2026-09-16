@@ -23,6 +23,7 @@
             "@php tests/business_api.php",
             "@php tests/reference_api.php",
             "@php tests/event_api.php",
+            "@php tests/search_api.php",
             "@php tests/api_documentation.php"
         ],
         "db:check": "@php bin/check-database.php",

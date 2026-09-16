@@ -64,6 +64,10 @@
   - 민감한 Metadata Key 차단
   - JSON 형식·필드·길이 Validation
   - 성공 시 HTTP 204
+- `GET /api/v1/search/suggestions`
+  - 공개된 업체와 ACTIVE 서비스·브랜드 제안
+  - 기본 limit 10, 최대 100
+  - LIKE Wildcard 문자 Escape
 - API 문서
   - `GET /api/docs`
   - `GET /api/docs/openapi.json`
@@ -78,6 +82,7 @@ composer test
 → Business API tests passed.
 → Reference API tests passed.
 → Event API tests passed.
+→ Search API tests passed.
 → API documentation tests passed.
 
 composer validate --strict
@@ -103,7 +108,7 @@ composer db:status
 - Reference Seed Data
 - 모바일 API 정의서 기준 Business 검색 Filter·정렬 및 전체 Summary/Detail DTO
 - Reputation 및 Review API
-- Search, SNS Auth, Favorite, Admin, Mobile, Public SEO Web
+- 통합 검색 본문, SNS Auth, Favorite, Admin, Mobile, Public SEO Web
 
 ## 다음 작업
 

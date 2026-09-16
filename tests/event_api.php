@@ -6,6 +6,7 @@ use App\Controller\Api\ApiDocumentationController;
 use App\Controller\Api\V1\BusinessController;
 use App\Controller\Api\V1\EventController;
 use App\Controller\Api\V1\ReferenceController;
+use App\Controller\Api\V1\SearchController;
 use App\Http\Application;
 use App\Http\ExceptionHandler;
 use App\Repository\BusinessReadRepository;
@@ -13,6 +14,7 @@ use App\Repository\EventLogStore;
 use App\Service\BusinessService;
 use App\Service\EventService;
 use App\Service\ReferenceDataProvider;
+use App\Service\SearchDataProvider;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\Request;
@@ -114,6 +116,14 @@ $documentationController = new ApiDocumentationController(
     dirname(__DIR__) . '/openapi/openapi.json',
     dirname(__DIR__) . '/vendor/swagger-api/swagger-ui/dist',
 );
+$searchController = new SearchController(
+    new class implements SearchDataProvider {
+        public function getSuggestions(string $keyword, int $limit): array
+        {
+            return ['businesses' => [], 'services' => [], 'brands' => []];
+        }
+    },
+);
 $routes = new RouteCollection();
 $registerRoutes = require dirname(__DIR__) . '/routes/api.php';
 $registerRoutes(
@@ -121,6 +131,7 @@ $registerRoutes(
     $referenceController,
     $businessController,
     $eventController,
+    $searchController,
     $documentationController,
 );
 

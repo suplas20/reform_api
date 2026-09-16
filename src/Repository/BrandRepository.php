@@ -6,7 +6,7 @@ namespace App\Repository;
 
 use PDO;
 
-final class BrandRepository
+final class BrandRepository implements BrandSuggestionRepository
 {
     public function __construct(private readonly PDO $connection)
     {
@@ -69,6 +69,31 @@ final class BrandRepository
         return $brands;
     }
 
+    public function findActiveSuggestions(string $keyword, int $limit): array
+    {
+        $statement = $this->connection->prepare(
+            <<<'SQL'
+                SELECT
+                    brands.id,
+                    brands.name
+                FROM brands
+                WHERE brands.status = :status
+                  AND brands.name LIKE :keyword ESCAPE '!'
+                ORDER BY brands.name ASC, brands.id ASC
+                LIMIT :limit
+                SQL,
+        );
+        $statement->bindValue(':status', 'ACTIVE');
+        $statement->bindValue(':keyword', SqlLikePattern::contains($keyword));
+        $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $statement->execute();
+
+        /** @var list<array<string, mixed>> $brands */
+        $brands = $statement->fetchAll();
+
+        return $brands;
+    }
+
     /**
      * @return array{string, array<string, string>}
      */
@@ -78,15 +103,9 @@ final class BrandRepository
             return ['', []];
         }
 
-        $escapedKeyword = str_replace(
-            ['\\', '%', '_'],
-            ['\\\\', '\\%', '\\_'],
-            $keyword,
-        );
-
         return [
-            ' AND brands.name LIKE :keyword',
-            ['keyword' => '%' . $escapedKeyword . '%'],
+            " AND brands.name LIKE :keyword ESCAPE '!'",
+            ['keyword' => SqlLikePattern::contains($keyword)],
         ];
     }
 }

@@ -6,7 +6,7 @@ namespace App\Repository;
 
 use PDO;
 
-final class BusinessRepository implements BusinessReadRepository
+final class BusinessRepository implements BusinessReadRepository, BusinessSuggestionRepository
 {
     public function __construct(private readonly PDO $connection)
     {
@@ -117,6 +117,38 @@ final class BusinessRepository implements BusinessReadRepository
         $business = $statement->fetch();
 
         return is_array($business) ? $business : null;
+    }
+
+    public function findPublicSuggestions(
+        string $keyword,
+        string $publishedAt,
+        int $limit,
+    ): array {
+        $statement = $this->connection->prepare(
+            <<<'SQL'
+                SELECT
+                    businesses.id,
+                    businesses.name
+                FROM businesses
+                WHERE businesses.status = :status
+                  AND businesses.deleted_at IS NULL
+                  AND businesses.published_at IS NOT NULL
+                  AND businesses.published_at <= :published_at
+                  AND businesses.name LIKE :keyword ESCAPE '!'
+                ORDER BY businesses.name ASC, businesses.id ASC
+                LIMIT :limit
+                SQL,
+        );
+        $statement->bindValue(':status', 'ACTIVE');
+        $statement->bindValue(':published_at', $publishedAt);
+        $statement->bindValue(':keyword', SqlLikePattern::contains($keyword));
+        $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $statement->execute();
+
+        /** @var list<array<string, mixed>> $businesses */
+        $businesses = $statement->fetchAll();
+
+        return $businesses;
     }
 
     /**
