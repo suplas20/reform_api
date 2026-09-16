@@ -6,6 +6,7 @@ namespace App\Support;
 
 use App\Controller\Api\ApiDocumentationController;
 use App\Controller\Api\V1\BusinessController;
+use App\Controller\Api\V1\EventController;
 use App\Controller\Api\V1\ReferenceController;
 use App\Database\ConnectionFactory;
 use App\Http\Application;
@@ -13,9 +14,11 @@ use App\Http\ExceptionHandler;
 use App\Repository\BrandRepository;
 use App\Repository\BusinessRepository;
 use App\Repository\CategoryRepository;
+use App\Repository\EventLogRepository;
 use App\Repository\RegionRepository;
 use App\Repository\ServiceRepository;
 use App\Service\BusinessService;
+use App\Service\EventService;
 use App\Service\ReferenceService;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
@@ -49,6 +52,9 @@ final class ApplicationFactory
             $brandRepository,
         );
         $referenceController = new ReferenceController($referenceService);
+        $eventLogRepository = new EventLogRepository($connection);
+        $eventService = new EventService($eventLogRepository);
+        $eventController = new EventController($eventService);
         $businessRepository = new BusinessRepository($connection);
         $businessService = new BusinessService($businessRepository);
         $businessController = new BusinessController($businessService);
@@ -60,6 +66,7 @@ final class ApplicationFactory
             $rootPath,
             $referenceController,
             $businessController,
+            $eventController,
             $apiDocumentationController,
         );
         $matcher = new UrlMatcher($routes, new RequestContext());
@@ -106,6 +113,7 @@ final class ApplicationFactory
         string $rootPath,
         ReferenceController $referenceController,
         BusinessController $businessController,
+        EventController $eventController,
         ApiDocumentationController $apiDocumentationController,
     ): RouteCollection
     {
@@ -121,6 +129,7 @@ final class ApplicationFactory
             $routes,
             $referenceController,
             $businessController,
+            $eventController,
             $apiDocumentationController,
         );
 

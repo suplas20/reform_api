@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Controller\Api\ApiDocumentationController;
 use App\Controller\Api\V1\BusinessController;
+use App\Controller\Api\V1\EventController;
 use App\Controller\Api\V1\ReferenceController;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -12,6 +13,7 @@ return static function (
     RouteCollection $routes,
     ReferenceController $referenceController,
     BusinessController $businessController,
+    EventController $eventController,
     ApiDocumentationController $apiDocumentationController,
 ): void {
     $routes->add(
@@ -71,6 +73,14 @@ return static function (
             '/api/v1/brands',
             ['_controller' => [$referenceController, 'brands']],
             methods: ['GET'],
+        ),
+    );
+    $routes->add(
+        'api.v1.events.create',
+        new Route(
+            '/api/v1/events',
+            ['_controller' => [$eventController, 'create']],
+            methods: ['POST'],
         ),
     );
     $routes->add(

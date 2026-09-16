@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 use App\Controller\Api\ApiDocumentationController;
 use App\Controller\Api\V1\BusinessController;
+use App\Controller\Api\V1\EventController;
 use App\Controller\Api\V1\ReferenceController;
 use App\Http\Application;
 use App\Http\ExceptionHandler;
 use App\Repository\BusinessReadRepository;
 use App\Service\BusinessService;
+use App\Service\EventRecorder;
 use App\Service\ReferenceDataProvider;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
@@ -128,12 +130,26 @@ $documentationController = new ApiDocumentationController(
     dirname(__DIR__) . '/openapi/openapi.json',
     dirname(__DIR__) . '/vendor/swagger-api/swagger-ui/dist',
 );
+$eventController = new EventController(
+    new class implements EventRecorder {
+        public function record(
+            ?int $userId,
+            ?string $sessionKey,
+            string $eventName,
+            ?string $entityType,
+            ?int $entityId,
+            ?array $metadata,
+        ): void {
+        }
+    },
+);
 $routes = new RouteCollection();
 $registerRoutes = require dirname(__DIR__) . '/routes/api.php';
 $registerRoutes(
     $routes,
     $referenceController,
     $businessController,
+    $eventController,
     $documentationController,
 );
 

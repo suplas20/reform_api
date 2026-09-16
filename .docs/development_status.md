@@ -1,7 +1,7 @@
 # 개발 진행 상태
 
 - 기준일: 2026-09-16
-- 현재 단계: Phase API-1 — Reference API 완료, Business API 계약 확장 대기
+- 현재 단계: Phase API-1 — Reference 완료, Business·Work Case 확장 대기
 - 구현 기준: `AGENTS.MD`, `.docs/reform_mobile_api_definition_v1.md`, `.docs/reform_platform_system_design.md`
 
 ## 완료된 항목
@@ -58,6 +58,12 @@
   - ACTIVE 데이터 및 계층·카테고리·검색·페이지 조건
   - CategoryRepository/ServiceRepository/RegionRepository/BrandRepository
   - ReferenceService → ReferenceController
+- `POST /api/v1/events`
+  - EventController → EventService → EventLogRepository
+  - 허용 Event Name Whitelist
+  - 민감한 Metadata Key 차단
+  - JSON 형식·필드·길이 Validation
+  - 성공 시 HTTP 204
 - API 문서
   - `GET /api/docs`
   - `GET /api/docs/openapi.json`
@@ -71,6 +77,7 @@ composer test
 → Foundation smoke tests passed.
 → Business API tests passed.
 → Reference API tests passed.
+→ Event API tests passed.
 → API documentation tests passed.
 
 composer validate --strict

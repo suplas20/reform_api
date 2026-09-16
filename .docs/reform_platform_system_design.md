@@ -1378,6 +1378,8 @@ DELETE /api/v1/favorites/{businessId}
 POST /api/v1/events
 ```
 
+요청 Field, 허용 Event Name, 민감정보 금지 규칙은 `.docs/reform_mobile_api_definition_v1.md` 22장을 따른다. 성공 응답은 Body 없는 HTTP 204이다.
+
 ---
 
 # 20. 검색 API 설계 방향

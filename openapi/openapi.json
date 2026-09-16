@@ -19,6 +19,10 @@
     {
       "name": "Business",
       "description": "공개 업체 조회"
+    },
+    {
+      "name": "Event",
+      "description": "사용자 행동 이벤트"
     }
   ],
   "paths": {
@@ -188,6 +192,50 @@
         }
       }
     },
+    "/api/v1/events": {
+      "post": {
+        "tags": ["Event"],
+        "summary": "사용자 행동 이벤트 기록",
+        "operationId": "createEvent",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/EventCreateRequest"}
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "이벤트 기록 성공"
+          },
+          "400": {
+            "description": "JSON 요청 형식 오류",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/ErrorResponse"}
+              }
+            }
+          },
+          "422": {
+            "description": "이벤트 입력값 검증 실패",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/ErrorResponse"}
+              }
+            }
+          },
+          "500": {
+            "description": "서버 오류",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/ErrorResponse"}
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/businesses": {
       "get": {
         "tags": [
@@ -345,6 +393,56 @@
   },
   "components": {
     "schemas": {
+      "EventCreateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["eventName"],
+        "properties": {
+          "sessionKey": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "eventName": {
+            "type": "string",
+            "enum": [
+              "SEARCH",
+              "FILTER",
+              "BUSINESS_IMPRESSION",
+              "BUSINESS_VIEW",
+              "BUSINESS_CLICK",
+              "FAVORITE",
+              "CALL_CLICK",
+              "MAP_CLICK",
+              "WEBSITE_CLICK",
+              "SNS_CLICK",
+              "CASE_VIEW",
+              "SHARE",
+              "EXTERNAL_GOOGLE_CLICK",
+              "EXTERNAL_NAVER_CLICK",
+              "REVIEW_VIEW",
+              "REVIEW_CREATE",
+              "REVIEW_UPDATE",
+              "REVIEW_DELETE"
+            ]
+          },
+          "entityType": {
+            "type": "string",
+            "maxLength": 30,
+            "pattern": "^[A-Z][A-Z0-9_]*$"
+          },
+          "entityId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Token, 비밀번호, API Key 등 민감정보를 포함할 수 없습니다.",
+            "additionalProperties": true
+          }
+        }
+      },
       "CategoryListSuccessResponse": {
         "type": "object",
         "required": ["success", "data"],
