@@ -62,6 +62,19 @@ $businessController = new BusinessController(
                 return null;
             }
 
+            public function findPublicDetailRelations(int $businessId): array
+            {
+                return [
+                    'primaryLocation' => null,
+                    'hours' => [],
+                    'categories' => [],
+                    'offerings' => [],
+                    'brands' => [],
+                    'links' => [],
+                    'verificationTypes' => [],
+                ];
+            }
+
             public function findActiveExternalReputationByBusinessIds(array $businessIds): array
             {
                 return [];

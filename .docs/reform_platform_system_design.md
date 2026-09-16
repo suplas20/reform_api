@@ -1276,7 +1276,7 @@ id DESC
 현재 목록 Item은 상세 응답에서 `description`과 `phone`을 제외한 기본 정보와 자체·외부 평판을 포함한다.
 Mobile API 정의서 14장의 검색어·카테고리·서비스·지역·브랜드·좌표·인증 Filter 및 정렬은 구현했다. 정식 추천 Ranking이 확정되기 전까지 `recommended`는 최신 게시순을 사용한다. 공개 이미지 URL 정책은 보류 결정에 따라 이미지 기반 Summary DTO와 Work Case API를 확장하지 않는다.
 
-### 현재 Business Detail 중간 구현
+### Business Detail 비이미지 구현
 
 첫 Vertical Slice는 다음 Endpoint만 구현한다.
 
@@ -1293,7 +1293,9 @@ published_at IS NOT NULL
 published_at <= 현재 UTC 시각
 ```
 
-현재 구현된 응답 Field:
+Mobile API 정의서 16장의 비이미지 Field를 구현했다. `images`는 공개 URL 정책 보류에 따라 빈 배열이며, 인증 연동 전 `isFavorite`은 `false`다.
+
+기존 첫 Vertical Slice의 응답 Field 기록:
 
 ```json
 {

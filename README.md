@@ -106,7 +106,7 @@ GET /api/v1/search/suggestions?keyword=&limit=10
 POST /api/v1/events
 ```
 
-Reference API는 활성화된 카테고리·서비스·지역·브랜드를 반환합니다. Business API는 공개 상태이고 게시 시각이 도달한 미삭제 업체의 기본 정보와 자체·외부 평판을 반환하며, 모바일 API 정의서의 전체 검색·상세 계약으로 확장 중입니다. Event API는 허용된 사용자 행동을 기록하고 성공 시 HTTP 204를 반환합니다. 목록 API의 `perPage`는 최대 100입니다.
+Reference API는 활성화된 카테고리·서비스·지역·브랜드를 반환합니다. Business API는 공개 업체 검색과 위치·영업시간·Offering·브랜드·링크·평판을 포함한 상세 정보를 반환합니다. 공개 이미지 URL 정책이 보류되어 이미지 필드는 아직 빈 배열이며, 인증 연동 전 `isFavorite`은 `false`입니다. Event API는 허용된 사용자 행동을 기록하고 성공 시 HTTP 204를 반환합니다.
 
 ## 프로젝트 폴더 이동
 

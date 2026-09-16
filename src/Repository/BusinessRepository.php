@@ -182,6 +182,121 @@ final class BusinessRepository implements BusinessReadRepository, BusinessSugges
         return is_array($business) ? $business : null;
     }
 
+    public function findPublicDetailRelations(int $businessId): array
+    {
+        $location = $this->fetchOne(
+            <<<'SQL'
+                SELECT
+                    business_locations.region_id,
+                    regions.name AS region_name,
+                    business_locations.postal_code,
+                    business_locations.road_address,
+                    business_locations.jibun_address,
+                    business_locations.address_detail,
+                    business_locations.latitude,
+                    business_locations.longitude
+                FROM business_locations
+                INNER JOIN regions ON regions.id = business_locations.region_id
+                WHERE business_locations.business_id = :business_id
+                ORDER BY business_locations.is_primary DESC, business_locations.id ASC
+                LIMIT 1
+                SQL,
+            $businessId,
+        );
+
+        return [
+            'primaryLocation' => $location,
+            'hours' => $this->fetchMany(
+                <<<'SQL'
+                    SELECT day_of_week, sequence, open_time, close_time, is_closed
+                    FROM business_hours
+                    WHERE business_id = :business_id
+                    ORDER BY day_of_week ASC, sequence ASC, id ASC
+                    SQL,
+                $businessId,
+            ),
+            'categories' => $this->fetchMany(
+                <<<'SQL'
+                    SELECT categories.id, categories.name, business_categories.is_primary
+                    FROM business_categories
+                    INNER JOIN categories ON categories.id = business_categories.category_id
+                    WHERE business_categories.business_id = :business_id
+                      AND categories.status = :active_status
+                    ORDER BY business_categories.is_primary DESC, categories.sort_order ASC, categories.id ASC
+                    SQL,
+                $businessId,
+                ['active_status' => 'ACTIVE'],
+            ),
+            'offerings' => $this->fetchMany(
+                <<<'SQL'
+                    SELECT
+                        business_offerings.id,
+                        business_offerings.category_id,
+                        categories.name AS category_name,
+                        business_offerings.service_id,
+                        services.name AS service_name,
+                        business_offerings.title,
+                        business_offerings.description,
+                        business_offerings.price_min,
+                        business_offerings.price_max,
+                        business_offerings.price_note,
+                        business_offerings.duration_min_days,
+                        business_offerings.duration_max_days,
+                        business_offerings.is_primary
+                    FROM business_offerings
+                    INNER JOIN categories ON categories.id = business_offerings.category_id
+                    INNER JOIN services ON services.id = business_offerings.service_id
+                    WHERE business_offerings.business_id = :business_id
+                      AND business_offerings.status = :offering_status
+                      AND categories.status = :category_status
+                      AND services.status = :service_status
+                    ORDER BY business_offerings.is_primary DESC, business_offerings.id ASC
+                    SQL,
+                $businessId,
+                [
+                    'offering_status' => 'ACTIVE',
+                    'category_status' => 'ACTIVE',
+                    'service_status' => 'ACTIVE',
+                ],
+            ),
+            'brands' => $this->fetchMany(
+                <<<'SQL'
+                    SELECT brands.id, brands.name, brands.slug
+                    FROM business_brands
+                    INNER JOIN brands ON brands.id = business_brands.brand_id
+                    WHERE business_brands.business_id = :business_id
+                      AND brands.status = :active_status
+                    ORDER BY brands.name ASC, brands.id ASC
+                    SQL,
+                $businessId,
+                ['active_status' => 'ACTIVE'],
+            ),
+            'links' => $this->fetchMany(
+                <<<'SQL'
+                    SELECT link_type, label, url
+                    FROM business_links
+                    WHERE business_id = :business_id
+                    ORDER BY is_primary DESC, sort_order ASC, id ASC
+                    SQL,
+                $businessId,
+            ),
+            'verificationTypes' => array_map(
+                static fn (array $verification): string => (string) $verification['verification_type'],
+                $this->fetchMany(
+                    <<<'SQL'
+                        SELECT DISTINCT verification_type
+                        FROM business_verifications
+                        WHERE business_id = :business_id
+                          AND status = :approved_status
+                        ORDER BY verification_type ASC
+                        SQL,
+                    $businessId,
+                    ['approved_status' => 'APPROVED'],
+                ),
+            ),
+        ];
+    }
+
     public function findPublicSuggestions(
         string $keyword,
         string $publishedAt,
@@ -242,7 +357,8 @@ final class BusinessRepository implements BusinessReadRepository, BusinessSugges
                     business_external_refs.provider,
                     business_external_refs.external_url,
                     business_external_ratings.rating,
-                    business_external_ratings.review_count
+                    business_external_ratings.review_count,
+                    business_external_ratings.fetched_at
                 FROM business_external_refs
                 LEFT JOIN business_external_ratings
                     ON business_external_ratings.business_id = business_external_refs.business_id
@@ -260,6 +376,35 @@ final class BusinessRepository implements BusinessReadRepository, BusinessSugges
         $reputation = $statement->fetchAll();
 
         return $reputation;
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     * @return list<array<string, mixed>>
+     */
+    private function fetchMany(string $sql, int $businessId, array $parameters = []): array
+    {
+        $statement = $this->connection->prepare($sql);
+        $statement->execute([
+            'business_id' => $businessId,
+            ...$parameters,
+        ]);
+
+        /** @var list<array<string, mixed>> $rows */
+        $rows = $statement->fetchAll();
+
+        return $rows;
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     * @return array<string, mixed>|null
+     */
+    private function fetchOne(string $sql, int $businessId, array $parameters = []): ?array
+    {
+        $rows = $this->fetchMany($sql, $businessId, $parameters);
+
+        return $rows[0] ?? null;
     }
 
     /**

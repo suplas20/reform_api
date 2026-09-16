@@ -41,7 +41,11 @@
 - `GET /api/v1/businesses/{id}`
   - BusinessRepository → BusinessService → API BusinessController
   - ACTIVE, 미삭제, 게시 시각 기준 공개
-  - 자체 평판과 외부 평판 분리 응답
+  - 지원 방식·인증·대표 위치·영업시간
+  - 카테고리·Offering·브랜드·운영 링크
+  - 자체 평판과 외부 평판·통계 분리 응답
+  - 이미지 정책 보류에 따라 images는 빈 배열
+  - 인증 연동 전 isFavorite은 false
   - BUSINESS_NOT_FOUND 및 ID Validation
 - Business API Contract Test
 - `GET /api/v1/businesses`
@@ -118,7 +122,7 @@ composer db:status
 
 Reference API 4종의 코드와 OpenAPI 계약이 완료됐다. 실제 초기 데이터는 서비스 분류값이 확정된 뒤 Seed로 추가한다.
 
-Business 검색 Query는 모바일 API 정의서 기준으로 확장했다. 공개 이미지 URL 정책 보류 결정에 따라 thumbnail, workCasePreview 및 Work Case 이미지 응답은 구현을 보류한다. 다음 작업에서는 이미지와 무관한 Business 상세 DTO를 우선 확장한다.
+Business 검색 Query와 이미지 외 상세 DTO는 모바일 API 정의서 기준으로 확장했다. 공개 이미지 URL 정책 보류 결정에 따라 thumbnail, workCasePreview 및 Work Case 이미지 응답은 구현을 보류한다. 다음 작업은 통합 검색 본문 또는 인증 정책 확정 후 SNS Auth이다.
 
 ```text
 GET /api/v1/businesses

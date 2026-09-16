@@ -69,30 +69,7 @@ final class BusinessService
     }
 
     /**
-     * @return array{
-     *     id: int,
-     *     name: string,
-     *     slug: string,
-     *     shortDescription: ?string,
-     *     description: ?string,
-     *     phone: ?string,
-     *     supports: array{shipping: bool, visit: bool, pickup: bool},
-     *     publishedAt: string,
-     *     reputation: array{
-     *         internal: array{
-     *             rating: ?float,
-     *             reviewCount: int,
-     *             favoriteCount: int,
-     *             workCaseCount: int
-     *         },
-     *         external: list<array{
-     *             provider: string,
-     *             rating: ?float,
-     *             reviewCount: ?int,
-     *             url: string
-     *         }>
-     *     }
-     * }
+     * @return array<string, mixed>
      */
     public function getPublicDetail(int $id): array
     {
@@ -110,6 +87,7 @@ final class BusinessService
 
         $externalReputation = $this->businessRepository
             ->findActiveExternalReputationByBusinessIds([$id]);
+        $relations = $this->businessRepository->findPublicDetailRelations($id);
 
         return [
             'id' => (int) $business['id'],
@@ -118,13 +96,66 @@ final class BusinessService
             'shortDescription' => self::nullableString($business['short_description']),
             'description' => self::nullableString($business['description']),
             'phone' => self::nullableString($business['phone']),
-            'supports' => [
-                'shipping' => (bool) $business['supports_shipping'],
+            'supportModes' => [
                 'visit' => (bool) $business['supports_visit'],
+                'shipping' => (bool) $business['supports_shipping'],
                 'pickup' => (bool) $business['supports_pickup'],
             ],
-            'publishedAt' => self::utcDateTime((string) $business['published_at']),
-            'reputation' => self::mapReputation($business, $externalReputation),
+            'verification' => [
+                'isVerified' => $relations['verificationTypes'] !== [],
+                'types' => $relations['verificationTypes'],
+            ],
+            'primaryLocation' => self::mapPrimaryLocation($relations['primaryLocation']),
+            'hours' => self::mapHours($relations['hours']),
+            'categories' => array_map(
+                static fn (array $category): array => [
+                    'id' => (int) $category['id'],
+                    'name' => (string) $category['name'],
+                    'isPrimary' => (bool) $category['is_primary'],
+                ],
+                $relations['categories'],
+            ),
+            'offerings' => array_map(
+                static fn (array $offering): array => [
+                    'id' => (int) $offering['id'],
+                    'categoryId' => (int) $offering['category_id'],
+                    'categoryName' => (string) $offering['category_name'],
+                    'serviceId' => (int) $offering['service_id'],
+                    'serviceName' => (string) $offering['service_name'],
+                    'title' => self::nullableString($offering['title']),
+                    'description' => self::nullableString($offering['description']),
+                    'priceMin' => self::nullableFloat($offering['price_min']),
+                    'priceMax' => self::nullableFloat($offering['price_max']),
+                    'priceNote' => self::nullableString($offering['price_note']),
+                    'durationMinDays' => self::nullableInt($offering['duration_min_days']),
+                    'durationMaxDays' => self::nullableInt($offering['duration_max_days']),
+                    'isPrimary' => (bool) $offering['is_primary'],
+                ],
+                $relations['offerings'],
+            ),
+            'brands' => array_map(
+                static fn (array $brand): array => [
+                    'id' => (int) $brand['id'],
+                    'name' => (string) $brand['name'],
+                    'slug' => (string) $brand['slug'],
+                ],
+                $relations['brands'],
+            ),
+            'images' => [],
+            'reputation' => self::mapDetailReputation($business, $externalReputation),
+            'links' => array_map(
+                static fn (array $link): array => [
+                    'type' => (string) $link['link_type'],
+                    'label' => self::nullableString($link['label']),
+                    'url' => (string) $link['url'],
+                ],
+                $relations['links'],
+            ),
+            'stats' => [
+                'workCaseCount' => (int) $business['work_case_count'],
+                'favoriteCount' => (int) $business['favorite_count'],
+            ],
+            'isFavorite' => false,
         ];
     }
 
@@ -184,6 +215,98 @@ final class BusinessService
                     'reviewCount' => self::nullableInt($reputation['review_count']),
                     'url' => (string) $reputation['external_url'],
                 ],
+                $externalReputation,
+            ),
+        ];
+    }
+
+    /**
+     * @param array<string, mixed>|null $location
+     * @return array<string, mixed>|null
+     */
+    private static function mapPrimaryLocation(?array $location): ?array
+    {
+        if ($location === null) {
+            return null;
+        }
+
+        return [
+            'regionId' => (int) $location['region_id'],
+            'regionName' => (string) $location['region_name'],
+            'postalCode' => self::nullableString($location['postal_code']),
+            'roadAddress' => (string) $location['road_address'],
+            'jibunAddress' => self::nullableString($location['jibun_address']),
+            'addressDetail' => self::nullableString($location['address_detail']),
+            'latitude' => self::nullableFloat($location['latitude']),
+            'longitude' => self::nullableFloat($location['longitude']),
+            'distanceKm' => null,
+        ];
+    }
+
+    /**
+     * @param list<array<string, mixed>> $rows
+     * @return list<array<string, mixed>>
+     */
+    private static function mapHours(array $rows): array
+    {
+        $hours = [];
+
+        foreach ($rows as $row) {
+            $day = (int) $row['day_of_week'];
+            $hours[$day] ??= [
+                'dayOfWeek' => $day,
+                'periods' => [],
+                'isClosed' => false,
+            ];
+
+            if ((bool) $row['is_closed']) {
+                $hours[$day]['isClosed'] = true;
+                $hours[$day]['periods'] = [];
+                continue;
+            }
+
+            if ($hours[$day]['isClosed']) {
+                continue;
+            }
+
+            if ($row['open_time'] !== null && $row['close_time'] !== null) {
+                $hours[$day]['periods'][] = [
+                    'openTime' => substr((string) $row['open_time'], 0, 5),
+                    'closeTime' => substr((string) $row['close_time'], 0, 5),
+                ];
+            }
+        }
+
+        return array_values($hours);
+    }
+
+    /**
+     * @param array<string, mixed> $business
+     * @param list<array<string, mixed>> $externalReputation
+     * @return array<string, mixed>
+     */
+    private static function mapDetailReputation(array $business, array $externalReputation): array
+    {
+        return [
+            'internal' => [
+                'rating' => self::nullableFloat($business['rating_avg']),
+                'reviewCount' => (int) $business['review_count'],
+            ],
+            'external' => array_map(
+                static function (array $reputation): array {
+                    $item = [
+                        'provider' => (string) $reputation['provider'],
+                        'rating' => self::nullableFloat($reputation['rating']),
+                        'reviewCount' => self::nullableInt($reputation['review_count']),
+                        'url' => (string) $reputation['external_url'],
+                    ];
+
+                    if (($reputation['fetched_at'] ?? null) !== null) {
+                        $item['fetchedAt'] = self::utcDateTime((string) $reputation['fetched_at']);
+                    }
+
+                    return $item;
+                },
                 $externalReputation,
             ),
         ];

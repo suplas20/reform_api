@@ -122,6 +122,68 @@ $repository = new class implements BusinessReadRepository {
         ];
     }
 
+    public function findPublicDetailRelations(int $businessId): array
+    {
+        return [
+            'primaryLocation' => [
+                'region_id' => 10,
+                'region_name' => '강남구',
+                'postal_code' => '00000',
+                'road_address' => '서울 강남구 테스트로 1',
+                'jibun_address' => null,
+                'address_detail' => '2층',
+                'latitude' => '37.5000000',
+                'longitude' => '127.0300000',
+            ],
+            'hours' => [
+                [
+                    'day_of_week' => 1,
+                    'sequence' => 1,
+                    'open_time' => '10:00:00',
+                    'close_time' => '13:00:00',
+                    'is_closed' => 0,
+                ],
+                [
+                    'day_of_week' => 1,
+                    'sequence' => 2,
+                    'open_time' => '14:00:00',
+                    'close_time' => '19:00:00',
+                    'is_closed' => 0,
+                ],
+                [
+                    'day_of_week' => 7,
+                    'sequence' => 1,
+                    'open_time' => null,
+                    'close_time' => null,
+                    'is_closed' => 1,
+                ],
+            ],
+            'categories' => [['id' => 1, 'name' => '가방', 'is_primary' => 1]],
+            'offerings' => [[
+                'id' => 1001,
+                'category_id' => 1,
+                'category_name' => '가방',
+                'service_id' => 10,
+                'service_name' => '염색',
+                'title' => null,
+                'description' => null,
+                'price_min' => null,
+                'price_max' => null,
+                'price_note' => '상담',
+                'duration_min_days' => 1,
+                'duration_max_days' => 3,
+                'is_primary' => 1,
+            ]],
+            'brands' => [['id' => 100, 'name' => 'Chanel', 'slug' => 'chanel']],
+            'links' => [[
+                'link_type' => 'WEBSITE',
+                'label' => '홈페이지',
+                'url' => 'https://example.com',
+            ]],
+            'verificationTypes' => ['BUSINESS_REGISTRATION', 'PHONE'],
+        ];
+    }
+
     public function findActiveExternalReputationByBusinessIds(array $businessIds): array
     {
         if (!in_array(123, $businessIds, true)) {
@@ -135,6 +197,7 @@ $repository = new class implements BusinessReadRepository {
                 'external_url' => 'https://example.com/google-place',
                 'rating' => '4.60',
                 'review_count' => 128,
+                'fetched_at' => '2026-09-16 00:30:00',
             ],
             [
                 'business_id' => 123,
@@ -142,6 +205,7 @@ $repository = new class implements BusinessReadRepository {
                 'external_url' => 'https://example.com/naver-place',
                 'rating' => null,
                 'review_count' => null,
+                'fetched_at' => null,
             ],
         ];
     }
@@ -311,14 +375,25 @@ assertBusinessApiValue(200, $successResponse->getStatusCode(), 'Business detail 
 assertBusinessApiValue(true, $successPayload['success'], 'Business detail success contract is invalid.');
 assertBusinessApiValue(123, $successPayload['data']['id'], 'Business ID is invalid.');
 assertBusinessApiValue('ABC 가죽공방', $successPayload['data']['name'], 'Business name is invalid.');
-assertBusinessApiValue(true, $successPayload['data']['supports']['shipping'], 'Shipping support is invalid.');
-assertBusinessApiValue(false, $successPayload['data']['supports']['visit'], 'Visit support is invalid.');
-assertBusinessApiValue('2026-09-15T00:00:00Z', $successPayload['data']['publishedAt'], 'Published time is invalid.');
+assertBusinessApiValue(true, $successPayload['data']['supportModes']['shipping'], 'Shipping support is invalid.');
+assertBusinessApiValue(false, $successPayload['data']['supportModes']['visit'], 'Visit support is invalid.');
+assertBusinessApiValue(true, $successPayload['data']['verification']['isVerified'], 'Verification is invalid.');
+assertBusinessApiValue('강남구', $successPayload['data']['primaryLocation']['regionName'], 'Location is invalid.');
+assertBusinessApiValue(2, count($successPayload['data']['hours'][0]['periods']), 'Business hour periods are invalid.');
+assertBusinessApiValue(true, $successPayload['data']['hours'][1]['isClosed'], 'Closed Business hour is invalid.');
+assertBusinessApiValue('가방', $successPayload['data']['categories'][0]['name'], 'Category is invalid.');
+assertBusinessApiValue('염색', $successPayload['data']['offerings'][0]['serviceName'], 'Offering is invalid.');
+assertBusinessApiValue('Chanel', $successPayload['data']['brands'][0]['name'], 'Brand is invalid.');
+assertBusinessApiValue([], $successPayload['data']['images'], 'Images must remain deferred.');
 assertBusinessApiValue(4.8, $successPayload['data']['reputation']['internal']['rating'], 'Internal rating is invalid.');
 assertBusinessApiValue(24, $successPayload['data']['reputation']['internal']['reviewCount'], 'Review count is invalid.');
 assertBusinessApiValue('GOOGLE', $successPayload['data']['reputation']['external'][0]['provider'], 'Google reputation is missing.');
 assertBusinessApiValue(4.6, $successPayload['data']['reputation']['external'][0]['rating'], 'Google rating is invalid.');
+assertBusinessApiValue('2026-09-16T00:30:00Z', $successPayload['data']['reputation']['external'][0]['fetchedAt'], 'External fetched time is invalid.');
 assertBusinessApiValue(null, $successPayload['data']['reputation']['external'][1]['rating'], 'Naver rating must be null.');
+assertBusinessApiValue('WEBSITE', $successPayload['data']['links'][0]['type'], 'Business link is invalid.');
+assertBusinessApiValue(18, $successPayload['data']['stats']['workCaseCount'], 'Work Case count is invalid.');
+assertBusinessApiValue(false, $successPayload['data']['isFavorite'], 'Anonymous favorite state is invalid.');
 
 $notFoundResponse = $application->handle(
     Request::create('/api/v1/businesses/999', 'GET'),

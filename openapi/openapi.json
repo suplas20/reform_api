@@ -762,9 +762,18 @@
           "shortDescription",
           "description",
           "phone",
-          "supports",
-          "publishedAt",
-          "reputation"
+          "supportModes",
+          "verification",
+          "primaryLocation",
+          "hours",
+          "categories",
+          "offerings",
+          "brands",
+          "images",
+          "reputation",
+          "links",
+          "stats",
+          "isFavorite"
         ],
         "properties": {
           "id": {
@@ -800,16 +809,76 @@
             ],
             "example": "02-1234-5678"
           },
-          "supports": {
+          "supportModes": {
             "$ref": "#/components/schemas/BusinessSupports"
           },
-          "publishedAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2026-09-15T00:00:00Z"
+          "verification": {
+            "type": "object",
+            "required": ["isVerified", "types"],
+            "properties": {
+              "isVerified": {"type": "boolean"},
+              "types": {"type": "array", "items": {"type": "string"}}
+            }
+          },
+          "primaryLocation": {
+            "type": ["object", "null"],
+            "additionalProperties": true
+          },
+          "hours": {
+            "type": "array",
+            "items": {"type": "object", "additionalProperties": true}
+          },
+          "categories": {
+            "type": "array",
+            "items": {"type": "object", "additionalProperties": true}
+          },
+          "offerings": {
+            "type": "array",
+            "items": {"type": "object", "additionalProperties": true}
+          },
+          "brands": {
+            "type": "array",
+            "items": {"$ref": "#/components/schemas/Brand"}
+          },
+          "images": {
+            "type": "array",
+            "description": "공개 이미지 URL 정책 확정 전까지 빈 배열입니다.",
+            "maxItems": 0,
+            "items": {"type": "object"}
           },
           "reputation": {
-            "$ref": "#/components/schemas/BusinessReputation"
+            "type": "object",
+            "required": ["internal", "external"],
+            "properties": {
+              "internal": {
+                "type": "object",
+                "required": ["rating", "reviewCount"],
+                "properties": {
+                  "rating": {"type": ["number", "null"], "format": "float"},
+                  "reviewCount": {"type": "integer", "minimum": 0}
+                }
+              },
+              "external": {
+                "type": "array",
+                "items": {"$ref": "#/components/schemas/ExternalReputation"}
+              }
+            }
+          },
+          "links": {
+            "type": "array",
+            "items": {"type": "object", "additionalProperties": true}
+          },
+          "stats": {
+            "type": "object",
+            "required": ["workCaseCount", "favoriteCount"],
+            "properties": {
+              "workCaseCount": {"type": "integer", "minimum": 0},
+              "favoriteCount": {"type": "integer", "minimum": 0}
+            }
+          },
+          "isFavorite": {
+            "type": "boolean",
+            "description": "인증 연동 전에는 false입니다."
           }
         }
       },
@@ -924,6 +993,10 @@
             "type": "string",
             "format": "uri",
             "example": "https://example.com/google-place"
+          },
+          "fetchedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
