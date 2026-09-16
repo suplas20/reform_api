@@ -57,6 +57,18 @@ $routes->add(
         methods: ['POST'],
     ),
 );
+$routes->add(
+    'smoke.internal-error',
+    new Route(
+        '/api/v1/smoke/internal-error',
+        [
+            '_controller' => static function (Request $request): never {
+                throw new RuntimeException('Sensitive internal error.');
+            },
+        ],
+        methods: ['GET'],
+    ),
+);
 
 $logger = new Logger('test');
 $logger->pushHandler(new NullHandler());
@@ -93,11 +105,29 @@ $notFoundPayload = json_decode($notFoundResponse->getContent(), true, flags: JSO
 
 assertSameValue(404, $notFoundResponse->getStatusCode(), 'Unknown API routes must return HTTP 404.');
 assertSameValue(false, $notFoundPayload['success'], 'The not-found response contract is invalid.');
+assertSameValue('NOT_FOUND', $notFoundPayload['error']['code'], 'The not-found error code is invalid.');
 
 $methodResponse = $application->handle(Request::create('/api/v1/smoke', 'POST'));
 
 assertSameValue(405, $methodResponse->getStatusCode(), 'Invalid methods must return HTTP 405.');
 assertSameValue('GET', $methodResponse->headers->get('Allow'), 'The Allow header is invalid.');
+
+$internalErrorResponse = $application->handle(
+    Request::create('/api/v1/smoke/internal-error', 'GET'),
+);
+$internalErrorPayload = json_decode(
+    $internalErrorResponse->getContent(),
+    true,
+    flags: JSON_THROW_ON_ERROR,
+);
+
+assertSameValue(500, $internalErrorResponse->getStatusCode(), 'Internal errors must return HTTP 500.');
+assertSameValue('INTERNAL_ERROR', $internalErrorPayload['error']['code'], 'Internal error code is invalid.');
+assertSameValue(
+    false,
+    str_contains((string) $internalErrorResponse->getContent(), 'Sensitive internal error.'),
+    'Internal error details must not be exposed.',
+);
 assertSameValue(
     true,
     in_array('mysql', PDO::getAvailableDrivers(), true),

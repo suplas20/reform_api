@@ -59,7 +59,7 @@ final class ExceptionHandler
         }
 
         if ($exception instanceof ResourceNotFoundException) {
-            return [404, 'ROUTE_NOT_FOUND', '요청한 경로를 찾을 수 없습니다.', []];
+            return [404, 'NOT_FOUND', '요청한 경로를 찾을 수 없습니다.', []];
         }
 
         if ($exception instanceof MethodNotAllowedException) {
@@ -71,7 +71,7 @@ final class ExceptionHandler
             ];
         }
 
-        return [500, 'INTERNAL_SERVER_ERROR', '서버 오류가 발생했습니다.', []];
+        return [500, 'INTERNAL_ERROR', '서버 오류가 발생했습니다.', []];
     }
 
     private function isApiRequest(Request $request): bool

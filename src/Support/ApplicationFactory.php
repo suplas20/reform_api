@@ -6,11 +6,17 @@ namespace App\Support;
 
 use App\Controller\Api\ApiDocumentationController;
 use App\Controller\Api\V1\BusinessController;
+use App\Controller\Api\V1\ReferenceController;
 use App\Database\ConnectionFactory;
 use App\Http\Application;
 use App\Http\ExceptionHandler;
+use App\Repository\BrandRepository;
 use App\Repository\BusinessRepository;
+use App\Repository\CategoryRepository;
+use App\Repository\RegionRepository;
+use App\Repository\ServiceRepository;
 use App\Service\BusinessService;
+use App\Service\ReferenceService;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
@@ -32,6 +38,17 @@ final class ApplicationFactory
 
         $logger = self::createLogger($servicesConfig);
         $connection = (new ConnectionFactory($databaseConfig))->connection();
+        $categoryRepository = new CategoryRepository($connection);
+        $serviceRepository = new ServiceRepository($connection);
+        $regionRepository = new RegionRepository($connection);
+        $brandRepository = new BrandRepository($connection);
+        $referenceService = new ReferenceService(
+            $categoryRepository,
+            $serviceRepository,
+            $regionRepository,
+            $brandRepository,
+        );
+        $referenceController = new ReferenceController($referenceService);
         $businessRepository = new BusinessRepository($connection);
         $businessService = new BusinessService($businessRepository);
         $businessController = new BusinessController($businessService);
@@ -41,6 +58,7 @@ final class ApplicationFactory
         );
         $routes = self::loadRoutes(
             $rootPath,
+            $referenceController,
             $businessController,
             $apiDocumentationController,
         );
@@ -86,6 +104,7 @@ final class ApplicationFactory
 
     private static function loadRoutes(
         string $rootPath,
+        ReferenceController $referenceController,
         BusinessController $businessController,
         ApiDocumentationController $apiDocumentationController,
     ): RouteCollection
@@ -100,6 +119,7 @@ final class ApplicationFactory
 
         $apiRegistrar(
             $routes,
+            $referenceController,
             $businessController,
             $apiDocumentationController,
         );

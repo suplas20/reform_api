@@ -1232,6 +1232,8 @@ OpenAPI 파일에는 Credential, Token, Provider Secret, 내부 파일 경로를
 
 # 19. 초기 API 범위
 
+Mobile v1의 최종 Endpoint별 Request/Response Contract와 구현 우선순위는 `.docs/reform_mobile_api_definition_v1.md`를 기준으로 한다. 아래 Business 계약은 해당 문서가 추가되기 전에 구현한 중간 Vertical Slice의 상태를 기록한다.
+
 ## Reference Data
 
 ```text
@@ -1248,7 +1250,7 @@ GET /api/v1/businesses
 GET /api/v1/businesses/{id}
 ```
 
-### Business List v1 Contract
+### 현재 Business List 중간 구현
 
 ```text
 GET /api/v1/businesses?page=1&perPage=20
@@ -1271,10 +1273,10 @@ published_at DESC
 id DESC
 ```
 
-목록 Item은 상세 응답에서 `description`과 `phone`을 제외한 핵심 정보와 자체·외부 평판을 포함한다.
-검색어·카테고리·서비스·지역·브랜드 Filter 및 사용자 지정 정렬은 Phase 3에서 구현한다.
+현재 목록 Item은 상세 응답에서 `description`과 `phone`을 제외한 기본 정보와 자체·외부 평판을 포함한다.
+다음 Business 작업에서 Mobile API 정의서 14장의 검색어·카테고리·서비스·지역·브랜드·좌표 Filter, 정렬 및 전체 Summary DTO로 교체한다.
 
-### Business Detail v1 Contract
+### 현재 Business Detail 중간 구현
 
 첫 Vertical Slice는 다음 Endpoint만 구현한다.
 
@@ -1291,7 +1293,7 @@ published_at IS NOT NULL
 published_at <= 현재 UTC 시각
 ```
 
-응답 Field:
+현재 구현된 응답 Field:
 
 ```json
 {
@@ -1385,13 +1387,14 @@ POST /api/v1/events
 ```text
 GET /api/v1/businesses
     ?keyword=
-    &category=
-    &service=
-    &region=
-    &brand=
+    &categoryId=
+    &serviceId=
+    &regionId=
+    &brandId=
     &lat=
     &lng=
-    &radius=
+    &radiusKm=
+    &verifiedOnly=
     &sort=
     &page=
     &perPage=

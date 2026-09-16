@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 use App\Controller\Api\ApiDocumentationController;
 use App\Controller\Api\V1\BusinessController;
+use App\Controller\Api\V1\ReferenceController;
 use App\Http\Application;
 use App\Http\ExceptionHandler;
 use App\Repository\BusinessReadRepository;
 use App\Service\BusinessService;
+use App\Service\ReferenceDataProvider;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,9 +59,32 @@ $businessController = new BusinessController(
         },
     ),
 );
+$referenceController = new ReferenceController(
+    new class implements ReferenceDataProvider {
+        public function getCategories(?int $parentId, ?int $level): array
+        {
+            return [];
+        }
+
+        public function getServices(?int $categoryId, ?int $limit): array
+        {
+            return [];
+        }
+
+        public function getRegions(?int $parentId, ?int $level): array
+        {
+            return [];
+        }
+
+        public function getBrands(?string $keyword, int $page, int $perPage): array
+        {
+            return ['items' => [], 'total' => 0, 'totalPages' => 0];
+        }
+    },
+);
 $routes = new RouteCollection();
 $registerRoutes = require dirname(__DIR__) . '/routes/api.php';
-$registerRoutes($routes, $businessController, $controller);
+$registerRoutes($routes, $referenceController, $businessController, $controller);
 
 $logger = new Logger('test');
 $logger->pushHandler(new NullHandler());
@@ -108,6 +133,17 @@ assertApiDocumentation(
     isset($specification['paths']['/api/v1/businesses']['get']),
     'Business list operation is missing from OpenAPI.',
 );
+foreach ([
+    '/api/v1/categories',
+    '/api/v1/services',
+    '/api/v1/regions',
+    '/api/v1/brands',
+] as $referencePath) {
+    assertApiDocumentation(
+        isset($specification['paths'][$referencePath]['get']),
+        sprintf('Reference operation is missing from OpenAPI: %s', $referencePath),
+    );
+}
 
 $assetRequest = Request::create('/api/docs/assets/swagger-ui.css', 'GET');
 $assetRequest->attributes->set('asset', 'swagger-ui.css');

@@ -2,7 +2,7 @@
 
 리폼·수선·복원 업체 검색 플랫폼의 PHP 백엔드, Public Web, Admin 애플리케이션입니다.
 
-현재 구현 범위는 시스템 설계서의 **Phase 1 — Foundation 및 Phase 2 초기 DB·평판 Schema와 Business 상세 API**입니다.
+현재 구현 범위는 **Foundation, 초기 DB·평판 Schema, Reference API 4종 및 Business 기본 Read API**입니다.
 
 ## 요구사항
 
@@ -95,11 +95,15 @@ composer serve
 구현된 API:
 
 ```text
+GET /api/v1/categories?parentId=&level=
+GET /api/v1/services?categoryId=&limit=
+GET /api/v1/regions?parentId=&level=
+GET /api/v1/brands?keyword=&page=1&perPage=20
 GET /api/v1/businesses?page=1&perPage=20
 GET /api/v1/businesses/{id}
 ```
 
-공개 상태이고 게시 시각이 도달한 미삭제 업체의 핵심 정보와 자체·외부 평판을 반환합니다. 목록 API의 `perPage`는 최대 100입니다. 등록되지 않은 `/api/v1/*` 요청은 설계된 JSON 오류 규격으로 404를 반환합니다.
+Reference API는 활성화된 카테고리·서비스·지역·브랜드를 반환합니다. Business API는 공개 상태이고 게시 시각이 도달한 미삭제 업체의 기본 정보와 자체·외부 평판을 반환하며, 모바일 API 정의서의 전체 검색·상세 계약으로 확장 중입니다. 목록 API의 `perPage`는 최대 100입니다.
 
 ## 프로젝트 폴더 이동
 

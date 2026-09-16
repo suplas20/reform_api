@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 use App\Controller\Api\ApiDocumentationController;
 use App\Controller\Api\V1\BusinessController;
+use App\Controller\Api\V1\ReferenceController;
 use App\Http\Application;
 use App\Http\ExceptionHandler;
 use App\Repository\BusinessReadRepository;
 use App\Service\BusinessService;
+use App\Service\ReferenceDataProvider;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\Request;
@@ -143,9 +145,32 @@ $apiDocumentationController = new ApiDocumentationController(
     dirname(__DIR__) . '/openapi/openapi.json',
     dirname(__DIR__) . '/vendor/swagger-api/swagger-ui/dist',
 );
+$referenceController = new ReferenceController(
+    new class implements ReferenceDataProvider {
+        public function getCategories(?int $parentId, ?int $level): array
+        {
+            return [];
+        }
+
+        public function getServices(?int $categoryId, ?int $limit): array
+        {
+            return [];
+        }
+
+        public function getRegions(?int $parentId, ?int $level): array
+        {
+            return [];
+        }
+
+        public function getBrands(?string $keyword, int $page, int $perPage): array
+        {
+            return ['items' => [], 'total' => 0, 'totalPages' => 0];
+        }
+    },
+);
 $routes = new RouteCollection();
 $registerRoutes = require dirname(__DIR__) . '/routes/api.php';
-$registerRoutes($routes, $controller, $apiDocumentationController);
+$registerRoutes($routes, $referenceController, $controller, $apiDocumentationController);
 
 $logger = new Logger('test');
 $logger->pushHandler(new NullHandler());
@@ -194,7 +219,7 @@ foreach ([
     );
 
     assertBusinessApiValue(422, $invalidPaginationResponse->getStatusCode(), 'Invalid pagination must return HTTP 422.');
-    assertBusinessApiValue('INVALID_PAGINATION', $invalidPaginationPayload['error']['code'], 'Pagination error code is invalid.');
+    assertBusinessApiValue('VALIDATION_ERROR', $invalidPaginationPayload['error']['code'], 'Pagination error code is invalid.');
 }
 
 $successResponse = $application->handle(
@@ -229,7 +254,7 @@ $invalidIdResponse = $application->handle(
 $invalidIdPayload = json_decode($invalidIdResponse->getContent(), true, flags: JSON_THROW_ON_ERROR);
 
 assertBusinessApiValue(422, $invalidIdResponse->getStatusCode(), 'Invalid Business ID must return HTTP 422.');
-assertBusinessApiValue('INVALID_BUSINESS_ID', $invalidIdPayload['error']['code'], 'Validation error code is invalid.');
+assertBusinessApiValue('VALIDATION_ERROR', $invalidIdPayload['error']['code'], 'Validation error code is invalid.');
 
 $methodResponse = $application->handle(
     Request::create('/api/v1/businesses/123', 'POST'),

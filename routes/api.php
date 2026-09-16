@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 use App\Controller\Api\ApiDocumentationController;
 use App\Controller\Api\V1\BusinessController;
+use App\Controller\Api\V1\ReferenceController;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 return static function (
     RouteCollection $routes,
+    ReferenceController $referenceController,
     BusinessController $businessController,
     ApiDocumentationController $apiDocumentationController,
 ): void {
@@ -36,6 +38,38 @@ return static function (
             [
                 'asset' => 'swagger-ui\.css|swagger-ui-bundle\.js|swagger-ui-standalone-preset\.js|initializer\.js',
             ],
+            methods: ['GET'],
+        ),
+    );
+    $routes->add(
+        'api.v1.categories.index',
+        new Route(
+            '/api/v1/categories',
+            ['_controller' => [$referenceController, 'categories']],
+            methods: ['GET'],
+        ),
+    );
+    $routes->add(
+        'api.v1.services.index',
+        new Route(
+            '/api/v1/services',
+            ['_controller' => [$referenceController, 'services']],
+            methods: ['GET'],
+        ),
+    );
+    $routes->add(
+        'api.v1.regions.index',
+        new Route(
+            '/api/v1/regions',
+            ['_controller' => [$referenceController, 'regions']],
+            methods: ['GET'],
+        ),
+    );
+    $routes->add(
+        'api.v1.brands.index',
+        new Route(
+            '/api/v1/brands',
+            ['_controller' => [$referenceController, 'brands']],
             methods: ['GET'],
         ),
     );

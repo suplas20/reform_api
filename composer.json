@@ -21,6 +21,7 @@
         "test": [
             "@php tests/smoke.php",
             "@php tests/business_api.php",
+            "@php tests/reference_api.php",
             "@php tests/api_documentation.php"
         ],
         "db:check": "@php bin/check-database.php",

@@ -9,7 +9,7 @@ use Throwable;
 final class NotFoundException extends ApplicationException
 {
     public function __construct(
-        string $errorCode = 'RESOURCE_NOT_FOUND',
+        string $errorCode = 'NOT_FOUND',
         string $userMessage = '요청한 정보를 찾을 수 없습니다.',
         ?Throwable $previous = null,
     ) {

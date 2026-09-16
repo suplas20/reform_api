@@ -54,8 +54,8 @@ final class BusinessController
 
         if ($id === false) {
             throw new ValidationException(
-                'INVALID_BUSINESS_ID',
-                '업체 ID가 올바르지 않습니다.',
+                'VALIDATION_ERROR',
+                '입력값을 확인해주세요.',
             );
         }
 
@@ -93,8 +93,8 @@ final class BusinessController
     private function throwInvalidPagination(): never
     {
         throw new ValidationException(
-            'INVALID_PAGINATION',
-            '페이지 정보가 올바르지 않습니다.',
+            'VALIDATION_ERROR',
+            '입력값을 확인해주세요.',
         );
     }
 }

@@ -1,8 +1,8 @@
 # 개발 진행 상태
 
-- 기준일: 2026-09-15
-- 현재 단계: Phase 2 — Business Read API
-- 구현 기준: `AGENTS.MD`, `.docs/reform_platform_system_design.md`
+- 기준일: 2026-09-16
+- 현재 단계: Phase API-1 — Reference API 완료, Business API 계약 확장 대기
+- 구현 기준: `AGENTS.MD`, `.docs/reform_mobile_api_definition_v1.md`, `.docs/reform_platform_system_design.md`
 
 ## 완료된 항목
 
@@ -49,7 +49,15 @@
   - 게시일 최신순 정렬
   - 자체·외부 평판 포함
   - 외부 평판 Batch Query로 N+1 방지
-  - INVALID_PAGINATION 처리
+  - VALIDATION_ERROR 처리
+- Reference API
+  - `GET /api/v1/categories`
+  - `GET /api/v1/services`
+  - `GET /api/v1/regions`
+  - `GET /api/v1/brands`
+  - ACTIVE 데이터 및 계층·카테고리·검색·페이지 조건
+  - CategoryRepository/ServiceRepository/RegionRepository/BrandRepository
+  - ReferenceService → ReferenceController
 - API 문서
   - `GET /api/docs`
   - `GET /api/docs/openapi.json`
@@ -62,6 +70,7 @@
 composer test
 → Foundation smoke tests passed.
 → Business API tests passed.
+→ Reference API tests passed.
 → API documentation tests passed.
 
 composer validate --strict
@@ -85,18 +94,19 @@ composer db:status
 - 나머지 Core Domain
 - 나머지 Repository/Service/Controller 구현
 - Reference Seed Data
+- 모바일 API 정의서 기준 Business 검색 Filter·정렬 및 전체 Summary/Detail DTO
 - Reputation 및 Review API
 - Search, SNS Auth, Favorite, Admin, Mobile, Public SEO Web
 
 ## 다음 작업
 
-Business 목록·상세 Read API가 완료됐다. 다음 작업은 Reference Seed Data의 실제 값을 확정하고 Reference API를 구현하는 것이다.
+Reference API 4종의 코드와 OpenAPI 계약이 완료됐다. 실제 초기 데이터는 서비스 분류값이 확정된 뒤 Seed로 추가한다.
+
+현재 Business API는 모바일 API 정의서가 추가되기 전의 간략 Read 계약이다. 다음 작업에서는 기존 Endpoint를 삭제하지 않고 정의서의 검색 조건과 전체 DTO로 확장한다.
 
 ```text
-GET /api/v1/categories
-GET /api/v1/services
-GET /api/v1/regions
-GET /api/v1/brands
+GET /api/v1/businesses
+GET /api/v1/businesses/{businessId}
 ```
 
 ## 로컬 DB 설정
@@ -130,4 +140,4 @@ composer test
 
 현재 APFS 경로에서 `composer test`, `composer validate --strict`, `composer audit` 통과를 확인했다.
 
-2026-09-16 현재 로컬 MariaDB가 중지되어 실제 DB Query 재검증은 보류됐으며, DB를 사용하지 않는 API Contract Test는 통과했다.
+2026-09-16 현재 로컬 MariaDB가 중지되어 Business 및 Reference Repository의 실제 DB Query 재검증은 보류됐으며, DB를 사용하지 않는 API Contract Test는 통과했다.
