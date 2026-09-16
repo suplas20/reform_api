@@ -46,7 +46,11 @@
 - Business API Contract Test
 - `GET /api/v1/businesses`
   - page/perPage Pagination
-  - 게시일 최신순 정렬
+  - keyword/categoryId/serviceId/regionId/brandId Filter
+  - lat/lng/radiusKm 거리 Filter
+  - verifiedOnly Filter
+  - recommended/distance/rating/reviewCount/recent 정렬
+  - recommended는 정식 Ranking 확정 전까지 최신 게시순
   - 자체·외부 평판 포함
   - 외부 평판 Batch Query로 N+1 방지
   - VALIDATION_ERROR 처리
@@ -114,7 +118,7 @@ composer db:status
 
 Reference API 4종의 코드와 OpenAPI 계약이 완료됐다. 실제 초기 데이터는 서비스 분류값이 확정된 뒤 Seed로 추가한다.
 
-현재 Business API는 모바일 API 정의서가 추가되기 전의 간략 Read 계약이다. 다음 작업에서는 기존 Endpoint를 삭제하지 않고 정의서의 검색 조건과 전체 DTO로 확장한다.
+Business 검색 Query는 모바일 API 정의서 기준으로 확장했다. 공개 이미지 URL 정책 보류 결정에 따라 thumbnail, workCasePreview 및 Work Case 이미지 응답은 구현을 보류한다. 다음 작업에서는 이미지와 무관한 Business 상세 DTO를 우선 확장한다.
 
 ```text
 GET /api/v1/businesses

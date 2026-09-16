@@ -87,7 +87,7 @@ $referenceController = new ReferenceController(
 $businessController = new BusinessController(
     new BusinessService(
         new class implements BusinessReadRepository {
-            public function countPublic(string $publishedAt): int
+            public function countPublic(string $publishedAt, array $criteria = []): int
             {
                 return 0;
             }
@@ -96,8 +96,14 @@ $businessController = new BusinessController(
                 string $publishedAt,
                 int $limit,
                 int $offset,
+                array $criteria = [],
             ): array {
                 return [];
+            }
+
+            public function activeCategoryServiceCombinationExists(int $categoryId, int $serviceId): bool
+            {
+                return true;
             }
 
             public function findPublicDetailById(int $id, string $publishedAt): ?array

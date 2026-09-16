@@ -40,9 +40,13 @@ function assertBusinessApiValue(mixed $expected, mixed $actual, string $message)
 }
 
 $repository = new class implements BusinessReadRepository {
-    public function countPublic(string $publishedAt): int
+    /** @var array<string, mixed> */
+    public array $lastCriteria = [];
+
+    public function countPublic(string $publishedAt, array $criteria = []): int
     {
         $this->validatePublishedAt($publishedAt);
+        $this->lastCriteria = $criteria;
 
         return 2;
     }
@@ -51,6 +55,7 @@ $repository = new class implements BusinessReadRepository {
         string $publishedAt,
         int $limit,
         int $offset,
+        array $criteria = [],
     ): array {
         $this->validatePublishedAt($publishedAt);
 
@@ -84,6 +89,11 @@ $repository = new class implements BusinessReadRepository {
                 'work_case_count' => 0,
             ],
         ], $offset, $limit);
+    }
+
+    public function activeCategoryServiceCombinationExists(int $categoryId, int $serviceId): bool
+    {
+        return !($categoryId === 1 && $serviceId === 999);
     }
 
     public function findPublicDetailById(int $id, string $publishedAt): ?array
@@ -236,10 +246,33 @@ assertBusinessApiValue(2, $secondPagePayload['meta']['page'], 'Requested page is
 assertBusinessApiValue(1, $secondPagePayload['meta']['perPage'], 'Requested perPage is invalid.');
 assertBusinessApiValue(2, $secondPagePayload['meta']['totalPages'], 'Paginated totalPages is invalid.');
 
+$filteredResponse = $application->handle(
+    Request::create(
+        '/api/v1/businesses?keyword=%EA%B0%80%EC%A3%BD&categoryId=1&serviceId=10'
+        . '&regionId=2&brandId=3&lat=37.5&lng=127.03&radiusKm=5'
+        . '&verifiedOnly=true&sort=distance',
+        'GET',
+    ),
+);
+assertBusinessApiValue(200, $filteredResponse->getStatusCode(), 'Filtered Business list is invalid.');
+assertBusinessApiValue('가죽', $repository->lastCriteria['keyword'], 'Keyword filter is invalid.');
+assertBusinessApiValue(1, $repository->lastCriteria['categoryId'], 'Category filter is invalid.');
+assertBusinessApiValue(10, $repository->lastCriteria['serviceId'], 'Service filter is invalid.');
+assertBusinessApiValue(37.5, $repository->lastCriteria['lat'], 'Latitude filter is invalid.');
+assertBusinessApiValue(127.03, $repository->lastCriteria['lng'], 'Longitude filter is invalid.');
+assertBusinessApiValue(5.0, $repository->lastCriteria['radiusKm'], 'Radius filter is invalid.');
+assertBusinessApiValue(true, $repository->lastCriteria['verifiedOnly'], 'Verification filter is invalid.');
+assertBusinessApiValue('distance', $repository->lastCriteria['sort'], 'Sort filter is invalid.');
+
 foreach ([
     '/api/v1/businesses?page=0',
     '/api/v1/businesses?perPage=101',
     '/api/v1/businesses?page[]=1',
+    '/api/v1/businesses?lat=37.5',
+    '/api/v1/businesses?radiusKm=5',
+    '/api/v1/businesses?sort=distance',
+    '/api/v1/businesses?sort=unknown',
+    '/api/v1/businesses?verifiedOnly=maybe',
 ] as $invalidPaginationPath) {
     $invalidPaginationResponse = $application->handle(
         Request::create($invalidPaginationPath, 'GET'),
@@ -253,6 +286,21 @@ foreach ([
     assertBusinessApiValue(422, $invalidPaginationResponse->getStatusCode(), 'Invalid pagination must return HTTP 422.');
     assertBusinessApiValue('VALIDATION_ERROR', $invalidPaginationPayload['error']['code'], 'Pagination error code is invalid.');
 }
+
+$invalidCombinationResponse = $application->handle(
+    Request::create('/api/v1/businesses?categoryId=1&serviceId=999', 'GET'),
+);
+$invalidCombinationPayload = json_decode(
+    $invalidCombinationResponse->getContent(),
+    true,
+    flags: JSON_THROW_ON_ERROR,
+);
+assertBusinessApiValue(422, $invalidCombinationResponse->getStatusCode(), 'Invalid filter combination must return 422.');
+assertBusinessApiValue(
+    'FILTER_COMBINATION_INVALID',
+    $invalidCombinationPayload['error']['code'],
+    'Filter combination error code is invalid.',
+);
 
 $successResponse = $application->handle(
     Request::create('/api/v1/businesses/123', 'GET'),

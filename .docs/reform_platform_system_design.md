@@ -1274,7 +1274,7 @@ id DESC
 ```
 
 현재 목록 Item은 상세 응답에서 `description`과 `phone`을 제외한 기본 정보와 자체·외부 평판을 포함한다.
-다음 Business 작업에서 Mobile API 정의서 14장의 검색어·카테고리·서비스·지역·브랜드·좌표 Filter, 정렬 및 전체 Summary DTO로 교체한다.
+Mobile API 정의서 14장의 검색어·카테고리·서비스·지역·브랜드·좌표·인증 Filter 및 정렬은 구현했다. 정식 추천 Ranking이 확정되기 전까지 `recommended`는 최신 게시순을 사용한다. 공개 이미지 URL 정책은 보류 결정에 따라 이미지 기반 Summary DTO와 Work Case API를 확장하지 않는다.
 
 ### 현재 Business Detail 중간 구현
 

@@ -6,16 +6,23 @@ namespace App\Repository;
 
 interface BusinessReadRepository
 {
-    public function countPublic(string $publishedAt): int;
+    /**
+     * @param array<string, mixed> $criteria
+     */
+    public function countPublic(string $publishedAt, array $criteria = []): int;
 
     /**
      * @return list<array<string, mixed>>
+     * @param array<string, mixed> $criteria
      */
     public function findPublicPage(
         string $publishedAt,
         int $limit,
         int $offset,
+        array $criteria = [],
     ): array;
+
+    public function activeCategoryServiceCombinationExists(int $categoryId, int $serviceId): bool;
 
     /**
      * @return array<string, mixed>|null

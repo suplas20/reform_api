@@ -298,9 +298,28 @@
           "Business"
         ],
         "summary": "업체 목록 조회",
-        "description": "공개 조건을 만족하는 업체를 게시일 최신순으로 조회합니다. 검색과 필터는 후속 API 범위입니다.",
+        "description": "공개 조건을 만족하는 업체를 검색·필터링합니다. 이미지 기반 Summary DTO 확장은 보류 중입니다.",
         "operationId": "listBusinesses",
         "parameters": [
+          {"name": "keyword", "in": "query", "schema": {"type": "string"}},
+          {"name": "categoryId", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "serviceId", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "regionId", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "brandId", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "lat", "in": "query", "schema": {"type": "number", "minimum": -90, "maximum": 90}},
+          {"name": "lng", "in": "query", "schema": {"type": "number", "minimum": -180, "maximum": 180}},
+          {"name": "radiusKm", "in": "query", "schema": {"type": "number", "exclusiveMinimum": 0}},
+          {"name": "verifiedOnly", "in": "query", "schema": {"type": "boolean", "default": false}},
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "recommended는 정식 Ranking 확정 전까지 recent와 동일하게 동작합니다.",
+            "schema": {
+              "type": "string",
+              "enum": ["recommended", "distance", "rating", "reviewCount", "recent"],
+              "default": "recommended"
+            }
+          },
           {
             "name": "page",
             "in": "query",

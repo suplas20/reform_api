@@ -33,7 +33,32 @@ final class BusinessController
             self::DEFAULT_PER_PAGE,
             self::MAX_PER_PAGE,
         );
-        $result = $this->businessService->getPublicList($page, $perPage);
+        $criteria = [
+            'keyword' => $this->optionalString($query['keyword'] ?? null),
+            'categoryId' => $this->optionalPositiveInt($query['categoryId'] ?? null),
+            'serviceId' => $this->optionalPositiveInt($query['serviceId'] ?? null),
+            'regionId' => $this->optionalPositiveInt($query['regionId'] ?? null),
+            'brandId' => $this->optionalPositiveInt($query['brandId'] ?? null),
+            'lat' => $this->optionalFloat($query['lat'] ?? null, -90.0, 90.0),
+            'lng' => $this->optionalFloat($query['lng'] ?? null, -180.0, 180.0),
+            'radiusKm' => $this->optionalFloat($query['radiusKm'] ?? null, 0.000001, PHP_FLOAT_MAX),
+            'verifiedOnly' => $this->optionalBoolean($query['verifiedOnly'] ?? null) ?? false,
+            'sort' => $this->sort($query['sort'] ?? null),
+        ];
+
+        if (($criteria['lat'] === null) !== ($criteria['lng'] === null)) {
+            $this->throwInvalidPagination();
+        }
+
+        if ($criteria['radiusKm'] !== null && $criteria['lat'] === null) {
+            $this->throwInvalidPagination();
+        }
+
+        if ($criteria['sort'] === 'distance' && $criteria['lat'] === null) {
+            $this->throwInvalidPagination();
+        }
+
+        $result = $this->businessService->getPublicList($page, $perPage, $criteria);
 
         return ApiResponse::list(
             $result['items'],
@@ -88,6 +113,84 @@ final class BusinessController
         }
 
         return $validated;
+    }
+
+    private function optionalPositiveInt(mixed $value): ?int
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        return $this->paginationValue($value, 1, PHP_INT_MAX);
+    }
+
+    private function optionalString(mixed $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (!is_string($value)) {
+            $this->throwInvalidPagination();
+        }
+
+        $value = trim($value);
+
+        return $value === '' ? null : $value;
+    }
+
+    private function optionalFloat(mixed $value, float $minimum, float $maximum): ?float
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (!is_int($value) && !is_float($value) && !is_string($value)) {
+            $this->throwInvalidPagination();
+        }
+
+        $validated = filter_var($value, FILTER_VALIDATE_FLOAT);
+
+        if ($validated === false || $validated < $minimum || $validated > $maximum) {
+            $this->throwInvalidPagination();
+        }
+
+        return $validated;
+    }
+
+    private function optionalBoolean(mixed $value): ?bool
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (!is_bool($value) && !is_int($value) && !is_string($value)) {
+            $this->throwInvalidPagination();
+        }
+
+        $validated = filter_var($value, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
+
+        if ($validated === null) {
+            $this->throwInvalidPagination();
+        }
+
+        return $validated;
+    }
+
+    private function sort(mixed $value): string
+    {
+        if ($value === null) {
+            return 'recommended';
+        }
+
+        if (
+            !is_string($value)
+            || !in_array($value, ['recommended', 'distance', 'rating', 'reviewCount', 'recent'], true)
+        ) {
+            $this->throwInvalidPagination();
+        }
+
+        return $value;
     }
 
     private function throwInvalidPagination(): never

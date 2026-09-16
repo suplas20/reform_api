@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Exception\NotFoundException;
+use App\Exception\ValidationException;
 use App\Repository\BusinessReadRepository;
 use DateTimeImmutable;
 use DateTimeZone;
@@ -22,14 +23,29 @@ final class BusinessService
      *     totalPages: int
      * }
      */
-    public function getPublicList(int $page, int $perPage): array
+    public function getPublicList(int $page, int $perPage, array $criteria = []): array
     {
+        if (
+            ($criteria['categoryId'] ?? null) !== null
+            && ($criteria['serviceId'] ?? null) !== null
+            && !$this->businessRepository->activeCategoryServiceCombinationExists(
+                $criteria['categoryId'],
+                $criteria['serviceId'],
+            )
+        ) {
+            throw new ValidationException(
+                'FILTER_COMBINATION_INVALID',
+                '선택한 카테고리에서 지원하지 않는 작업입니다.',
+            );
+        }
+
         $publishedAt = gmdate('Y-m-d H:i:s');
-        $total = $this->businessRepository->countPublic($publishedAt);
+        $total = $this->businessRepository->countPublic($publishedAt, $criteria);
         $businesses = $this->businessRepository->findPublicPage(
             $publishedAt,
             $perPage,
             ($page - 1) * $perPage,
+            $criteria,
         );
         $businessIds = array_map(
             static fn (array $business): int => (int) $business['id'],
