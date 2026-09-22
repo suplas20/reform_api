@@ -55,9 +55,9 @@ final class FakeReferenceDataProvider implements ReferenceDataProvider
         ]];
     }
 
-    public function getRegions(?int $parentId, ?int $level): array
+    public function getRegions(?int $parentId, ?int $level, ?string $keyword): array
     {
-        $this->lastArguments['regions'] = [$parentId, $level];
+        $this->lastArguments['regions'] = [$parentId, $level, $keyword];
 
         return [[
             'id' => 10,
@@ -120,6 +120,16 @@ $businessController = new BusinessController(
             public function activeCategoryServiceCombinationExists(int $categoryId, int $serviceId): bool
             {
                 return true;
+            }
+
+            public function findPublicSummaryRelations(array $businessIds): array
+            {
+                return ['locations' => [], 'categories' => [], 'services' => [], 'brands' => [], 'verifiedBusinessIds' => []];
+            }
+
+            public function findPublicByIds(array $businessIds, string $publishedAt): array
+            {
+                return [];
             }
 
             public function findPublicDetailById(int $id, string $publishedAt): ?array
@@ -208,11 +218,11 @@ assertReferenceApi([1, 4], $referenceData->lastArguments['services'], 'Services 
 assertReferenceApi(10, $services['data'][0]['id'], 'Services payload is invalid.');
 
 $regionsResponse = $application->handle(
-    Request::create('/api/v1/regions?parentId=1&level=2', 'GET'),
+    Request::create('/api/v1/regions?parentId=1&level=2&query=%EA%B0%95%EB%82%A8', 'GET'),
 );
 $regions = json_decode($regionsResponse->getContent(), true, flags: JSON_THROW_ON_ERROR);
 assertReferenceApi(200, $regionsResponse->getStatusCode(), 'Regions status is invalid.');
-assertReferenceApi([1, 2], $referenceData->lastArguments['regions'], 'Regions query is invalid.');
+assertReferenceApi([1, 2, '강남'], $referenceData->lastArguments['regions'], 'Regions query is invalid.');
 assertReferenceApi('11680', $regions['data'][0]['code'], 'Regions payload is invalid.');
 
 $brandsResponse = $application->handle(

@@ -24,7 +24,9 @@ final class CategoryRepository
         $conditions = ['categories.status = :status'];
         $parameters = ['status' => 'ACTIVE'];
 
-        if ($parentId !== null) {
+        if ($parentId === null) {
+            $conditions[] = 'categories.parent_id IS NULL';
+        } else {
             $conditions[] = 'categories.parent_id = :parent_id';
             $parameters['parent_id'] = $parentId;
         }

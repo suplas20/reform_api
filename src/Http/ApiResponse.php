@@ -28,16 +28,17 @@ final class ApiResponse
         int $perPage,
         int $total,
         int $totalPages,
+        array $additionalMeta = [],
     ): JsonResponse {
         return self::json([
             'success' => true,
             'data' => $data,
-            'meta' => [
+            'meta' => array_replace([
                 'page' => $page,
                 'perPage' => $perPage,
                 'total' => $total,
                 'totalPages' => $totalPages,
-            ],
+            ], $additionalMeta),
         ]);
     }
 

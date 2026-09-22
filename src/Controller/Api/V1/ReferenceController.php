@@ -52,6 +52,7 @@ final class ReferenceController
             $this->referenceData->getRegions(
                 $this->optionalPositiveInt($query['parentId'] ?? null),
                 $this->optionalPositiveInt($query['level'] ?? null),
+                $this->optionalString($query['query'] ?? null),
             ),
         );
     }
@@ -65,11 +66,11 @@ final class ReferenceController
             intdiv(PHP_INT_MAX, self::MAX_PER_PAGE),
         );
         $perPage = $this->positiveInt(
-            $query['perPage'] ?? null,
+            $query['perPage'] ?? $query['limit'] ?? null,
             self::DEFAULT_PER_PAGE,
             self::MAX_PER_PAGE,
         );
-        $keyword = $this->optionalString($query['keyword'] ?? null);
+        $keyword = $this->optionalString($query['keyword'] ?? $query['query'] ?? null);
         $result = $this->referenceData->getBrands($keyword, $page, $perPage);
 
         return ApiResponse::list(

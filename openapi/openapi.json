@@ -27,6 +27,50 @@
     {
       "name": "Search",
       "description": "통합 검색 및 검색어 제안"
+    },
+    {
+      "name": "WorkCase",
+      "description": "공개 작업 사례 조회"
+    },
+    {
+      "name": "Review",
+      "description": "업체 리뷰 조회와 작성"
+    },
+    {
+      "name": "Auth",
+      "description": "모바일 SNS 인증과 토큰 수명주기"
+    },
+    {
+      "name": "User",
+      "description": "내 정보와 사용자 활동"
+    },
+    {
+      "name": "Favorite",
+      "description": "관심 업체"
+    },
+    {
+      "name": "Inquiry",
+      "description": "업체 문의"
+    },
+    {
+      "name": "Media",
+      "description": "이미지 업로드"
+    },
+    {
+      "name": "Notification",
+      "description": "알림과 앱 설정"
+    },
+    {
+      "name": "Help",
+      "description": "고객 도움말"
+    },
+    {
+      "name": "Ad",
+      "description": "광고 조회와 추적"
+    },
+    {
+      "name": "App",
+      "description": "모바일 앱 실행 설정"
     }
   ],
   "paths": {
@@ -127,6 +171,12 @@
             "name": "level",
             "in": "query",
             "schema": {"type": "integer", "minimum": 1}
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "description": "지역명 검색어",
+            "schema": {"type": "string"}
           }
         ],
         "responses": {
@@ -161,6 +211,12 @@
             "schema": {"type": "string"}
           },
           {
+            "name": "query",
+            "in": "query",
+            "description": "앱 호환용 keyword 별칭",
+            "schema": {"type": "string"}
+          },
+          {
             "name": "page",
             "in": "query",
             "schema": {"type": "integer", "minimum": 1, "default": 1}
@@ -174,6 +230,12 @@
               "maximum": 100,
               "default": 20
             }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "앱 호환용 perPage 별칭",
+            "schema": {"type": "integer", "minimum": 1, "maximum": 100}
           }
         ],
         "responses": {
@@ -302,12 +364,15 @@
         "operationId": "listBusinesses",
         "parameters": [
           {"name": "keyword", "in": "query", "schema": {"type": "string"}},
+          {"name": "query", "in": "query", "description": "앱 호환용 keyword 별칭", "schema": {"type": "string"}},
           {"name": "categoryId", "in": "query", "schema": {"type": "integer", "minimum": 1}},
           {"name": "serviceId", "in": "query", "schema": {"type": "integer", "minimum": 1}},
           {"name": "regionId", "in": "query", "schema": {"type": "integer", "minimum": 1}},
           {"name": "brandId", "in": "query", "schema": {"type": "integer", "minimum": 1}},
           {"name": "lat", "in": "query", "schema": {"type": "number", "minimum": -90, "maximum": 90}},
           {"name": "lng", "in": "query", "schema": {"type": "number", "minimum": -180, "maximum": 180}},
+          {"name": "latitude", "in": "query", "description": "앱 호환용 lat 별칭", "schema": {"type": "number", "minimum": -90, "maximum": 90}},
+          {"name": "longitude", "in": "query", "description": "앱 호환용 lng 별칭", "schema": {"type": "number", "minimum": -180, "maximum": 180}},
           {"name": "radiusKm", "in": "query", "schema": {"type": "number", "exclusiveMinimum": 0}},
           {"name": "verifiedOnly", "in": "query", "schema": {"type": "boolean", "default": false}},
           {
@@ -342,6 +407,12 @@
               "maximum": 100,
               "default": 20
             }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "앱 호환용 perPage 별칭",
+            "schema": {"type": "integer", "minimum": 1, "maximum": 100}
           }
         ],
         "responses": {
@@ -464,10 +535,517 @@
           }
         }
       }
+    },
+    "/api/v1/work-cases": {
+      "get": {
+        "tags": ["WorkCase"],
+        "summary": "작업 사례 목록 조회",
+        "description": "공개된 업체의 PUBLISHED 작업 사례를 최신순으로 조회합니다. 공개 이미지 URL 정책 확정 전까지 이미지 URL은 null입니다.",
+        "operationId": "listWorkCases",
+        "parameters": [
+          {"name": "businessId", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "categoryId", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "serviceId", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "brandId", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1, "default": 1}},
+          {"name": "perPage", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 100, "default": 20}},
+          {"name": "limit", "in": "query", "description": "앱 호환용 perPage 별칭", "schema": {"type": "integer", "minimum": 1, "maximum": 100}}
+        ],
+        "responses": {
+          "200": {
+            "description": "작업 사례 목록",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/WorkCaseListSuccessResponse"}}}
+          },
+          "422": {
+            "description": "유효하지 않은 조회 조건",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          }
+        }
+      }
+    },
+    "/api/v1/work-cases/{id}": {
+      "get": {
+        "tags": ["WorkCase"],
+        "summary": "작업 사례 상세 조회",
+        "operationId": "getWorkCase",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64", "minimum": 1}}
+        ],
+        "responses": {
+          "200": {
+            "description": "작업 사례 상세",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/WorkCaseSuccessResponse"}}}
+          },
+          "404": {
+            "description": "작업 사례를 찾을 수 없음",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          },
+          "422": {
+            "description": "유효하지 않은 작업 사례 ID",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          }
+        }
+      }
+    },
+    "/api/v1/businesses/{businessId}/reviews": {
+      "get": {
+        "tags": ["Review"],
+        "summary": "업체 리뷰 목록 조회",
+        "description": "ACTIVE 상태의 자체 리뷰를 조회합니다. 이미지 URL 정책 확정 전까지 images는 빈 배열입니다.",
+        "operationId": "listBusinessReviews",
+        "parameters": [
+          {"name": "businessId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64", "minimum": 1}},
+          {"name": "rating", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 5}},
+          {"name": "hasImages", "in": "query", "schema": {"type": "boolean"}},
+          {"name": "sort", "in": "query", "schema": {"type": "string", "enum": ["latest", "ratingDesc", "ratingAsc", "ratingHigh", "ratingLow"], "default": "latest"}},
+          {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1, "default": 1}},
+          {"name": "perPage", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 100, "default": 20}},
+          {"name": "limit", "in": "query", "description": "앱 호환용 perPage 별칭", "schema": {"type": "integer", "minimum": 1, "maximum": 100}}
+        ],
+        "responses": {
+          "200": {
+            "description": "리뷰 목록과 평점 요약",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ReviewListSuccessResponse"}}}
+          },
+          "404": {
+            "description": "업체를 찾을 수 없음",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          },
+          "422": {
+            "description": "유효하지 않은 조회 조건",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          }
+        }
+      },
+      "post": {
+        "tags": ["Review"],
+        "summary": "업체 리뷰 작성",
+        "operationId": "createBusinessReview",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "businessId", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}},
+          {"name": "Idempotency-Key", "in": "header", "required": false, "schema": {"type": "string", "maxLength": 100}}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ReviewCreateRequest"}}}
+        },
+        "responses": {
+          "201": {"description": "작성된 리뷰", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/GenericSuccessResponse"}}}},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "422": {"$ref": "#/components/responses/ValidationFailed"}
+        }
+      }
+    },
+    "/api/v1/businesses/{businessId}/review-summary": {
+      "get": {
+        "tags": ["Review"],
+        "summary": "업체 평점 요약 조회",
+        "operationId": "getBusinessReviewSummary",
+        "parameters": [
+          {"name": "businessId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64", "minimum": 1}}
+        ],
+        "responses": {
+          "200": {
+            "description": "평균 평점과 점수별 분포",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ReviewSummarySuccessResponse"}}}
+          },
+          "404": {
+            "description": "업체를 찾을 수 없음",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          },
+          "422": {
+            "description": "유효하지 않은 업체 ID",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          }
+        }
+      }
+    },
+    "/api/v1/auth/social-login": {
+      "post": {
+        "tags": ["Auth"], "summary": "SNS 로그인", "operationId": "socialLogin",
+        "description": "제공자 토큰 또는 인가 코드를 백엔드에서 검증하고 앱 토큰을 발급합니다. 제공자 검증 설정 전에는 503을 반환합니다.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SocialLoginRequest"}}}},
+        "responses": {
+          "200": {"description": "앱 access/refresh token", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/GenericSuccessResponse"}}}},
+          "422": {"$ref": "#/components/responses/ValidationFailed"},
+          "503": {"description": "SNS 제공자 검증 또는 토큰 정책이 설정되지 않음", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "tags": ["Auth"], "summary": "앱 토큰 갱신", "operationId": "refreshToken",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RefreshTokenRequest"}}}},
+        "responses": {
+          "200": {"description": "회전된 access/refresh token", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/GenericSuccessResponse"}}}},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "422": {"$ref": "#/components/responses/ValidationFailed"}
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": ["Auth"], "summary": "로그아웃", "operationId": "logout", "security": [{"BearerAuth": []}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RefreshTokenRequest"}}}},
+        "responses": {"204": {"description": "로그아웃 완료"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "422": {"$ref": "#/components/responses/ValidationFailed"}}
+      }
+    },
+    "/api/v1/me/reviews": {
+      "get": {
+        "tags": ["Review"], "summary": "내 리뷰 목록", "operationId": "listMyReviews", "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "type", "in": "query", "schema": {"type": "string", "enum": ["written", "helpful"], "default": "written"}},
+          {"$ref": "#/components/parameters/Page"}, {"$ref": "#/components/parameters/PerPage"}
+        ],
+        "responses": {"200": {"$ref": "#/components/responses/GenericList"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "422": {"$ref": "#/components/responses/ValidationFailed"}}
+      }
+    },
+    "/api/v1/me/favorites": {
+      "get": {
+        "tags": ["Favorite"], "summary": "관심 업체 목록", "operationId": "listFavorites", "security": [{"BearerAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/Page"}, {"$ref": "#/components/parameters/PerPage"}],
+        "responses": {"200": {"$ref": "#/components/responses/GenericList"}, "401": {"$ref": "#/components/responses/Unauthorized"}}
+      }
+    },
+    "/api/v1/me/favorites/{businessId}": {
+      "parameters": [{"$ref": "#/components/parameters/BusinessId"}],
+      "put": {
+        "tags": ["Favorite"], "summary": "관심 업체 저장", "operationId": "putFavorite", "security": [{"BearerAuth": []}],
+        "responses": {"204": {"description": "저장 완료"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "404": {"$ref": "#/components/responses/NotFound"}}
+      },
+      "delete": {
+        "tags": ["Favorite"], "summary": "관심 업체 삭제", "operationId": "deleteFavorite", "security": [{"BearerAuth": []}],
+        "responses": {"204": {"description": "삭제 완료"}, "401": {"$ref": "#/components/responses/Unauthorized"}}
+      }
+    },
+    "/api/v1/businesses/{businessId}/inquiries": {
+      "post": {
+        "tags": ["Inquiry"], "summary": "업체 문의 작성", "operationId": "createInquiry", "security": [{"BearerAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/BusinessId"}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/InquiryCreateRequest"}}}},
+        "responses": {"201": {"$ref": "#/components/responses/GenericSuccess"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "422": {"$ref": "#/components/responses/ValidationFailed"}}
+      }
+    },
+    "/api/v1/me/inquiries": {
+      "get": {
+        "tags": ["Inquiry"], "summary": "내 문의 목록", "operationId": "listMyInquiries", "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "status", "in": "query", "schema": {"type": "string", "enum": ["waiting", "inProgress", "answered", "closed"]}},
+          {"$ref": "#/components/parameters/Page"}, {"$ref": "#/components/parameters/PerPage"}
+        ],
+        "responses": {"200": {"$ref": "#/components/responses/GenericList"}, "401": {"$ref": "#/components/responses/Unauthorized"}}
+      }
+    },
+    "/api/v1/me/inquiries/{inquiryId}": {
+      "get": {
+        "tags": ["Inquiry"], "summary": "내 문의 상세", "operationId": "getMyInquiry", "security": [{"BearerAuth": []}],
+        "parameters": [{"name": "inquiryId", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}],
+        "responses": {"200": {"$ref": "#/components/responses/GenericSuccess"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "404": {"$ref": "#/components/responses/NotFound"}}
+      }
+    },
+    "/api/v1/me": {
+      "get": {
+        "tags": ["User"], "summary": "내 프로필", "operationId": "getMe", "security": [{"BearerAuth": []}],
+        "responses": {"200": {"$ref": "#/components/responses/GenericSuccess"}, "401": {"$ref": "#/components/responses/Unauthorized"}}
+      },
+      "patch": {
+        "tags": ["User"], "summary": "내 프로필 수정", "operationId": "updateMe", "security": [{"BearerAuth": []}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ProfileUpdateRequest"}}}},
+        "responses": {"200": {"$ref": "#/components/responses/GenericSuccess"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "422": {"$ref": "#/components/responses/ValidationFailed"}}
+      },
+      "delete": {
+        "tags": ["User"], "summary": "회원 탈퇴", "operationId": "deleteMe", "security": [{"BearerAuth": []}],
+        "responses": {"204": {"description": "탈퇴 처리 완료"}, "401": {"$ref": "#/components/responses/Unauthorized"}}
+      }
+    },
+    "/api/v1/me/activity-counts": {
+      "get": {
+        "tags": ["User"], "summary": "내 활동 수", "operationId": "getMyActivityCounts", "security": [{"BearerAuth": []}],
+        "responses": {"200": {"$ref": "#/components/responses/GenericSuccess"}, "401": {"$ref": "#/components/responses/Unauthorized"}}
+      }
+    },
+    "/api/v1/media/presigned-uploads": {
+      "post": {
+        "tags": ["Media"], "summary": "업로드 URL 발급", "operationId": "createMediaUploads", "security": [{"BearerAuth": []}],
+        "description": "Cafe24 로컬 스토리지에 사용할 일회성 동일 서버 PUT URL을 발급합니다.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/MediaUploadRequest"}}}},
+        "responses": {"201": {"$ref": "#/components/responses/GenericSuccess"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "422": {"$ref": "#/components/responses/ValidationFailed"}, "503": {"$ref": "#/components/responses/ServiceUnavailable"}}
+      }
+    },
+    "/api/v1/media/uploads/{mediaId}": {
+      "put": {
+        "tags": ["Media"], "summary": "이미지 바이트 업로드", "operationId": "uploadMediaBytes",
+        "parameters": [
+          {"name": "mediaId", "in": "path", "required": true, "schema": {"type": "string"}},
+          {"name": "token", "in": "query", "required": true, "schema": {"type": "string"}}
+        ],
+        "requestBody": {"required": true, "content": {"image/jpeg": {"schema": {"type": "string", "format": "binary"}}, "image/png": {"schema": {"type": "string", "format": "binary"}}, "image/webp": {"schema": {"type": "string", "format": "binary"}}}},
+        "responses": {"204": {"description": "업로드 완료"}, "403": {"description": "업로드 토큰 거부"}, "422": {"$ref": "#/components/responses/ValidationFailed"}}
+      }
+    },
+    "/api/v1/media/complete": {
+      "post": {
+        "tags": ["Media"], "summary": "미디어 업로드 완료 확인", "operationId": "completeMediaUploads", "security": [{"BearerAuth": []}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["mediaIds"], "properties": {"mediaIds": {"type": "array", "minItems": 1, "maxItems": 5, "items": {"type": "string"}}}}}}},
+        "responses": {"200": {"$ref": "#/components/responses/GenericSuccess"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "422": {"$ref": "#/components/responses/ValidationFailed"}}
+      }
+    },
+    "/api/v1/me/recent-businesses": {
+      "get": {
+        "tags": ["User"], "summary": "최근 본 업체", "operationId": "listRecentBusinesses", "security": [{"BearerAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/Page"}, {"$ref": "#/components/parameters/PerPage"}],
+        "responses": {"200": {"$ref": "#/components/responses/GenericList"}, "401": {"$ref": "#/components/responses/Unauthorized"}}
+      },
+      "delete": {
+        "tags": ["User"], "summary": "최근 본 업체 전체 삭제", "operationId": "clearRecentBusinesses", "security": [{"BearerAuth": []}],
+        "responses": {"204": {"description": "삭제 완료"}, "401": {"$ref": "#/components/responses/Unauthorized"}}
+      }
+    },
+    "/api/v1/me/recent-businesses/{businessId}": {
+      "put": {
+        "tags": ["User"], "summary": "최근 본 업체 기록", "operationId": "putRecentBusiness", "security": [{"BearerAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/BusinessId"}],
+        "responses": {"204": {"description": "기록 완료"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "404": {"$ref": "#/components/responses/NotFound"}}
+      }
+    },
+    "/api/v1/me/notifications": {
+      "get": {
+        "tags": ["Notification"], "summary": "알림 목록", "operationId": "listNotifications", "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "type", "in": "query", "schema": {"type": "string", "maxLength": 30}},
+          {"name": "unreadOnly", "in": "query", "schema": {"type": "boolean", "default": false}},
+          {"$ref": "#/components/parameters/Page"}, {"$ref": "#/components/parameters/PerPage"}
+        ],
+        "responses": {"200": {"$ref": "#/components/responses/GenericList"}, "401": {"$ref": "#/components/responses/Unauthorized"}}
+      }
+    },
+    "/api/v1/me/notifications/{notificationId}": {
+      "get": {
+        "tags": ["Notification"], "summary": "알림 상세", "operationId": "getNotification", "security": [{"BearerAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/NotificationId"}],
+        "responses": {"200": {"$ref": "#/components/responses/GenericSuccess"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "404": {"$ref": "#/components/responses/NotFound"}}
+      }
+    },
+    "/api/v1/me/notifications/{notificationId}/read": {
+      "patch": {
+        "tags": ["Notification"], "summary": "알림 읽음 처리", "operationId": "readNotification", "security": [{"BearerAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/NotificationId"}],
+        "responses": {"204": {"description": "읽음 처리 완료"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "404": {"$ref": "#/components/responses/NotFound"}}
+      }
+    },
+    "/api/v1/me/notifications/read-all": {
+      "patch": {
+        "tags": ["Notification"], "summary": "전체 알림 읽음 처리", "operationId": "readAllNotifications", "security": [{"BearerAuth": []}],
+        "responses": {"204": {"description": "전체 읽음 처리 완료"}, "401": {"$ref": "#/components/responses/Unauthorized"}}
+      }
+    },
+    "/api/v1/me/settings": {
+      "get": {
+        "tags": ["Notification"], "summary": "앱 사용자 설정", "operationId": "getMySettings", "security": [{"BearerAuth": []}],
+        "responses": {"200": {"$ref": "#/components/responses/GenericSuccess"}, "401": {"$ref": "#/components/responses/Unauthorized"}}
+      },
+      "patch": {
+        "tags": ["Notification"], "summary": "앱 사용자 설정 변경", "operationId": "updateMySettings", "security": [{"BearerAuth": []}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/UserSettingsRequest"}}}},
+        "responses": {"200": {"$ref": "#/components/responses/GenericSuccess"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "422": {"$ref": "#/components/responses/ValidationFailed"}}
+      }
+    },
+    "/api/v1/me/devices/{deviceId}": {
+      "parameters": [{"name": "deviceId", "in": "path", "required": true, "schema": {"type": "string", "maxLength": 100}}],
+      "put": {
+        "tags": ["Notification"], "summary": "푸시 기기 등록", "operationId": "putDevice", "security": [{"BearerAuth": []}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/DeviceRequest"}}}},
+        "responses": {"204": {"description": "등록 완료"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "422": {"$ref": "#/components/responses/ValidationFailed"}}
+      },
+      "delete": {
+        "tags": ["Notification"], "summary": "푸시 기기 삭제", "operationId": "deleteDevice", "security": [{"BearerAuth": []}],
+        "responses": {"204": {"description": "삭제 완료"}, "401": {"$ref": "#/components/responses/Unauthorized"}}
+      }
+    },
+    "/api/v1/help/categories": {
+      "get": {
+        "tags": ["Help"], "summary": "도움말 카테고리", "operationId": "listHelpCategories",
+        "responses": {"200": {"$ref": "#/components/responses/GenericSuccess"}}
+      }
+    },
+    "/api/v1/help/faqs": {
+      "get": {
+        "tags": ["Help"], "summary": "FAQ 목록", "operationId": "listHelpFaqs",
+        "parameters": [
+          {"name": "categoryId", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "query", "in": "query", "schema": {"type": "string", "maxLength": 200}},
+          {"$ref": "#/components/parameters/Page"}, {"$ref": "#/components/parameters/PerPage"}
+        ],
+        "responses": {"200": {"$ref": "#/components/responses/GenericList"}, "422": {"$ref": "#/components/responses/ValidationFailed"}}
+      }
+    },
+    "/api/v1/help/faqs/{faqId}": {
+      "get": {
+        "tags": ["Help"], "summary": "FAQ 상세", "operationId": "getHelpFaq",
+        "parameters": [{"name": "faqId", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}],
+        "responses": {"200": {"$ref": "#/components/responses/GenericSuccess"}, "404": {"$ref": "#/components/responses/NotFound"}}
+      }
+    },
+    "/api/v1/ads": {
+      "get": {
+        "tags": ["Ad"], "summary": "광고 조회", "operationId": "getAd",
+        "parameters": [{"name": "placement", "in": "query", "required": true, "schema": {"type": "string", "enum": ["home_feed_01", "search_result_01"]}}],
+        "responses": {"200": {"$ref": "#/components/responses/GenericSuccess"}, "422": {"$ref": "#/components/responses/ValidationFailed"}, "503": {"$ref": "#/components/responses/ServiceUnavailable"}}
+      }
+    },
+    "/api/v1/ads/{adId}/impressions": {
+      "post": {
+        "tags": ["Ad"], "summary": "광고 노출 기록", "operationId": "recordAdImpression",
+        "security": [{}, {"BearerAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/AdId"}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/AdEventRequest"}}}},
+        "responses": {"204": {"description": "기록 완료"}, "422": {"$ref": "#/components/responses/ValidationFailed"}}
+      }
+    },
+    "/api/v1/ads/{adId}/clicks": {
+      "post": {
+        "tags": ["Ad"], "summary": "광고 클릭 기록", "operationId": "recordAdClick",
+        "security": [{}, {"BearerAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/AdId"}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/AdEventRequest"}}}},
+        "responses": {"204": {"description": "기록 완료"}, "422": {"$ref": "#/components/responses/ValidationFailed"}}
+      }
+    },
+    "/api/v1/app-config": {
+      "get": {
+        "tags": ["App"], "summary": "앱 실행 설정", "operationId": "getAppConfig",
+        "parameters": [
+          {"name": "platform", "in": "query", "required": true, "schema": {"type": "string", "enum": ["ios", "android"]}},
+          {"name": "appVersion", "in": "query", "required": true, "schema": {"type": "string", "maxLength": 30}}
+        ],
+        "responses": {"200": {"$ref": "#/components/responses/GenericSuccess"}, "422": {"$ref": "#/components/responses/ValidationFailed"}, "503": {"$ref": "#/components/responses/ServiceUnavailable"}}
+      }
     }
   },
   "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "opaque"
+      }
+    },
+    "parameters": {
+      "Page": {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1, "default": 1}},
+      "PerPage": {"name": "perPage", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 100, "default": 20}},
+      "BusinessId": {"name": "businessId", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}},
+      "NotificationId": {"name": "notificationId", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}},
+      "AdId": {"name": "adId", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}
+    },
+    "responses": {
+      "GenericSuccess": {"description": "요청 성공", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/GenericSuccessResponse"}}}},
+      "GenericList": {"description": "목록 조회 성공", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/GenericListSuccessResponse"}}}},
+      "Unauthorized": {"description": "인증 실패", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}},
+      "NotFound": {"description": "대상을 찾을 수 없음", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}},
+      "ValidationFailed": {"description": "입력값 검증 실패", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}},
+      "ServiceUnavailable": {"description": "필수 운영 정책 또는 외부 연동 미설정", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}}
+    },
     "schemas": {
+      "GenericSuccessResponse": {
+        "type": "object", "required": ["success", "data"],
+        "properties": {"success": {"type": "boolean", "const": true}, "data": {}}
+      },
+      "GenericListSuccessResponse": {
+        "type": "object", "required": ["success", "data", "meta"],
+        "properties": {
+          "success": {"type": "boolean", "const": true},
+          "data": {"type": "array", "items": {}},
+          "meta": {"$ref": "#/components/schemas/PaginationMeta"}
+        }
+      },
+      "SocialLoginRequest": {
+        "type": "object", "additionalProperties": false, "required": ["provider", "redirectUri", "device"],
+        "anyOf": [{"required": ["authorizationCode"]}, {"required": ["idToken"]}],
+        "properties": {
+          "provider": {"type": "string", "enum": ["kakao", "naver", "google", "apple"]},
+          "authorizationCode": {"type": "string", "maxLength": 4000},
+          "idToken": {"type": "string", "maxLength": 10000},
+          "redirectUri": {"type": "string", "maxLength": 1000},
+          "device": {"type": "object", "required": ["deviceId"], "properties": {"deviceId": {"type": "string", "maxLength": 100}}}
+        }
+      },
+      "RefreshTokenRequest": {
+        "type": "object", "additionalProperties": false, "required": ["refreshToken", "deviceId"],
+        "properties": {"refreshToken": {"type": "string", "maxLength": 200}, "deviceId": {"type": "string", "maxLength": 100}}
+      },
+      "ReviewCreateRequest": {
+        "type": "object", "additionalProperties": false, "required": ["rating"],
+        "properties": {
+          "rating": {"type": "integer", "minimum": 1, "maximum": 5},
+          "content": {"type": "string", "maxLength": 500},
+          "tags": {"type": "array", "maxItems": 10, "uniqueItems": true, "items": {"type": "string", "maxLength": 50}},
+          "mediaIds": {"type": "array", "maxItems": 5, "uniqueItems": true, "items": {"type": "string", "maxLength": 40}}
+        }
+      },
+      "InquiryCreateRequest": {
+        "type": "object", "additionalProperties": false,
+        "required": ["type", "preferredDateType", "message"],
+        "properties": {
+          "type": {"type": "string", "enum": ["repair", "quote", "restoration", "etc"]},
+          "itemCategoryId": {"type": "integer", "minimum": 1},
+          "preferredDateType": {"type": "string", "enum": ["thisWeek", "nextWeek", "thisMonth", "afterConsultation", "exactDate"]},
+          "preferredDate": {"type": "string", "format": "date"},
+          "message": {"type": "string", "maxLength": 500},
+          "mediaIds": {"type": "array", "maxItems": 5, "items": {"type": "string", "maxLength": 40}}
+        }
+      },
+      "ProfileUpdateRequest": {
+        "type": "object", "additionalProperties": false,
+        "properties": {
+          "name": {"type": ["string", "null"], "maxLength": 100},
+          "nickname": {"type": ["string", "null"], "maxLength": 50},
+          "tagline": {"type": ["string", "null"], "maxLength": 200},
+          "phone": {"type": ["string", "null"], "maxLength": 30},
+          "avatarMediaId": {"type": ["string", "null"], "maxLength": 40}
+        }
+      },
+      "MediaUploadRequest": {
+        "type": "object", "additionalProperties": false, "required": ["files"],
+        "properties": {
+          "files": {
+            "type": "array", "minItems": 1, "maxItems": 5,
+            "items": {
+              "type": "object", "additionalProperties": false, "required": ["fileName", "contentType", "size", "purpose"],
+              "properties": {
+                "fileName": {"type": "string", "maxLength": 255},
+                "contentType": {"type": "string", "enum": ["image/jpeg", "image/png", "image/webp"]},
+                "size": {"type": "integer", "minimum": 1},
+                "purpose": {"type": "string", "enum": ["profile", "review", "inquiry"]}
+              }
+            }
+          }
+        }
+      },
+      "UserSettingsRequest": {
+        "type": "object", "additionalProperties": false,
+        "properties": {
+          "pushEnabled": {"type": "boolean"},
+          "inquiryNotificationsEnabled": {"type": "boolean"},
+          "reviewNotificationsEnabled": {"type": "boolean"},
+          "marketingConsent": {"type": "boolean"},
+          "nearbyRecommendationsEnabled": {"type": "boolean"}
+        }
+      },
+      "DeviceRequest": {
+        "type": "object", "additionalProperties": false, "required": ["platform", "pushToken", "appVersion"],
+        "properties": {
+          "platform": {"type": "string", "enum": ["ios", "android"]},
+          "pushToken": {"type": "string", "maxLength": 500},
+          "appVersion": {"type": "string", "maxLength": 30},
+          "locale": {"type": ["string", "null"], "maxLength": 20},
+          "timezone": {"type": ["string", "null"], "maxLength": 50}
+        }
+      },
+      "AdEventRequest": {
+        "type": "object", "additionalProperties": false, "required": ["eventId", "trackingToken"],
+        "properties": {"eventId": {"type": "string", "maxLength": 100}, "trackingToken": {"type": "string", "maxLength": 500}}
+      },
       "SearchSuggestionsSuccessResponse": {
         "type": "object",
         "required": ["success", "data"],
@@ -610,9 +1188,10 @@
       },
       "Service": {
         "type": "object",
-        "required": ["id", "name", "slug", "description", "sortOrder"],
+        "required": ["id", "categoryId", "name", "slug", "description", "sortOrder"],
         "properties": {
           "id": {"type": "integer", "format": "int64"},
+          "categoryId": {"type": ["integer", "null"], "format": "int64", "description": "categoryId로 조회한 경우 해당 카테고리 ID"},
           "name": {"type": "string"},
           "slug": {"type": "string"},
           "description": {"type": ["string", "null"]},
@@ -717,7 +1296,23 @@
           "shortDescription",
           "supports",
           "publishedAt",
-          "reputation"
+          "reputation",
+          "categoryId",
+          "regionId",
+          "serviceIds",
+          "brandIds",
+          "description",
+          "rating",
+          "reviewCount",
+          "thumbnailUrl",
+          "verified",
+          "address",
+          "distanceKm",
+          "priceLevel",
+          "options",
+          "latitude",
+          "longitude",
+          "isFavorite"
         ],
         "properties": {
           "id": {
@@ -750,7 +1345,23 @@
           },
           "reputation": {
             "$ref": "#/components/schemas/BusinessReputation"
-          }
+          },
+          "categoryId": {"type": ["integer", "null"], "format": "int64"},
+          "regionId": {"type": ["integer", "null"], "format": "int64"},
+          "serviceIds": {"type": "array", "items": {"type": "integer", "format": "int64"}},
+          "brandIds": {"type": "array", "items": {"type": "integer", "format": "int64"}},
+          "description": {"type": ["string", "null"]},
+          "rating": {"type": ["number", "null"], "format": "float", "minimum": 1, "maximum": 5},
+          "reviewCount": {"type": "integer", "minimum": 0},
+          "thumbnailUrl": {"type": ["string", "null"], "format": "uri", "description": "공개 이미지 URL 정책 확정 전에는 null입니다."},
+          "verified": {"type": "boolean"},
+          "address": {"type": ["string", "null"]},
+          "distanceKm": {"type": ["number", "null"], "format": "float", "minimum": 0},
+          "priceLevel": {"type": ["integer", "null"], "minimum": 1},
+          "options": {"type": "array", "items": {"type": "string", "enum": ["pickup"]}},
+          "latitude": {"type": ["number", "null"], "minimum": -90, "maximum": 90},
+          "longitude": {"type": ["number", "null"], "minimum": -180, "maximum": 180},
+          "isFavorite": {"type": "boolean", "description": "인증 연동 전에는 false입니다."}
         }
       },
       "Business": {
@@ -997,6 +1608,153 @@
           "fetchedAt": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "WorkCaseListSuccessResponse": {
+        "type": "object",
+        "required": ["success", "data", "meta"],
+        "properties": {
+          "success": {"type": "boolean", "const": true},
+          "data": {"type": "array", "items": {"$ref": "#/components/schemas/WorkCaseSummary"}},
+          "meta": {"$ref": "#/components/schemas/PaginationMeta"}
+        }
+      },
+      "WorkCaseSuccessResponse": {
+        "type": "object",
+        "required": ["success", "data"],
+        "properties": {
+          "success": {"type": "boolean", "const": true},
+          "data": {"$ref": "#/components/schemas/WorkCase"}
+        }
+      },
+      "WorkCaseSummary": {
+        "type": "object",
+        "required": ["id", "businessId", "title", "slug", "category", "brand", "services", "beforeImageUrl", "afterImageUrl", "publishedAt"],
+        "properties": {
+          "id": {"type": "integer", "format": "int64"},
+          "businessId": {"type": "integer", "format": "int64"},
+          "title": {"type": "string"},
+          "slug": {"type": "string"},
+          "category": {"oneOf": [{"$ref": "#/components/schemas/NamedEntity"}, {"type": "null"}]},
+          "brand": {"oneOf": [{"$ref": "#/components/schemas/NamedEntity"}, {"type": "null"}]},
+          "services": {"type": "array", "items": {"$ref": "#/components/schemas/NamedEntity"}},
+          "beforeImageUrl": {"type": ["string", "null"], "format": "uri", "description": "공개 이미지 URL 정책 확정 전에는 null입니다."},
+          "afterImageUrl": {"type": ["string", "null"], "format": "uri", "description": "공개 이미지 URL 정책 확정 전에는 null입니다."},
+          "publishedAt": {"type": "string", "format": "date-time"}
+        }
+      },
+      "WorkCase": {
+        "allOf": [
+          {"$ref": "#/components/schemas/WorkCaseSummary"},
+          {
+            "type": "object",
+            "required": ["description", "business", "images"],
+            "properties": {
+              "description": {"type": ["string", "null"]},
+              "business": {"$ref": "#/components/schemas/NamedEntity"},
+              "images": {
+                "type": "array",
+                "maxItems": 0,
+                "description": "공개 이미지 URL 정책 확정 전까지 빈 배열입니다.",
+                "items": {"type": "object"}
+              }
+            }
+          }
+        ]
+      },
+      "NamedEntity": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": {"type": "integer", "format": "int64"},
+          "name": {"type": "string"}
+        }
+      },
+      "ReviewListSuccessResponse": {
+        "type": "object",
+        "required": ["success", "data", "meta"],
+        "properties": {
+          "success": {"type": "boolean", "const": true},
+          "data": {"type": "array", "items": {"$ref": "#/components/schemas/Review"}},
+          "meta": {
+            "allOf": [
+              {"$ref": "#/components/schemas/PaginationMeta"},
+              {
+                "type": "object",
+                "required": ["summary"],
+                "properties": {"summary": {"$ref": "#/components/schemas/ReviewListSummary"}}
+              }
+            ]
+          }
+        }
+      },
+      "Review": {
+        "type": "object",
+        "required": ["id", "rating", "content", "user", "images", "createdAt", "updatedAt"],
+        "properties": {
+          "id": {"type": "integer", "format": "int64"},
+          "rating": {"type": "integer", "minimum": 1, "maximum": 5},
+          "content": {"type": ["string", "null"]},
+          "user": {
+            "type": "object",
+            "required": ["id", "name", "profileImage"],
+            "properties": {
+              "id": {"type": "integer", "format": "int64"},
+              "name": {"type": ["string", "null"]},
+              "profileImage": {"type": ["string", "null"], "format": "uri", "description": "공개 이미지 URL 정책 확정 전에는 null입니다."}
+            }
+          },
+          "images": {"type": "array", "maxItems": 0, "items": {"type": "object"}},
+          "createdAt": {"type": "string", "format": "date-time"},
+          "updatedAt": {"type": "string", "format": "date-time"}
+        }
+      },
+      "ReviewListSummary": {
+        "type": "object",
+        "required": ["averageRating", "reviewCount", "distribution"],
+        "properties": {
+          "averageRating": {"type": ["number", "null"], "format": "float", "minimum": 1, "maximum": 5},
+          "reviewCount": {"type": "integer", "minimum": 0},
+          "distribution": {
+            "type": "object",
+            "required": ["1", "2", "3", "4", "5"],
+            "properties": {
+              "1": {"type": "integer", "minimum": 0},
+              "2": {"type": "integer", "minimum": 0},
+              "3": {"type": "integer", "minimum": 0},
+              "4": {"type": "integer", "minimum": 0},
+              "5": {"type": "integer", "minimum": 0}
+            }
+          }
+        }
+      },
+      "ReviewSummarySuccessResponse": {
+        "type": "object",
+        "required": ["success", "data"],
+        "properties": {
+          "success": {"type": "boolean", "const": true},
+          "data": {
+            "type": "object",
+            "required": ["average", "total", "distribution"],
+            "properties": {
+              "average": {"type": ["number", "null"], "format": "float", "minimum": 1, "maximum": 5},
+              "total": {"type": "integer", "minimum": 0},
+              "distribution": {
+                "type": "array",
+                "minItems": 5,
+                "maxItems": 5,
+                "items": {
+                  "type": "object",
+                  "required": ["score", "count", "ratio"],
+                  "properties": {
+                    "score": {"type": "integer", "minimum": 1, "maximum": 5},
+                    "count": {"type": "integer", "minimum": 0},
+                    "ratio": {"type": "number", "minimum": 0, "maximum": 1}
+                  }
+                }
+              }
+            }
           }
         }
       },

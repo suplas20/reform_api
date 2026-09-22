@@ -54,12 +54,16 @@ final class BusinessService
         $externalReputation = $this->groupExternalReputation(
             $this->businessRepository->findActiveExternalReputationByBusinessIds($businessIds),
         );
+        $summaryRelations = $this->groupSummaryRelations(
+            $this->businessRepository->findPublicSummaryRelations($businessIds),
+        );
 
         return [
             'items' => array_map(
                 static fn (array $business): array => self::mapSummary(
                     $business,
                     $externalReputation[(int) $business['id']] ?? [],
+                    $summaryRelations[(int) $business['id']] ?? self::emptySummaryRelations(),
                 ),
                 $businesses,
             ),
@@ -160,12 +164,55 @@ final class BusinessService
     }
 
     /**
+     * @param list<int> $businessIds
+     * @return list<array<string, mixed>>
+     */
+    public function getPublicSummariesByIds(array $businessIds): array
+    {
+        $businessIds = array_values(array_unique($businessIds));
+        $rows = $this->businessRepository->findPublicByIds($businessIds, gmdate('Y-m-d H:i:s'));
+        $rowsById = [];
+
+        foreach ($rows as $row) {
+            $rowsById[(int) $row['id']] = $row;
+        }
+
+        $externalReputation = $this->groupExternalReputation(
+            $this->businessRepository->findActiveExternalReputationByBusinessIds($businessIds),
+        );
+        $relations = $this->groupSummaryRelations(
+            $this->businessRepository->findPublicSummaryRelations($businessIds),
+        );
+        $items = [];
+
+        foreach ($businessIds as $businessId) {
+            if (!isset($rowsById[$businessId])) {
+                continue;
+            }
+
+            $items[] = self::mapSummary(
+                $rowsById[$businessId],
+                $externalReputation[$businessId] ?? [],
+                $relations[$businessId] ?? self::emptySummaryRelations(),
+            );
+        }
+
+        return $items;
+    }
+
+    /**
      * @param array<string, mixed> $business
      * @param list<array<string, mixed>> $externalReputation
      * @return array<string, mixed>
      */
-    private static function mapSummary(array $business, array $externalReputation): array
+    private static function mapSummary(
+        array $business,
+        array $externalReputation,
+        array $relations,
+    ): array
     {
+        $location = $relations['location'];
+
         return [
             'id' => (int) $business['id'],
             'name' => (string) $business['name'],
@@ -178,6 +225,80 @@ final class BusinessService
             ],
             'publishedAt' => self::utcDateTime((string) $business['published_at']),
             'reputation' => self::mapReputation($business, $externalReputation),
+            'categoryId' => $relations['categoryId'],
+            'regionId' => $location === null ? null : (int) $location['region_id'],
+            'serviceIds' => $relations['serviceIds'],
+            'brandIds' => $relations['brandIds'],
+            'description' => self::nullableString($business['short_description']),
+            'rating' => self::nullableFloat($business['rating_avg']),
+            'reviewCount' => (int) $business['review_count'],
+            'thumbnailUrl' => null,
+            'verified' => $relations['verified'],
+            'address' => $location === null ? null : (string) $location['road_address'],
+            'distanceKm' => isset($business['distance_km']) ? (float) $business['distance_km'] : null,
+            'priceLevel' => null,
+            'options' => (bool) $business['supports_pickup'] ? ['pickup'] : [],
+            'latitude' => $location === null ? null : self::nullableFloat($location['latitude']),
+            'longitude' => $location === null ? null : self::nullableFloat($location['longitude']),
+            'isFavorite' => false,
+        ];
+    }
+
+    /**
+     * @param array{
+     *     locations: list<array<string, mixed>>,
+     *     categories: list<array<string, mixed>>,
+     *     services: list<array<string, mixed>>,
+     *     brands: list<array<string, mixed>>,
+     *     verifiedBusinessIds: list<int>
+     * } $relations
+     * @return array<int, array<string, mixed>>
+     */
+    private function groupSummaryRelations(array $relations): array
+    {
+        $grouped = [];
+
+        foreach ($relations['locations'] as $location) {
+            $businessId = (int) $location['business_id'];
+            $grouped[$businessId] ??= self::emptySummaryRelations();
+            $grouped[$businessId]['location'] ??= $location;
+        }
+
+        foreach ($relations['categories'] as $category) {
+            $businessId = (int) $category['business_id'];
+            $grouped[$businessId] ??= self::emptySummaryRelations();
+            $grouped[$businessId]['categoryId'] ??= (int) $category['category_id'];
+        }
+
+        foreach ($relations['services'] as $service) {
+            $businessId = (int) $service['business_id'];
+            $grouped[$businessId] ??= self::emptySummaryRelations();
+            $grouped[$businessId]['serviceIds'][] = (int) $service['service_id'];
+        }
+
+        foreach ($relations['brands'] as $brand) {
+            $businessId = (int) $brand['business_id'];
+            $grouped[$businessId] ??= self::emptySummaryRelations();
+            $grouped[$businessId]['brandIds'][] = (int) $brand['brand_id'];
+        }
+
+        foreach ($relations['verifiedBusinessIds'] as $businessId) {
+            $grouped[$businessId] ??= self::emptySummaryRelations();
+            $grouped[$businessId]['verified'] = true;
+        }
+
+        return $grouped;
+    }
+
+    /** @return array{location: ?array, categoryId: ?int, serviceIds: list<int>, brandIds: list<int>, verified: bool} */
+    private static function emptySummaryRelations(): array
+    {
+        return [
+            'location' => null,
+            'categoryId' => null,
+            'serviceIds' => [],
+            'brandIds' => [],
+            'verified' => false,
         ];
     }
 

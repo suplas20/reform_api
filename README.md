@@ -2,7 +2,7 @@
 
 리폼·수선·복원 업체 검색 플랫폼의 PHP 백엔드, Public Web, Admin 애플리케이션입니다.
 
-현재 구현 범위는 **Foundation, 초기 DB·평판 Schema, Reference API 4종 및 Business 기본 Read API**입니다.
+현재 구현 범위는 **Foundation, 앱 API 요구사항 45개, 초기 DB·평판·앱 기능 Schema**입니다.
 
 ## 요구사항
 
@@ -34,6 +34,20 @@ APP_ENV
 APP_DEBUG
 APP_TIMEZONE
 LOG_LEVEL
+APP_BASE_URL
+UPLOAD_MAX_IMAGE_BYTES
+AUTH_ACCESS_TTL_SECONDS
+AUTH_REFRESH_TTL_SECONDS
+AD_TRACKING_SECRET
+APP_MINIMUM_VERSION
+APP_LATEST_VERSION
+APP_MAINTENANCE_ENABLED
+APP_MAINTENANCE_MESSAGE
+CUSTOMER_CENTER_PHONE
+CUSTOMER_CENTER_HOURS
+TERMS_OF_SERVICE_URL
+PRIVACY_POLICY_URL
+OPEN_SOURCE_LICENSE_URL
 ```
 
 ## 검증
@@ -69,11 +83,19 @@ API 계약 원본은 `openapi/openapi.json`이며 API 변경과 같은 작업에
 composer db:check
 composer db:status
 composer db:migrate
+composer db:seed
+composer test:seed
 ```
 
 - `db:check`: MariaDB 연결, 버전, Charset, Collation 확인
 - `db:status`: Migration 적용 상태 확인
 - `db:migrate`: 적용되지 않은 Migration 실행
+- `db:seed`: 기준 정보와 개발용 데모 콘텐츠를 중복 없이 추가
+- `db:seed:reference`: 카테고리·서비스·지역·브랜드·FAQ만 추가
+- `db:seed:demo`: 기준 정보 적용 후 화면 확인용 데모 업체·작업 사례 추가
+- `test:seed`: 필수 Seed 건수와 연결 관계 확인
+
+기본 Seed에는 상위 카테고리 8개와 하위 카테고리 13개, 서비스 18개, 전국 시·도와 서울 자치구 42개 지역, 브랜드 20개, FAQ 11개가 포함됩니다. 데모 업체 3개와 작업 사례 4개는 이름에 `[데모]`를 표시하여 실제 업체와 구분합니다.
 
 Schema 변경은 `database/migrations/`의 버전 관리 SQL 파일로만 기록합니다. 운영 환경에서 애플리케이션 요청 중 Migration을 자동 실행하지 않습니다.
 
@@ -82,6 +104,8 @@ Schema 변경은 `database/migrations/`의 버전 관리 SQL 파일로만 기록
 ```text
 001_initial_schema
 002_add_reputation_schema
+003_add_app_api_schema
+004_add_review_idempotency
 ```
 
 ## 로컬 서버
@@ -92,21 +116,24 @@ composer serve
 
 기본 주소는 `http://127.0.0.1:8080`입니다.
 
-구현된 API:
+`.docs/app_api/reform_app_api_requirements.md`의 P0/P1/P2 API 45개를 구현했습니다. 기존 이벤트·검색어 제안과 Cafe24 로컬 저장소용 업로드 PUT을 더해 OpenAPI에는 총 48개 operation이 등록되어 있습니다.
+
+구현 영역:
 
 ```text
-GET /api/v1/categories?parentId=&level=
-GET /api/v1/services?categoryId=&limit=
-GET /api/v1/regions?parentId=&level=
-GET /api/v1/brands?keyword=&page=1&perPage=20
-GET /api/v1/businesses?keyword=&categoryId=&serviceId=&regionId=&brandId=
-    &lat=&lng=&radiusKm=&verifiedOnly=&sort=&page=1&perPage=20
-GET /api/v1/businesses/{id}
-GET /api/v1/search/suggestions?keyword=&limit=10
-POST /api/v1/events
+인증: SNS 로그인, 갱신, 로그아웃
+공개 조회: 기준 정보, 업체, 작업 사례, 리뷰, FAQ, 광고, 앱 설정
+사용자 기능: 프로필, 활동 수, 찜, 문의, 내 리뷰, 최근 본 업체
+알림 기능: 알림 조회·읽음, 사용자 설정, 푸시 기기
+미디어: 업로드 URL 발급, 이미지 검증·저장, 완료 처리
+운영 보조: 이벤트, 검색어 제안, 광고 노출·클릭 추적
 ```
 
-Reference API는 활성화된 카테고리·서비스·지역·브랜드를 반환합니다. Business API는 공개 업체 검색과 위치·영업시간·Offering·브랜드·링크·평판을 포함한 상세 정보를 반환합니다. 공개 이미지 URL 정책이 보류되어 이미지 필드는 아직 빈 배열이며, 인증 연동 전 `isFavorite`은 `false`입니다. Event API는 허용된 사용자 행동을 기록하고 성공 시 HTTP 204를 반환합니다.
+리뷰 작성은 선택적인 `Idempotency-Key`를 지원합니다. 토큰 원문은 저장하지 않고 SHA-256 hash만 저장하며, Refresh Token은 회전합니다. 이미지 업로드는 실제 MIME·크기·이미지 디코딩 여부를 검사합니다.
+
+앱 연동 호환을 위해 업체 검색은 `query`/`latitude`/`longitude`/`limit`, 브랜드 검색은 `query`/`limit`을 기존 파라미터의 별칭으로 지원합니다. v1 응답과 페이지 번호 기반 Pagination은 기존 계약을 유지합니다.
+
+SNS Provider 검증 구현체와 운영 TTL/URL/용량 값은 배포 환경별 설정 사항입니다. 설정 전 소셜 로그인과 관련 기능은 가짜 인증을 허용하지 않고 `503` 오류를 반환합니다. 공개 이미지 URL 변환 정책이 확정되기 전까지 조회 API의 이미지 URL은 `null` 또는 빈 배열입니다.
 
 ## 프로젝트 폴더 이동
 

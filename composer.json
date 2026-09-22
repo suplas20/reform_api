@@ -24,12 +24,21 @@
             "@php tests/reference_api.php",
             "@php tests/event_api.php",
             "@php tests/search_api.php",
+            "@php tests/public_content_api.php",
             "@php tests/api_documentation.php"
         ],
         "db:check": "@php bin/check-database.php",
         "db:migrate": "@php bin/migrate.php migrate",
         "db:status": "@php bin/migrate.php status",
-        "test:database": "@php tests/database_schema.php",
+        "db:seed": "@php bin/seed.php all",
+        "db:seed:reference": "@php bin/seed.php reference",
+        "db:seed:demo": "@php bin/seed.php demo",
+        "test:seed": "@php tests/seed_data.php",
+        "test:database": [
+            "@php tests/database_schema.php",
+            "@php tests/public_repository.php",
+            "@php tests/app_api_integration.php"
+        ],
         "serve": [
             "Composer\\Config::disableProcessTimeout",
             "@php -S 127.0.0.1:8080 -t public"

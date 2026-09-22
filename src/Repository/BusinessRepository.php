@@ -138,6 +138,160 @@ final class BusinessRepository implements BusinessReadRepository, BusinessSugges
         return $statement->fetchColumn() !== false;
     }
 
+    public function findPublicSummaryRelations(array $businessIds): array
+    {
+        $businessIds = array_values(array_unique($businessIds));
+
+        if ($businessIds === []) {
+            return [
+                'locations' => [],
+                'categories' => [],
+                'services' => [],
+                'brands' => [],
+                'verifiedBusinessIds' => [],
+            ];
+        }
+
+        $locations = $this->fetchByBusinessIds(
+            <<<'SQL'
+                SELECT
+                    business_locations.business_id,
+                    business_locations.region_id,
+                    business_locations.road_address,
+                    business_locations.latitude,
+                    business_locations.longitude,
+                    business_locations.is_primary,
+                    business_locations.id
+                FROM business_locations
+                WHERE business_locations.business_id IN (%s)
+                ORDER BY business_locations.business_id ASC,
+                    business_locations.is_primary DESC,
+                    business_locations.id ASC
+                SQL,
+            $businessIds,
+        );
+        $categories = $this->fetchByBusinessIds(
+            <<<'SQL'
+                SELECT
+                    business_categories.business_id,
+                    business_categories.category_id,
+                    business_categories.is_primary,
+                    categories.sort_order
+                FROM business_categories
+                INNER JOIN categories ON categories.id = business_categories.category_id
+                WHERE business_categories.business_id IN (%s)
+                  AND categories.status = :status
+                ORDER BY business_categories.business_id ASC,
+                    business_categories.is_primary DESC,
+                    categories.sort_order ASC,
+                    categories.id ASC
+                SQL,
+            $businessIds,
+            ['status' => 'ACTIVE'],
+        );
+        $services = $this->fetchByBusinessIds(
+            <<<'SQL'
+                SELECT DISTINCT business_offerings.business_id, business_offerings.service_id
+                FROM business_offerings
+                INNER JOIN services ON services.id = business_offerings.service_id
+                WHERE business_offerings.business_id IN (%s)
+                  AND business_offerings.status = :offering_status
+                  AND services.status = :service_status
+                ORDER BY business_offerings.business_id ASC, business_offerings.service_id ASC
+                SQL,
+            $businessIds,
+            ['offering_status' => 'ACTIVE', 'service_status' => 'ACTIVE'],
+        );
+        $brands = $this->fetchByBusinessIds(
+            <<<'SQL'
+                SELECT business_brands.business_id, business_brands.brand_id
+                FROM business_brands
+                INNER JOIN brands ON brands.id = business_brands.brand_id
+                WHERE business_brands.business_id IN (%s)
+                  AND brands.status = :status
+                ORDER BY business_brands.business_id ASC, business_brands.brand_id ASC
+                SQL,
+            $businessIds,
+            ['status' => 'ACTIVE'],
+        );
+        $verificationRows = $this->fetchByBusinessIds(
+            <<<'SQL'
+                SELECT DISTINCT business_verifications.business_id
+                FROM business_verifications
+                WHERE business_verifications.business_id IN (%s)
+                  AND business_verifications.status = :status
+                ORDER BY business_verifications.business_id ASC
+                SQL,
+            $businessIds,
+            ['status' => 'APPROVED'],
+        );
+
+        return [
+            'locations' => $locations,
+            'categories' => $categories,
+            'services' => $services,
+            'brands' => $brands,
+            'verifiedBusinessIds' => array_map(
+                static fn (array $row): int => (int) $row['business_id'],
+                $verificationRows,
+            ),
+        ];
+    }
+
+    public function findPublicByIds(array $businessIds, string $publishedAt): array
+    {
+        $businessIds = array_values(array_unique($businessIds));
+
+        if ($businessIds === []) {
+            return [];
+        }
+
+        $placeholders = [];
+        $parameters = [
+            'status' => 'ACTIVE',
+            'published_at' => $publishedAt,
+        ];
+
+        foreach ($businessIds as $index => $businessId) {
+            $parameter = 'business_id_' . $index;
+            $placeholders[] = ':' . $parameter;
+            $parameters[$parameter] = $businessId;
+        }
+
+        $statement = $this->connection->prepare(sprintf(
+            <<<'SQL'
+                SELECT
+                    businesses.id,
+                    businesses.name,
+                    businesses.slug,
+                    businesses.short_description,
+                    businesses.supports_shipping,
+                    businesses.supports_visit,
+                    businesses.supports_pickup,
+                    businesses.published_at,
+                    business_reputation_stats.rating_avg,
+                    COALESCE(business_reputation_stats.review_count, 0) AS review_count,
+                    COALESCE(business_reputation_stats.favorite_count, 0) AS favorite_count,
+                    COALESCE(business_reputation_stats.work_case_count, 0) AS work_case_count
+                FROM businesses
+                LEFT JOIN business_reputation_stats
+                    ON business_reputation_stats.business_id = businesses.id
+                WHERE businesses.id IN (%s)
+                  AND businesses.status = :status
+                  AND businesses.deleted_at IS NULL
+                  AND businesses.published_at IS NOT NULL
+                  AND businesses.published_at <= :published_at
+                SQL,
+            implode(', ', $placeholders),
+        ));
+        $statement->execute($parameters);
+
+        /** @var list<array<string, mixed>> $rows */
+        $rows = $statement->fetchAll();
+
+        return $rows;
+    }
+
     /**
      * @return array<string, mixed>|null
      */
@@ -405,6 +559,33 @@ final class BusinessRepository implements BusinessReadRepository, BusinessSugges
         $rows = $this->fetchMany($sql, $businessId, $parameters);
 
         return $rows[0] ?? null;
+    }
+
+    /**
+     * @param list<int> $businessIds
+     * @param array<string, mixed> $parameters
+     * @return list<array<string, mixed>>
+     */
+    private function fetchByBusinessIds(
+        string $sql,
+        array $businessIds,
+        array $parameters = [],
+    ): array {
+        $placeholders = [];
+
+        foreach ($businessIds as $index => $businessId) {
+            $parameter = 'business_id_' . $index;
+            $placeholders[] = ':' . $parameter;
+            $parameters[$parameter] = $businessId;
+        }
+
+        $statement = $this->connection->prepare(sprintf($sql, implode(', ', $placeholders)));
+        $statement->execute($parameters);
+
+        /** @var list<array<string, mixed>> $rows */
+        $rows = $statement->fetchAll();
+
+        return $rows;
     }
 
     /**

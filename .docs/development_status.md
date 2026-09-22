@@ -1,86 +1,65 @@
 # 개발 진행 상태
 
-- 기준일: 2026-09-16
-- 현재 단계: Phase API-1 — Reference 완료, Business·Work Case 확장 대기
-- 구현 기준: `AGENTS.MD`, `.docs/reform_mobile_api_definition_v1.md`, `.docs/reform_platform_system_design.md`
+- 기준일: 2026-09-22
+- 현재 단계: 고객 앱 API 45개 구현 및 통합 검증 완료
+- 구현 기준: `AGENTS.MD`, `.docs/app_api/reform_app_api_requirements.md`, 기존 v1 계약
 
 ## 완료된 항목
 
-- PHP 8.4 및 Composer 로컬 환경
-- PSR-4 Autoload (`App\` → `src/`)
-- Symfony Routing 7.4
-- Symfony HttpFoundation 7.4
-- Monolog 3
-- Swagger UI 5.32.15 및 OpenAPI 3.1
-- `public/index.php` Front Controller
-- API/Web/Admin Route 파일 분리
-- PDO MariaDB Connection Factory
-- 중앙 Exception Handler
-- API 성공·목록·오류 응답 규격
-- Foundation Smoke Test
-- Phase 2 기본 디렉터리 구조
-  - `database/migrations/`
-  - `database/seeds/`
-  - `src/Controller/{Api/V1,Web,Admin}/`
-  - `src/{Service,Repository,Auth,Storage}/`
-  - `src/Http/Middleware/`
-  - `views/`, `public/assets/`
-- 로컬 설정·의존성·런타임 파일 Git 제외 규칙
-- MariaDB 10.6 연결 및 `utf8mb4_unicode_ci` 확인
-- `001_initial_schema.sql`
-  - 설계 문서의 Domain Table 27개
-  - Migration 이력 Table 1개
-  - Index, Unique Constraint, Foreign Key Delete Rule
-- `002_add_reputation_schema.sql`
-  - 외부 플랫폼 Reference 및 허용된 평점 통계
-  - 자체 Review 및 Review Image
-  - 업체별 자체 Reputation 집계
-  - 변경 후 Domain Table 32개
-- DB Migration Runner 및 상태 확인 명령
-- 실제 DB Schema 검증 Test
-- `GET /api/v1/businesses/{id}`
-  - BusinessRepository → BusinessService → API BusinessController
-  - ACTIVE, 미삭제, 게시 시각 기준 공개
-  - 지원 방식·인증·대표 위치·영업시간
-  - 카테고리·Offering·브랜드·운영 링크
-  - 자체 평판과 외부 평판·통계 분리 응답
-  - 이미지 정책 보류에 따라 images는 빈 배열
-  - 인증 연동 전 isFavorite은 false
-  - BUSINESS_NOT_FOUND 및 ID Validation
-- Business API Contract Test
-- `GET /api/v1/businesses`
-  - page/perPage Pagination
-  - keyword/categoryId/serviceId/regionId/brandId Filter
-  - lat/lng/radiusKm 거리 Filter
-  - verifiedOnly Filter
-  - recommended/distance/rating/reviewCount/recent 정렬
-  - recommended는 정식 Ranking 확정 전까지 최신 게시순
-  - 자체·외부 평판 포함
-  - 외부 평판 Batch Query로 N+1 방지
-  - VALIDATION_ERROR 처리
-- Reference API
-  - `GET /api/v1/categories`
-  - `GET /api/v1/services`
-  - `GET /api/v1/regions`
-  - `GET /api/v1/brands`
-  - ACTIVE 데이터 및 계층·카테고리·검색·페이지 조건
-  - CategoryRepository/ServiceRepository/RegionRepository/BrandRepository
-  - ReferenceService → ReferenceController
-- `POST /api/v1/events`
-  - EventController → EventService → EventLogRepository
-  - 허용 Event Name Whitelist
-  - 민감한 Metadata Key 차단
-  - JSON 형식·필드·길이 Validation
-  - 성공 시 HTTP 204
-- `GET /api/v1/search/suggestions`
-  - 공개된 업체와 ACTIVE 서비스·브랜드 제안
-  - 기본 limit 10, 최대 100
-  - LIKE Wildcard 문자 Escape
-- API 문서
-  - `GET /api/docs`
-  - `GET /api/docs/openapi.json`
-  - `openapi/openapi.json`
-  - Swagger Asset 허용 목록 및 보안 Header
+- PHP 8.4, Symfony Routing/HttpFoundation 7.4, Monolog 3, PDO/MariaDB 기반 Foundation
+- Controller → Service → Repository → PDO 구조
+- 중앙 예외 처리와 공통 성공·목록·오류 응답
+- Swagger UI와 OpenAPI 3.1
+- 앱 요구사항 P0/P1/P2 API 45개
+  - SNS 로그인·토큰 갱신·로그아웃
+  - 카테고리·서비스·지역·브랜드
+  - 업체 검색·상세
+  - 작업 사례 목록·상세
+  - 리뷰 목록·요약·작성·내 리뷰
+  - 찜 목록·추가·삭제
+  - 문의 작성·목록·상세
+  - 프로필 조회·수정·탈퇴·활동 개수
+  - 미디어 업로드 요청·완료
+  - 최근 본 업체
+  - 알림·사용자 설정·푸시 기기
+  - FAQ
+  - 광고 조회·노출·클릭
+  - 앱 실행 설정
+- 기존 보조 API
+  - `POST /api/v1/events`
+  - `GET /api/v1/search/suggestions`
+- Cafe24 로컬 저장소 업로드용 `PUT /api/v1/media/uploads/{mediaId}`
+- OpenAPI 총 48개 operation
+- 기본 Seed 데이터와 재실행 가능한 `composer db:seed`
+  - 카테고리 21개(상위 8개, 하위 13개)
+  - 서비스 18개와 카테고리-서비스 조합
+  - 전국 시·도 및 서울 자치구 지역 42개
+  - 브랜드 20개
+  - FAQ 카테고리 6개와 FAQ 11개
+  - 개발용 데모 업체 3개와 작업 사례 4개
+- 앱 기능용 DB Schema
+  - 리뷰 태그·도움돼요·멱등성
+  - 미디어 업로드
+  - 문의·답변·첨부
+  - 최근 본 업체·알림·사용자 설정·푸시 기기
+  - FAQ·광고·광고 이벤트
+- 보안 처리
+  - PDO Prepared Statement와 Identifier Whitelist
+  - Access/Refresh Token hash 저장과 Refresh 회전
+  - SNS Provider ID 직접 신뢰 금지
+  - 업로드 크기·MIME·이미지 디코딩 검증
+  - 리뷰 `Idempotency-Key` 재시도 및 충돌 검증
+  - 찜 추가·삭제 멱등 처리와 평판 수 동기 갱신
+  - 리뷰 작성과 평판 통계 동기 Transaction
+
+## Migration 상태
+
+```text
+[applied] 001_initial_schema
+[applied] 002_add_reputation_schema
+[applied] 003_add_app_api_schema
+[applied] 004_add_review_idempotency
+```
 
 ## 검증 상태
 
@@ -91,73 +70,47 @@ composer test
 → Reference API tests passed.
 → Event API tests passed.
 → Search API tests passed.
+→ Public content API tests passed.
 → API documentation tests passed.
-
-composer validate --strict
-→ valid
-
-composer audit
-→ No security vulnerability advisories found.
 
 composer test:database
 → Database schema tests passed.
+→ Public repository integration tests passed.
+→ App API integration tests passed.
 
-composer db:status
-→ [applied] 001_initial_schema
-→ [applied] 002_add_reputation_schema
+composer test:seed
+→ Seed data tests passed.
+
+composer validate --strict
+→ valid
 ```
 
-로컬 PHP는 8.4.25, Composer는 2.10.3에서 검증했다.
+실행 중인 로컬 서버의 `GET /api/docs/openapi.json`에서도 48개 operation을 확인했다. 인증 없는 `GET /api/v1/me`는 401, FAQ는 200, 설정되지 않은 SNS 로그인은 503을 반환하는 것을 실제 HTTP로 검증했다.
 
-## 아직 구현하지 않은 항목
+## 운영 설정이 필요한 항목
 
-- 나머지 Core Domain
-- 나머지 Repository/Service/Controller 구현
-- Reference Seed Data
-- 모바일 API 정의서 기준 Business 검색 Filter·정렬 및 전체 Summary/Detail DTO
-- Reputation 및 Review API
-- 통합 검색 본문, SNS Auth, Favorite, Admin, Mobile, Public SEO Web
+- Kakao/Naver/Google/Apple Provider credential 검증 구현체 및 운영 자격 증명
+- Access/Refresh Token TTL
+- 공개 API 기준 URL과 이미지 최대 용량
+- 광고 추적 서명 Secret
+- 앱 최소·최신 버전, 점검 메시지, 고객센터·약관 URL
+- 공개 이미지 조회 URL/변환 정책
 
-## 다음 작업
+이 값이 없는 기능은 임의의 운영 정책이나 가짜 인증을 만들지 않고 명시적인 `503` 오류를 반환한다. 공개 이미지 URL 정책이 확정되기 전까지 조회 응답의 이미지 URL은 `null` 또는 빈 배열이다.
 
-Reference API 4종의 코드와 OpenAPI 계약이 완료됐다. 실제 초기 데이터는 서비스 분류값이 확정된 뒤 Seed로 추가한다.
+## 호환성 메모
 
-Business 검색 Query와 이미지 외 상세 DTO는 모바일 API 정의서 기준으로 확장했다. 공개 이미지 URL 정책 보류 결정에 따라 thumbnail, workCasePreview 및 Work Case 이미지 응답은 구현을 보류한다. 다음 작업은 통합 검색 본문 또는 인증 정책 확정 후 SNS Auth이다.
+기존 `/api/v1` 응답의 `success`, `data`, `meta` 및 page/perPage 계약을 깨지 않기 위해 앱 문서의 cursor 예시는 `page`, `perPage`와 `limit` 별칭으로 제공한다. 업체 검색은 `query`/`latitude`/`longitude` 별칭도 지원한다.
 
-```text
-GET /api/v1/businesses
-GET /api/v1/businesses/{businessId}
-```
-
-## 로컬 DB 설정
-
-`config/database.local.php`가 없다면 다음 파일을 복사한 뒤 접속 정보를 입력한다.
-
-```text
-config/database.local.php.example
-→ config/database.local.php
-```
-
-실제 접속 정보와 비밀번호는 Git에 포함하지 않는다.
+## 로컬 실행
 
 ```bash
-composer db:check
-composer db:status
 composer db:migrate
-composer test:database
-```
-
-## 폴더 이동
-
-프로젝트 코드에는 기존 절대 경로가 저장되어 있지 않다. 새 위치에서 다음을 실행한다.
-
-```bash
-composer install --prefer-dist
+composer db:seed
 composer test
+composer test:database
+composer test:seed
+composer serve
 ```
 
-외장 저장장치에서 설치한 기존 `vendor/`에는 macOS AppleDouble 메타데이터가 남을 수 있으므로, APFS 위치로 이동한 뒤 `vendor/`를 새로 설치하는 것을 권장한다.
-
-현재 APFS 경로에서 `composer test`, `composer validate --strict`, `composer audit` 통과를 확인했다.
-
-2026-09-16 현재 로컬 MariaDB가 중지되어 Business 및 Reference Repository의 실제 DB Query 재검증은 보류됐으며, DB를 사용하지 않는 API Contract Test는 통과했다.
+Swagger UI: `http://127.0.0.1:8080/api/docs`

@@ -73,7 +73,7 @@ $referenceController = new ReferenceController(
             return [];
         }
 
-        public function getRegions(?int $parentId, ?int $level): array
+        public function getRegions(?int $parentId, ?int $level, ?string $keyword): array
         {
             return [];
         }
@@ -104,6 +104,16 @@ $businessController = new BusinessController(
             public function activeCategoryServiceCombinationExists(int $categoryId, int $serviceId): bool
             {
                 return true;
+            }
+
+            public function findPublicSummaryRelations(array $businessIds): array
+            {
+                return ['locations' => [], 'categories' => [], 'services' => [], 'brands' => [], 'verifiedBusinessIds' => []];
+            }
+
+            public function findPublicByIds(array $businessIds, string $publishedAt): array
+            {
+                return [];
             }
 
             public function findPublicDetailById(int $id, string $publishedAt): ?array

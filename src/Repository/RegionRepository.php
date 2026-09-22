@@ -15,7 +15,7 @@ final class RegionRepository
     /**
      * @return list<array<string, mixed>>
      */
-    public function findActive(?int $parentId, ?int $level): array
+    public function findActive(?int $parentId, ?int $level, ?string $keyword): array
     {
         $conditions = ['regions.status = :status'];
         $parameters = ['status' => 'ACTIVE'];
@@ -28,6 +28,11 @@ final class RegionRepository
         if ($level !== null) {
             $conditions[] = 'regions.level = :level';
             $parameters['level'] = $level;
+        }
+
+        if ($keyword !== null) {
+            $conditions[] = "regions.name LIKE :keyword ESCAPE '!'";
+            $parameters['keyword'] = SqlLikePattern::contains($keyword);
         }
 
         $statement = $this->connection->prepare(sprintf(

@@ -22,6 +22,24 @@ interface BusinessReadRepository
         array $criteria = [],
     ): array;
 
+    /**
+     * @param list<int> $businessIds
+     * @return array{
+     *     locations: list<array<string, mixed>>,
+     *     categories: list<array<string, mixed>>,
+     *     services: list<array<string, mixed>>,
+     *     brands: list<array<string, mixed>>,
+     *     verifiedBusinessIds: list<int>
+     * }
+     */
+    public function findPublicSummaryRelations(array $businessIds): array;
+
+    /**
+     * @param list<int> $businessIds
+     * @return list<array<string, mixed>>
+     */
+    public function findPublicByIds(array $businessIds, string $publishedAt): array;
+
     public function activeCategoryServiceCombinationExists(int $categoryId, int $serviceId): bool;
 
     /**

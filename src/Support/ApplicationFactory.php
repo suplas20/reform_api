@@ -4,24 +4,58 @@ declare(strict_types=1);
 
 namespace App\Support;
 
+use App\Auth\UnavailableSocialIdentityVerifier;
 use App\Controller\Api\ApiDocumentationController;
+use App\Controller\Api\V1\AdController;
+use App\Controller\Api\V1\AppConfigController;
+use App\Controller\Api\V1\AuthController;
 use App\Controller\Api\V1\BusinessController;
 use App\Controller\Api\V1\EventController;
+use App\Controller\Api\V1\FavoriteController;
+use App\Controller\Api\V1\HelpController;
+use App\Controller\Api\V1\InquiryController;
+use App\Controller\Api\V1\MeController;
+use App\Controller\Api\V1\MediaController;
 use App\Controller\Api\V1\ReferenceController;
+use App\Controller\Api\V1\ReviewController;
 use App\Controller\Api\V1\SearchController;
+use App\Controller\Api\V1\UserActivityController;
+use App\Controller\Api\V1\WorkCaseController;
 use App\Database\ConnectionFactory;
+use App\Database\TransactionManager;
 use App\Http\Application;
 use App\Http\ExceptionHandler;
 use App\Repository\BrandRepository;
+use App\Repository\AdRepository;
+use App\Repository\AuthRepository;
 use App\Repository\BusinessRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\EventLogRepository;
+use App\Repository\FavoriteRepository;
+use App\Repository\HelpRepository;
+use App\Repository\InquiryRepository;
+use App\Repository\MediaRepository;
 use App\Repository\RegionRepository;
+use App\Repository\ReviewRepository;
 use App\Repository\ServiceRepository;
+use App\Repository\UserActivityRepository;
+use App\Repository\UserRepository;
+use App\Repository\WorkCaseRepository;
 use App\Service\BusinessService;
+use App\Service\AdService;
+use App\Service\AppConfigService;
+use App\Service\AuthService;
 use App\Service\EventService;
+use App\Service\FavoriteService;
+use App\Service\HelpService;
+use App\Service\InquiryService;
+use App\Service\MediaService;
 use App\Service\ReferenceService;
+use App\Service\ReviewService;
 use App\Service\SearchService;
+use App\Service\UserActivityService;
+use App\Service\UserService;
+use App\Service\WorkCaseService;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
@@ -43,6 +77,7 @@ final class ApplicationFactory
 
         $logger = self::createLogger($servicesConfig);
         $connection = (new ConnectionFactory($databaseConfig))->connection();
+        $transactionManager = new TransactionManager($connection);
         $categoryRepository = new CategoryRepository($connection);
         $serviceRepository = new ServiceRepository($connection);
         $regionRepository = new RegionRepository($connection);
@@ -66,6 +101,55 @@ final class ApplicationFactory
             $brandRepository,
         );
         $searchController = new SearchController($searchService);
+        $workCaseController = new WorkCaseController(
+            new WorkCaseService(new WorkCaseRepository($connection)),
+        );
+        $reviewRepository = new ReviewRepository($connection);
+        $authService = new AuthService(
+            new AuthRepository($connection),
+            new UnavailableSocialIdentityVerifier(),
+            $transactionManager,
+            (int) $servicesConfig['auth']['access_ttl_seconds'],
+            (int) $servicesConfig['auth']['refresh_ttl_seconds'],
+        );
+        $reviewController = new ReviewController(
+            new ReviewService($reviewRepository, $reviewRepository, $transactionManager),
+            $authService,
+        );
+        $authController = new AuthController($authService);
+        $meController = new MeController($authService, new UserService(new UserRepository($connection)));
+        $favoriteController = new FavoriteController(
+            $authService,
+            new FavoriteService(
+                new FavoriteRepository($connection),
+                $businessRepository,
+                $businessService,
+                $transactionManager,
+            ),
+        );
+        $inquiryController = new InquiryController(
+            $authService,
+            new InquiryService(new InquiryRepository($connection), $businessRepository, $transactionManager),
+        );
+        $mediaController = new MediaController(
+            $authService,
+            new MediaService(
+                new MediaRepository($connection),
+                (string) $servicesConfig['storage']['uploads_path'],
+                (string) $servicesConfig['storage']['public_base_url'],
+                (int) $servicesConfig['storage']['maximum_image_bytes'],
+            ),
+        );
+        $userActivityController = new UserActivityController(
+            $authService,
+            new UserActivityService(new UserActivityRepository($connection), $businessRepository, $businessService),
+        );
+        $helpController = new HelpController(new HelpService(new HelpRepository($connection)));
+        $adController = new AdController(
+            $authService,
+            new AdService(new AdRepository($connection), (string) $servicesConfig['ads']['tracking_secret']),
+        );
+        $appConfigController = new AppConfigController(new AppConfigService($servicesConfig['mobile_app']));
         $apiDocumentationController = new ApiDocumentationController(
             $rootPath . '/openapi/openapi.json',
             $rootPath . '/vendor/swagger-api/swagger-ui/dist',
@@ -77,6 +161,17 @@ final class ApplicationFactory
             $eventController,
             $searchController,
             $apiDocumentationController,
+            $workCaseController,
+            $reviewController,
+            $authController,
+            $meController,
+            $favoriteController,
+            $inquiryController,
+            $mediaController,
+            $userActivityController,
+            $helpController,
+            $adController,
+            $appConfigController,
         );
         $matcher = new UrlMatcher($routes, new RequestContext());
 
@@ -125,6 +220,17 @@ final class ApplicationFactory
         EventController $eventController,
         SearchController $searchController,
         ApiDocumentationController $apiDocumentationController,
+        WorkCaseController $workCaseController,
+        ReviewController $reviewController,
+        AuthController $authController,
+        MeController $meController,
+        FavoriteController $favoriteController,
+        InquiryController $inquiryController,
+        MediaController $mediaController,
+        UserActivityController $userActivityController,
+        HelpController $helpController,
+        AdController $adController,
+        AppConfigController $appConfigController,
     ): RouteCollection
     {
         $routes = new RouteCollection();
@@ -142,6 +248,17 @@ final class ApplicationFactory
             $eventController,
             $searchController,
             $apiDocumentationController,
+            $workCaseController,
+            $reviewController,
+            $authController,
+            $meController,
+            $favoriteController,
+            $inquiryController,
+            $mediaController,
+            $userActivityController,
+            $helpController,
+            $adController,
+            $appConfigController,
         );
 
         foreach (['web.php', 'admin.php'] as $routeFile) {

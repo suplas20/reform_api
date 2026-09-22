@@ -29,18 +29,18 @@ final class BusinessController
             intdiv(PHP_INT_MAX, self::MAX_PER_PAGE),
         );
         $perPage = $this->paginationValue(
-            $query['perPage'] ?? null,
+            $query['perPage'] ?? $query['limit'] ?? null,
             self::DEFAULT_PER_PAGE,
             self::MAX_PER_PAGE,
         );
         $criteria = [
-            'keyword' => $this->optionalString($query['keyword'] ?? null),
+            'keyword' => $this->optionalString($query['keyword'] ?? $query['query'] ?? null),
             'categoryId' => $this->optionalPositiveInt($query['categoryId'] ?? null),
             'serviceId' => $this->optionalPositiveInt($query['serviceId'] ?? null),
             'regionId' => $this->optionalPositiveInt($query['regionId'] ?? null),
             'brandId' => $this->optionalPositiveInt($query['brandId'] ?? null),
-            'lat' => $this->optionalFloat($query['lat'] ?? null, -90.0, 90.0),
-            'lng' => $this->optionalFloat($query['lng'] ?? null, -180.0, 180.0),
+            'lat' => $this->optionalFloat($query['lat'] ?? $query['latitude'] ?? null, -90.0, 90.0),
+            'lng' => $this->optionalFloat($query['lng'] ?? $query['longitude'] ?? null, -180.0, 180.0),
             'radiusKm' => $this->optionalFloat($query['radiusKm'] ?? null, 0.000001, PHP_FLOAT_MAX),
             'verifiedOnly' => $this->optionalBoolean($query['verifiedOnly'] ?? null) ?? false,
             'sort' => $this->sort($query['sort'] ?? null),

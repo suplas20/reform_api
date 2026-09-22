@@ -57,6 +57,16 @@ $businessController = new BusinessController(
                 return true;
             }
 
+            public function findPublicSummaryRelations(array $businessIds): array
+            {
+                return ['locations' => [], 'categories' => [], 'services' => [], 'brands' => [], 'verifiedBusinessIds' => []];
+            }
+
+            public function findPublicByIds(array $businessIds, string $publishedAt): array
+            {
+                return [];
+            }
+
             public function findPublicDetailById(int $id, string $publishedAt): ?array
             {
                 return null;
@@ -94,7 +104,7 @@ $referenceController = new ReferenceController(
             return [];
         }
 
-        public function getRegions(?int $parentId, ?int $level): array
+        public function getRegions(?int $parentId, ?int $level, ?string $keyword): array
         {
             return [];
         }
@@ -202,6 +212,90 @@ assertApiDocumentation(
 assertApiDocumentation(
     isset($specification['paths']['/api/v1/search/suggestions']['get']),
     'Search suggestions operation is missing from OpenAPI.',
+);
+foreach ([
+    '/api/v1/work-cases',
+    '/api/v1/work-cases/{id}',
+    '/api/v1/businesses/{businessId}/reviews',
+    '/api/v1/businesses/{businessId}/review-summary',
+] as $publicContentPath) {
+    assertApiDocumentation(
+        isset($specification['paths'][$publicContentPath]['get']),
+        sprintf('Public content operation is missing from OpenAPI: %s', $publicContentPath),
+    );
+}
+
+$requiredAppOperations = [
+    ['POST', '/api/v1/auth/social-login'],
+    ['POST', '/api/v1/auth/refresh'],
+    ['POST', '/api/v1/auth/logout'],
+    ['GET', '/api/v1/categories'],
+    ['GET', '/api/v1/services'],
+    ['GET', '/api/v1/regions'],
+    ['GET', '/api/v1/brands'],
+    ['GET', '/api/v1/businesses'],
+    ['GET', '/api/v1/businesses/{id}'],
+    ['GET', '/api/v1/work-cases'],
+    ['GET', '/api/v1/work-cases/{id}'],
+    ['GET', '/api/v1/businesses/{businessId}/reviews'],
+    ['GET', '/api/v1/businesses/{businessId}/review-summary'],
+    ['GET', '/api/v1/me/reviews'],
+    ['POST', '/api/v1/businesses/{businessId}/reviews'],
+    ['GET', '/api/v1/me/favorites'],
+    ['PUT', '/api/v1/me/favorites/{businessId}'],
+    ['DELETE', '/api/v1/me/favorites/{businessId}'],
+    ['GET', '/api/v1/me/inquiries'],
+    ['POST', '/api/v1/businesses/{businessId}/inquiries'],
+    ['GET', '/api/v1/me/inquiries/{inquiryId}'],
+    ['GET', '/api/v1/me'],
+    ['PATCH', '/api/v1/me'],
+    ['DELETE', '/api/v1/me'],
+    ['GET', '/api/v1/me/activity-counts'],
+    ['POST', '/api/v1/media/presigned-uploads'],
+    ['POST', '/api/v1/media/complete'],
+    ['GET', '/api/v1/me/recent-businesses'],
+    ['PUT', '/api/v1/me/recent-businesses/{businessId}'],
+    ['DELETE', '/api/v1/me/recent-businesses'],
+    ['GET', '/api/v1/me/notifications'],
+    ['GET', '/api/v1/me/notifications/{notificationId}'],
+    ['PATCH', '/api/v1/me/notifications/{notificationId}/read'],
+    ['PATCH', '/api/v1/me/notifications/read-all'],
+    ['GET', '/api/v1/me/settings'],
+    ['PATCH', '/api/v1/me/settings'],
+    ['GET', '/api/v1/help/categories'],
+    ['GET', '/api/v1/help/faqs'],
+    ['GET', '/api/v1/help/faqs/{faqId}'],
+    ['PUT', '/api/v1/me/devices/{deviceId}'],
+    ['DELETE', '/api/v1/me/devices/{deviceId}'],
+    ['GET', '/api/v1/ads'],
+    ['POST', '/api/v1/ads/{adId}/impressions'],
+    ['POST', '/api/v1/ads/{adId}/clicks'],
+    ['GET', '/api/v1/app-config'],
+];
+
+assertApiDocumentation(
+    count($requiredAppOperations) === 45,
+    'The app API requirements must contain exactly 45 operations.',
+);
+
+foreach ($requiredAppOperations as [$method, $path]) {
+    assertApiDocumentation(
+        isset($specification['paths'][$path][strtolower($method)]),
+        sprintf('Required app operation is missing from OpenAPI: %s %s', $method, $path),
+    );
+}
+
+$documentedOperationCount = 0;
+
+foreach ($specification['paths'] as $operations) {
+    foreach (['get', 'post', 'put', 'patch', 'delete'] as $method) {
+        $documentedOperationCount += isset($operations[$method]) ? 1 : 0;
+    }
+}
+
+assertApiDocumentation(
+    $documentedOperationCount === 48,
+    sprintf('OpenAPI must expose 48 operations; got %d.', $documentedOperationCount),
 );
 
 $assetRequest = Request::create('/api/docs/assets/swagger-ui.css', 'GET');

@@ -19,7 +19,7 @@ interface ReferenceDataProvider
     /**
      * @return list<array<string, mixed>>
      */
-    public function getRegions(?int $parentId, ?int $level): array;
+    public function getRegions(?int $parentId, ?int $level, ?string $keyword): array;
 
     /**
      * @return array{

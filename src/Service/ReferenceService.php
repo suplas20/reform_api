@@ -47,6 +47,7 @@ final class ReferenceService implements ReferenceDataProvider
         return array_map(
             static fn (array $service): array => [
                 'id' => (int) $service['id'],
+                'categoryId' => $categoryId,
                 'name' => (string) $service['name'],
                 'slug' => (string) $service['slug'],
                 'description' => self::nullableString($service['description']),
@@ -56,7 +57,7 @@ final class ReferenceService implements ReferenceDataProvider
         );
     }
 
-    public function getRegions(?int $parentId, ?int $level): array
+    public function getRegions(?int $parentId, ?int $level, ?string $keyword): array
     {
         return array_map(
             static fn (array $region): array => [
@@ -68,7 +69,7 @@ final class ReferenceService implements ReferenceDataProvider
                 'level' => (int) $region['level'],
                 'sortOrder' => (int) $region['sort_order'],
             ],
-            $this->regionRepository->findActive($parentId, $level),
+            $this->regionRepository->findActive($parentId, $level, $keyword),
         );
     }
 

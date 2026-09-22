@@ -96,6 +96,35 @@ $repository = new class implements BusinessReadRepository {
         return !($categoryId === 1 && $serviceId === 999);
     }
 
+    public function findPublicSummaryRelations(array $businessIds): array
+    {
+        return [
+            'locations' => [[
+                'business_id' => 123,
+                'region_id' => 10,
+                'road_address' => '서울 강남구 테스트로 1',
+                'latitude' => '37.5000000',
+                'longitude' => '127.0300000',
+                'is_primary' => 1,
+                'id' => 1,
+            ]],
+            'categories' => [[
+                'business_id' => 123,
+                'category_id' => 1,
+                'is_primary' => 1,
+                'sort_order' => 1,
+            ]],
+            'services' => [['business_id' => 123, 'service_id' => 10]],
+            'brands' => [['business_id' => 123, 'brand_id' => 100]],
+            'verifiedBusinessIds' => [123],
+        ];
+    }
+
+    public function findPublicByIds(array $businessIds, string $publishedAt): array
+    {
+        return $this->findPublicPage($publishedAt, 100, 0);
+    }
+
     public function findPublicDetailById(int $id, string $publishedAt): ?array
     {
         $this->validatePublishedAt($publishedAt);
@@ -235,7 +264,7 @@ $referenceController = new ReferenceController(
             return [];
         }
 
-        public function getRegions(?int $parentId, ?int $level): array
+        public function getRegions(?int $parentId, ?int $level, ?string $keyword): array
         {
             return [];
         }
@@ -295,6 +324,10 @@ assertBusinessApiValue(2, count($listPayload['data']), 'Business list item count
 assertBusinessApiValue(123, $listPayload['data'][0]['id'], 'First Business list item is invalid.');
 assertBusinessApiValue(4.8, $listPayload['data'][0]['reputation']['internal']['rating'], 'List reputation is invalid.');
 assertBusinessApiValue('GOOGLE', $listPayload['data'][0]['reputation']['external'][0]['provider'], 'List external reputation is invalid.');
+assertBusinessApiValue(1, $listPayload['data'][0]['categoryId'], 'App category summary is invalid.');
+assertBusinessApiValue([10], $listPayload['data'][0]['serviceIds'], 'App service summary is invalid.');
+assertBusinessApiValue('서울 강남구 테스트로 1', $listPayload['data'][0]['address'], 'App address summary is invalid.');
+assertBusinessApiValue(true, $listPayload['data'][0]['verified'], 'App verification summary is invalid.');
 assertBusinessApiValue(1, $listPayload['meta']['page'], 'Default page is invalid.');
 assertBusinessApiValue(20, $listPayload['meta']['perPage'], 'Default perPage is invalid.');
 assertBusinessApiValue(2, $listPayload['meta']['total'], 'Business total is invalid.');
@@ -327,6 +360,19 @@ assertBusinessApiValue(127.03, $repository->lastCriteria['lng'], 'Longitude filt
 assertBusinessApiValue(5.0, $repository->lastCriteria['radiusKm'], 'Radius filter is invalid.');
 assertBusinessApiValue(true, $repository->lastCriteria['verifiedOnly'], 'Verification filter is invalid.');
 assertBusinessApiValue('distance', $repository->lastCriteria['sort'], 'Sort filter is invalid.');
+
+$appAliasResponse = $application->handle(
+    Request::create(
+        '/api/v1/businesses?query=%EA%B0%80%EC%A3%BD&latitude=37.5&longitude=127.03&limit=1',
+        'GET',
+    ),
+);
+$appAliasPayload = json_decode($appAliasResponse->getContent(), true, flags: JSON_THROW_ON_ERROR);
+assertBusinessApiValue(200, $appAliasResponse->getStatusCode(), 'App query aliases must be accepted.');
+assertBusinessApiValue('가죽', $repository->lastCriteria['keyword'], 'Query alias is invalid.');
+assertBusinessApiValue(37.5, $repository->lastCriteria['lat'], 'Latitude alias is invalid.');
+assertBusinessApiValue(127.03, $repository->lastCriteria['lng'], 'Longitude alias is invalid.');
+assertBusinessApiValue(1, $appAliasPayload['meta']['perPage'], 'Limit alias is invalid.');
 
 foreach ([
     '/api/v1/businesses?page=0',
