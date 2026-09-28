@@ -630,24 +630,33 @@ final class BusinessRepository implements BusinessReadRepository, BusinessSugges
             );
         }
 
-        foreach ([
-            'regionId' => ['business_locations', 'region_id'],
-            'brandId' => ['business_brands', 'brand_id'],
-        ] as $key => [$table, $column]) {
-            if (($criteria[$key] ?? null) === null) {
-                continue;
-            }
-
-            $parameter = $prefix . '_' . $column;
+        if (($criteria['regionId'] ?? null) !== null) {
             $conditions[] = sprintf(
-                'AND EXISTS (SELECT 1 FROM %s WHERE %s.business_id = businesses.id AND %s.%s = :%s)',
-                $table,
-                $table,
-                $table,
-                $column,
-                $parameter,
+                <<<'SQL'
+                    AND EXISTS (
+                        SELECT 1
+                        FROM business_locations
+                        INNER JOIN regions AS location_regions
+                            ON location_regions.id = business_locations.region_id
+                        WHERE business_locations.business_id = businesses.id
+                          AND (
+                              business_locations.region_id = :%1$s_region_id
+                              OR location_regions.parent_id = :%1$s_parent_region_id
+                          )
+                    )
+                    SQL,
+                $prefix,
             );
-            $parameters[$parameter] = $criteria[$key];
+            $parameters[$prefix . '_region_id'] = $criteria['regionId'];
+            $parameters[$prefix . '_parent_region_id'] = $criteria['regionId'];
+        }
+
+        if (($criteria['brandId'] ?? null) !== null) {
+            $conditions[] = sprintf(
+                'AND EXISTS (SELECT 1 FROM business_brands WHERE business_brands.business_id = businesses.id AND business_brands.brand_id = :%s_brand_id)',
+                $prefix,
+            );
+            $parameters[$prefix . '_brand_id'] = $criteria['brandId'];
         }
 
         if (($criteria['verifiedOnly'] ?? false) === true) {

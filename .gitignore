@@ -4,6 +4,7 @@
 /vendor/
 
 /config/database.local.php
+/config/public_data.local.php
 
 /storage/logs/*
 !/storage/logs/.gitkeep

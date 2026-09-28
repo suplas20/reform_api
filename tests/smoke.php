@@ -6,6 +6,7 @@ use App\Exception\ValidationException;
 use App\Http\ApiResponse;
 use App\Http\Application;
 use App\Http\ExceptionHandler;
+use App\Http\Middleware\CorsMiddleware;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\Request;
@@ -75,14 +76,52 @@ $logger->pushHandler(new NullHandler());
 $application = new Application(
     new UrlMatcher($routes, new RequestContext()),
     new ExceptionHandler($logger),
+    new CorsMiddleware(['http://localhost:8081']),
 );
 
-$successResponse = $application->handle(Request::create('/api/v1/smoke', 'GET'));
+$successResponse = $application->handle(Request::create(
+    '/api/v1/smoke',
+    'GET',
+    server: ['HTTP_ORIGIN' => 'http://localhost:8081'],
+));
 $successPayload = json_decode($successResponse->getContent(), true, flags: JSON_THROW_ON_ERROR);
 
 assertSameValue(200, $successResponse->getStatusCode(), 'The success route must return HTTP 200.');
 assertSameValue(true, $successPayload['success'], 'The success response contract is invalid.');
 assertSameValue('/api/v1/smoke', $successPayload['data']['path'], 'The request path was not passed.');
+assertSameValue(
+    'http://localhost:8081',
+    $successResponse->headers->get('Access-Control-Allow-Origin'),
+    'Allowed API origins must receive the CORS response header.',
+);
+
+$preflightResponse = $application->handle(Request::create(
+    '/api/v1/smoke',
+    'OPTIONS',
+    server: [
+        'HTTP_ORIGIN' => 'http://localhost:8081',
+        'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'GET',
+        'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Authorization, Content-Type',
+    ],
+));
+
+assertSameValue(204, $preflightResponse->getStatusCode(), 'Valid CORS preflight requests must return HTTP 204.');
+assertSameValue(
+    'http://localhost:8081',
+    $preflightResponse->headers->get('Access-Control-Allow-Origin'),
+    'Valid preflight responses must echo the allowed Origin.',
+);
+
+$disallowedOriginResponse = $application->handle(Request::create(
+    '/api/v1/smoke',
+    'GET',
+    server: ['HTTP_ORIGIN' => 'https://untrusted.example'],
+));
+assertSameValue(
+    null,
+    $disallowedOriginResponse->headers->get('Access-Control-Allow-Origin'),
+    'Disallowed origins must not receive CORS permission.',
+);
 
 $listResponse = ApiResponse::list([], page: 1, perPage: 20, total: 0, totalPages: 0);
 $listPayload = json_decode($listResponse->getContent(), true, flags: JSON_THROW_ON_ERROR);

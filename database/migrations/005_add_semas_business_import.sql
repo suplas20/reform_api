@@ -1,0 +1,62 @@
+CREATE TABLE semas_business_imports (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    business_id BIGINT NULL,
+    external_id VARCHAR(255) NOT NULL,
+    business_name VARCHAR(200) NOT NULL,
+    branch_name VARCHAR(200) NULL,
+    industry_large_code VARCHAR(20) NOT NULL,
+    industry_large_name VARCHAR(100) NOT NULL,
+    industry_medium_code VARCHAR(20) NOT NULL,
+    industry_medium_name VARCHAR(100) NOT NULL,
+    industry_small_code VARCHAR(20) NOT NULL,
+    industry_small_name VARCHAR(100) NOT NULL,
+    standard_industry_code VARCHAR(30) NULL,
+    standard_industry_name VARCHAR(200) NULL,
+    province_code VARCHAR(20) NOT NULL,
+    province_name VARCHAR(100) NOT NULL,
+    district_code VARCHAR(20) NOT NULL,
+    district_name VARCHAR(100) NOT NULL,
+    administrative_dong_code VARCHAR(30) NULL,
+    administrative_dong_name VARCHAR(100) NULL,
+    legal_dong_code VARCHAR(30) NULL,
+    legal_dong_name VARCHAR(100) NULL,
+    lot_number_code VARCHAR(40) NULL,
+    lot_number_address VARCHAR(300) NULL,
+    road_name_code VARCHAR(30) NULL,
+    road_name VARCHAR(200) NULL,
+    building_management_number VARCHAR(40) NULL,
+    building_name VARCHAR(200) NULL,
+    road_address VARCHAR(300) NULL,
+    postal_code VARCHAR(20) NULL,
+    dong_number VARCHAR(50) NULL,
+    floor_number VARCHAR(50) NULL,
+    unit_number VARCHAR(50) NULL,
+    longitude DECIMAL(12,9) NULL,
+    latitude DECIMAL(11,9) NULL,
+    data_reference_month CHAR(6) NULL,
+    classification_status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+    classified_at DATETIME NULL,
+    first_collected_at DATETIME NOT NULL,
+    last_collected_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_semas_business_imports_external_id (external_id),
+    INDEX idx_semas_business_imports_business_id (business_id),
+    INDEX idx_semas_business_imports_industry_small_code (industry_small_code),
+    INDEX idx_semas_business_imports_classification_status (classification_status),
+    CONSTRAINT fk_semas_business_imports_business
+        FOREIGN KEY (business_id) REFERENCES businesses (id)
+        ON UPDATE RESTRICT ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE semas_business_import_keywords (
+    import_id BIGINT NOT NULL,
+    keyword VARCHAR(100) NOT NULL,
+    created_at DATETIME NOT NULL,
+    PRIMARY KEY (import_id, keyword),
+    INDEX idx_semas_business_import_keywords_keyword (keyword),
+    CONSTRAINT fk_semas_business_import_keywords_import
+        FOREIGN KEY (import_id) REFERENCES semas_business_imports (id)
+        ON UPDATE RESTRICT ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

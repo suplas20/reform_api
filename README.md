@@ -30,9 +30,11 @@ DB_PORT
 DB_DATABASE
 DB_USERNAME
 DB_PASSWORD
+DATA_GO_KR_SERVICE_KEY
 APP_ENV
 APP_DEBUG
 APP_TIMEZONE
+CORS_ALLOWED_ORIGINS
 LOG_LEVEL
 APP_BASE_URL
 UPLOAD_MAX_IMAGE_BYTES
@@ -49,6 +51,9 @@ TERMS_OF_SERVICE_URL
 PRIVACY_POLICY_URL
 OPEN_SOURCE_LICENSE_URL
 ```
+
+`CORS_ALLOWED_ORIGINS`는 쉼표로 구분한 허용 Origin 목록입니다. 로컬 환경의 기본값은
+`http://localhost:8081,http://127.0.0.1:8081,http://[::1]:8081`이며, 운영 환경에서는 실제 앱 웹 Origin을 명시해야 합니다.
 
 ## 검증
 
@@ -106,7 +111,48 @@ Schema 변경은 `database/migrations/`의 버전 관리 SQL 파일로만 기록
 002_add_reputation_schema
 003_add_app_api_schema
 004_add_review_idempotency
+005_add_semas_business_import
+006_add_korean_schema_comments
+007_publish_semas_businesses
 ```
+
+## 소상공인시장진흥공단 업체 수집
+
+[소상공인시장진흥공단 상가(상권)정보 API](https://www.data.go.kr/data/15012005/openapi.do)의
+업종별 상가업소 조회를 사용합니다. `S2 > S206 > S20601/S20602/S20603/S20699` 원본을 먼저
+`semas_business_imports`에 적재하고, 설정된 키워드로 분류한 결과를
+`semas_business_import_keywords`에 저장합니다. 매칭된 데이터만 기존 업체·주소·카테고리·서비스·출처
+테이블로 동기화됩니다. 키워드에 매칭된 외부 수집 업체는 `ACTIVE` 상태와 수집 시각의 공개일로 생성되어
+앱 업체 목록에 노출됩니다.
+
+인증키는 코드에 커밋하지 않습니다. 아래 파일을 만든 뒤 공공데이터포털의 **일반 인증키(Decoding)** 를
+입력합니다.
+
+```bash
+cp config/public_data.local.php.example config/public_data.local.php
+```
+
+또는 `DATA_GO_KR_SERVICE_KEY` 환경 변수를 사용할 수 있습니다. 대상 업종 코드와 키워드는
+`config/public_data.php`에서 관리하며, 로컬 파일에서 필요한 값만 재정의할 수 있습니다.
+
+Migration과 기준 Seed를 먼저 적용한 뒤 전체 작업을 실행합니다.
+
+```bash
+composer db:migrate
+composer db:seed:reference
+composer db:import:semas
+```
+
+세 단계를 나누어 실행하거나 중단 지점부터 재실행할 수도 있습니다.
+
+```bash
+composer db:import:semas:collect
+composer db:import:semas:classify
+composer db:import:semas:sync
+```
+
+수집은 상가업소번호 기준 Upsert 방식이며, 동일 명령을 다시 실행해도 업체가 중복 생성되지 않습니다.
+공유호스팅 HTTP 요청이나 상시 Worker에서는 실행하지 않고, 승인된 로컬/배포 유지보수 절차에서만 실행합니다.
 
 ## 로컬 서버
 
@@ -114,7 +160,7 @@ Schema 변경은 `database/migrations/`의 버전 관리 SQL 파일로만 기록
 composer serve
 ```
 
-기본 주소는 `http://127.0.0.1:8080`입니다.
+기본 주소는 `http://127.0.0.1:8080`이며, 개발 중 실제 모바일 기기에서도 접근할 수 있도록 모든 로컬 네트워크 인터페이스에 바인딩됩니다.
 
 `.docs/app_api/reform_app_api_requirements.md`의 P0/P1/P2 API 45개를 구현했습니다. 기존 이벤트·검색어 제안과 Cafe24 로컬 저장소용 업로드 PUT을 더해 OpenAPI에는 총 48개 operation이 등록되어 있습니다.
 

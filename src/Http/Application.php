@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http;
 
+use App\Http\Middleware\CorsMiddleware;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
@@ -16,12 +17,19 @@ final class Application
     public function __construct(
         private readonly UrlMatcherInterface $urlMatcher,
         private readonly ExceptionHandler $exceptionHandler,
+        private readonly ?CorsMiddleware $corsMiddleware = null,
     ) {
     }
 
     public function handle(Request $request): Response
     {
         try {
+            $preflightResponse = $this->corsMiddleware?->preflight($request);
+
+            if ($preflightResponse !== null) {
+                return $preflightResponse;
+            }
+
             $context = new RequestContext();
             $context->fromRequest($request);
             $this->urlMatcher->setContext($context);
@@ -41,9 +49,11 @@ final class Application
                 throw new UnexpectedValueException('Controllers must return a Response instance.');
             }
 
-            return $response;
+            return $this->corsMiddleware?->applyHeaders($request, $response) ?? $response;
         } catch (Throwable $exception) {
-            return $this->exceptionHandler->handle($request, $exception);
+            $response = $this->exceptionHandler->handle($request, $exception);
+
+            return $this->corsMiddleware?->applyHeaders($request, $response) ?? $response;
         }
     }
 }

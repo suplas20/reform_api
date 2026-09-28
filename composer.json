@@ -20,6 +20,7 @@
     "scripts": {
         "test": [
             "@php tests/smoke.php",
+            "@php tests/semas_import.php",
             "@php tests/business_api.php",
             "@php tests/reference_api.php",
             "@php tests/event_api.php",
@@ -33,6 +34,10 @@
         "db:seed": "@php bin/seed.php all",
         "db:seed:reference": "@php bin/seed.php reference",
         "db:seed:demo": "@php bin/seed.php demo",
+        "db:import:semas": "@php bin/import-semas-businesses.php all",
+        "db:import:semas:collect": "@php bin/import-semas-businesses.php collect",
+        "db:import:semas:classify": "@php bin/import-semas-businesses.php classify",
+        "db:import:semas:sync": "@php bin/import-semas-businesses.php sync",
         "test:seed": "@php tests/seed_data.php",
         "test:database": [
             "@php tests/database_schema.php",
@@ -41,7 +46,7 @@
         ],
         "serve": [
             "Composer\\Config::disableProcessTimeout",
-            "@php -S 127.0.0.1:8080 -t public"
+            "@php -S 0.0.0.0:8080 -t public"
         ]
     },
     "config": {

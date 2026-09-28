@@ -110,6 +110,8 @@ $expectedTables = [
     'regions',
     'schema_migrations',
     'search_logs',
+    'semas_business_import_keywords',
+    'semas_business_imports',
     'services',
     'review_images',
     'reviews',
@@ -172,6 +174,8 @@ $expectedDeleteRules = [
     'fk_review_tags_review' => 'CASCADE',
     'fk_reviews_business' => 'CASCADE',
     'fk_reviews_user' => 'CASCADE',
+    'fk_semas_business_import_keywords_import' => 'CASCADE',
+    'fk_semas_business_imports_business' => 'SET NULL',
     'fk_social_accounts_user' => 'CASCADE',
     'fk_user_favorites_business' => 'CASCADE',
     'fk_user_favorites_user' => 'CASCADE',
@@ -228,6 +232,55 @@ try {
         $storageStatement->fetchAll(PDO::FETCH_COLUMN),
         'Every table must use InnoDB and utf8mb4_unicode_ci.',
     );
+
+    $missingTableCommentsStatement = $connection->query(
+        <<<'SQL'
+            SELECT TABLE_NAME, TABLE_COMMENT
+            FROM information_schema.TABLES
+            WHERE TABLE_SCHEMA = DATABASE()
+              AND TABLE_TYPE = 'BASE TABLE'
+            SQL,
+    );
+
+    if ($missingTableCommentsStatement === false) {
+        throw new RuntimeException('Unable to inspect table comments.');
+    }
+
+    $invalidTableComments = [];
+
+    while ($row = $missingTableCommentsStatement->fetch()) {
+        $comment = trim((string) $row['TABLE_COMMENT']);
+
+        if ($comment === '' || preg_match('/[가-힣]/u', $comment) !== 1) {
+            $invalidTableComments[] = (string) $row['TABLE_NAME'];
+        }
+    }
+
+    assertSameList([], $invalidTableComments, 'Every table must have a Korean table comment.');
+
+    $missingColumnCommentsStatement = $connection->query(
+        <<<'SQL'
+            SELECT TABLE_NAME, COLUMN_NAME, COLUMN_COMMENT
+            FROM information_schema.COLUMNS
+            WHERE TABLE_SCHEMA = DATABASE()
+            SQL,
+    );
+
+    if ($missingColumnCommentsStatement === false) {
+        throw new RuntimeException('Unable to inspect column comments.');
+    }
+
+    $invalidColumnComments = [];
+
+    while ($row = $missingColumnCommentsStatement->fetch()) {
+        $comment = trim((string) $row['COLUMN_COMMENT']);
+
+        if ($comment === '' || preg_match('/[가-힣]/u', $comment) !== 1) {
+            $invalidColumnComments[] = sprintf('%s.%s', $row['TABLE_NAME'], $row['COLUMN_NAME']);
+        }
+    }
+
+    assertSameList([], $invalidColumnComments, 'Every column must have a Korean column comment.');
 
     $softDeleteStatement = $connection->query(
         <<<'SQL'
@@ -308,6 +361,24 @@ try {
             'idx_reviews_created_at',
             'idx_reviews_business_status',
             'uq_reviews_user_idempotency',
+        ],
+    );
+    assertRequiredIndexes(
+        $connection,
+        'semas_business_imports',
+        [
+            'uq_semas_business_imports_external_id',
+            'idx_semas_business_imports_business_id',
+            'idx_semas_business_imports_industry_small_code',
+            'idx_semas_business_imports_classification_status',
+        ],
+    );
+    assertRequiredIndexes(
+        $connection,
+        'semas_business_import_keywords',
+        [
+            'PRIMARY',
+            'idx_semas_business_import_keywords_keyword',
         ],
     );
 

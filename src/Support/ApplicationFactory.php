@@ -25,6 +25,7 @@ use App\Database\ConnectionFactory;
 use App\Database\TransactionManager;
 use App\Http\Application;
 use App\Http\ExceptionHandler;
+use App\Http\Middleware\CorsMiddleware;
 use App\Repository\BrandRepository;
 use App\Repository\AdRepository;
 use App\Repository\AuthRepository;
@@ -175,7 +176,11 @@ final class ApplicationFactory
         );
         $matcher = new UrlMatcher($routes, new RequestContext());
 
-        return new Application($matcher, new ExceptionHandler($logger));
+        return new Application(
+            $matcher,
+            new ExceptionHandler($logger),
+            new CorsMiddleware($appConfig['cors_allowed_origins']),
+        );
     }
 
     /**

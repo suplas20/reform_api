@@ -1,0 +1,10 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'semas' => [
+        // 공공데이터포털에서 발급된 일반 인증키(Decoding)를 입력합니다.
+        'service_key' => 'replace-with-data-go-kr-decoding-key',
+    ],
+];
