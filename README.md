@@ -82,6 +82,19 @@ http://127.0.0.1:8080/api/docs/openapi.json
 
 API 계약 원본은 `openapi/openapi.json`이며 API 변경과 같은 작업에서 함께 갱신합니다.
 
+### 목록 페이지네이션
+
+작업 사례, 리뷰, 문의, 찜, 최근 본 업체, 알림, FAQ 목록은 모두 페이지 번호 기반
+페이지네이션을 지원합니다. 무한 스크롤에서는 한 번에 최대 건수를 요청하지 말고 다음과 같이
+필요한 페이지를 순서대로 조회합니다.
+
+```text
+GET /api/v1/help/faqs?page=1&perPage=20
+```
+
+응답의 `meta.page`가 `meta.totalPages`보다 작을 때만 `page`를 1 증가시켜 다음 목록을
+요청합니다. `perPage` 기본값은 20, 최댓값은 100입니다.
+
 ## 데이터베이스
 
 ```bash

@@ -285,6 +285,41 @@ foreach ($requiredAppOperations as [$method, $path]) {
     );
 }
 
+foreach ([
+    '/api/v1/work-cases',
+    '/api/v1/businesses/{businessId}/reviews',
+    '/api/v1/me/reviews',
+    '/api/v1/me/favorites',
+    '/api/v1/me/inquiries',
+    '/api/v1/me/recent-businesses',
+    '/api/v1/me/notifications',
+    '/api/v1/help/faqs',
+] as $paginatedPath) {
+    $parameterNames = [];
+
+    foreach ($specification['paths'][$paginatedPath]['get']['parameters'] ?? [] as $parameter) {
+        if (isset($parameter['name'])) {
+            $parameterNames[] = $parameter['name'];
+            continue;
+        }
+
+        $parameterNames[] = match ($parameter['$ref'] ?? '') {
+            '#/components/parameters/Page' => 'page',
+            '#/components/parameters/PerPage' => 'perPage',
+            default => '',
+        };
+    }
+
+    assertApiDocumentation(
+        in_array('page', $parameterNames, true),
+        sprintf('Infinite-scroll operation must document page: GET %s', $paginatedPath),
+    );
+    assertApiDocumentation(
+        in_array('perPage', $parameterNames, true),
+        sprintf('Infinite-scroll operation must document perPage: GET %s', $paginatedPath),
+    );
+}
+
 $documentedOperationCount = 0;
 
 foreach ($specification['paths'] as $operations) {

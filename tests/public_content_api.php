@@ -118,21 +118,33 @@ $reviewRepository = new class implements ReviewReadRepository {
     {
         $this->lastCriteria = $criteria;
 
-        return 1;
+        return 2;
     }
 
     public function findPublicPageByBusinessId(int $businessId, int $limit, int $offset, array $criteria): array
     {
-        return [[
-            'id' => 9001,
-            'rating' => 5,
-            'content' => '만족합니다.',
-            'created_at' => '2026-09-20 06:30:00',
-            'updated_at' => '2026-09-20 06:30:00',
-            'user_id' => 77,
-            'user_name' => '김리폼',
-            'profile_image' => '/private/path.jpg',
-        ]];
+        return array_slice([
+            [
+                'id' => 9001,
+                'rating' => 5,
+                'content' => '만족합니다.',
+                'created_at' => '2026-09-20 06:30:00',
+                'updated_at' => '2026-09-20 06:30:00',
+                'user_id' => 77,
+                'user_name' => '김리폼',
+                'profile_image' => '/private/path.jpg',
+            ],
+            [
+                'id' => 9002,
+                'rating' => 4,
+                'content' => '깔끔합니다.',
+                'created_at' => '2026-09-19 06:30:00',
+                'updated_at' => '2026-09-19 06:30:00',
+                'user_id' => 78,
+                'user_name' => '두번째 사용자',
+                'profile_image' => null,
+            ],
+        ], $offset, $limit);
     }
 
     public function summarizePublicByBusinessId(int $businessId): array
@@ -169,6 +181,15 @@ assertPublicContentValue(null, $workCaseListPayload['data'][0]['beforeImageUrl']
 assertPublicContentValue(1, $workCaseListPayload['meta']['perPage'], 'The limit alias must set perPage.');
 assertPublicContentValue(10, $workCaseRepository->lastCriteria['businessId'], 'Business filter is invalid.');
 
+$workCaseSecondPage = $application->handle(Request::create('/api/v1/work-cases?businessId=10&page=2&perPage=1', 'GET'));
+$workCaseSecondPagePayload = json_decode($workCaseSecondPage->getContent(), true, flags: JSON_THROW_ON_ERROR);
+assertPublicContentValue(200, $workCaseSecondPage->getStatusCode(), 'Work Case second page must return 200.');
+assertPublicContentValue(102, $workCaseSecondPagePayload['data'][0]['id'], 'Work Case second page item is invalid.');
+assertPublicContentValue(2, $workCaseSecondPagePayload['meta']['page'], 'Work Case second page metadata is invalid.');
+assertPublicContentValue(1, $workCaseSecondPagePayload['meta']['perPage'], 'Work Case per-page metadata is invalid.');
+assertPublicContentValue(2, $workCaseSecondPagePayload['meta']['total'], 'Work Case total metadata is invalid.');
+assertPublicContentValue(2, $workCaseSecondPagePayload['meta']['totalPages'], 'Work Case total-pages metadata is invalid.');
+
 $workCaseDetail = $application->handle(Request::create('/api/v1/work-cases/101', 'GET'));
 $workCaseDetailPayload = json_decode($workCaseDetail->getContent(), true, flags: JSON_THROW_ON_ERROR);
 assertPublicContentValue('리폼 공방', $workCaseDetailPayload['data']['business']['name'], 'Work Case Business is invalid.');
@@ -177,7 +198,7 @@ assertPublicContentValue([], $workCaseDetailPayload['data']['images'], 'Work Cas
 $missingWorkCase = $application->handle(Request::create('/api/v1/work-cases/999', 'GET'));
 assertPublicContentValue(404, $missingWorkCase->getStatusCode(), 'Missing Work Case must return 404.');
 
-$reviewList = $application->handle(Request::create('/api/v1/businesses/10/reviews?sort=ratingHigh&hasImages=true&limit=10', 'GET'));
+$reviewList = $application->handle(Request::create('/api/v1/businesses/10/reviews?sort=ratingHigh&hasImages=true&page=1&perPage=1', 'GET'));
 $reviewListPayload = json_decode($reviewList->getContent(), true, flags: JSON_THROW_ON_ERROR);
 assertPublicContentValue(200, $reviewList->getStatusCode(), 'Review list must return 200.');
 assertPublicContentValue(9001, $reviewListPayload['data'][0]['id'], 'Review list item is invalid.');
@@ -185,6 +206,15 @@ assertPublicContentValue(null, $reviewListPayload['data'][0]['user']['profileIma
 assertPublicContentValue(4.8, $reviewListPayload['meta']['summary']['averageRating'], 'Review summary is invalid.');
 assertPublicContentValue('ratingDesc', $reviewRepository->lastCriteria['sort'], 'App sort alias is invalid.');
 assertPublicContentValue(true, $reviewRepository->lastCriteria['hasImages'], 'Review image filter is invalid.');
+
+$reviewSecondPage = $application->handle(Request::create('/api/v1/businesses/10/reviews?sort=ratingHigh&hasImages=true&page=2&perPage=1', 'GET'));
+$reviewSecondPagePayload = json_decode($reviewSecondPage->getContent(), true, flags: JSON_THROW_ON_ERROR);
+assertPublicContentValue(200, $reviewSecondPage->getStatusCode(), 'Review second page must return 200.');
+assertPublicContentValue(9002, $reviewSecondPagePayload['data'][0]['id'], 'Review second page item is invalid.');
+assertPublicContentValue(2, $reviewSecondPagePayload['meta']['page'], 'Review second page metadata is invalid.');
+assertPublicContentValue(1, $reviewSecondPagePayload['meta']['perPage'], 'Review per-page metadata is invalid.');
+assertPublicContentValue(2, $reviewSecondPagePayload['meta']['total'], 'Review total metadata is invalid.');
+assertPublicContentValue(2, $reviewSecondPagePayload['meta']['totalPages'], 'Review total-pages metadata is invalid.');
 
 $reviewSummary = $application->handle(Request::create('/api/v1/businesses/10/review-summary', 'GET'));
 $reviewSummaryPayload = json_decode($reviewSummary->getContent(), true, flags: JSON_THROW_ON_ERROR);

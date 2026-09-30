@@ -143,6 +143,23 @@ try {
         );
     }
 
+    foreach ([
+        ['/api/v1/me/reviews?page=1&perPage=1', $accessToken],
+        ['/api/v1/me/favorites?page=1&perPage=1', $accessToken],
+        ['/api/v1/me/inquiries?page=1&perPage=1', $accessToken],
+        ['/api/v1/me/recent-businesses?page=1&perPage=1', $accessToken],
+        ['/api/v1/me/notifications?page=1&perPage=1', $accessToken],
+        ['/api/v1/help/faqs?page=1&perPage=1', null],
+    ] as [$path, $token]) {
+        $response = appRequest($application, 'GET', $path, accessToken: $token);
+        $payload = responseJson($response);
+        assertAppApi($response->getStatusCode() === 200, sprintf('Paginated API %s must return 200.', $path));
+        assertAppApi(($payload['meta']['page'] ?? null) === 1, sprintf('Paginated API %s must return meta.page.', $path));
+        assertAppApi(($payload['meta']['perPage'] ?? null) === 1, sprintf('Paginated API %s must return meta.perPage.', $path));
+        assertAppApi(isset($payload['meta']['total']), sprintf('Paginated API %s must return meta.total.', $path));
+        assertAppApi(isset($payload['meta']['totalPages']), sprintf('Paginated API %s must return meta.totalPages.', $path));
+    }
+
     $appConfig = appRequest($application, 'GET', '/api/v1/app-config?platform=android&appVersion=1.0.0');
     assertAppApi($appConfig->getStatusCode() === 200, 'App configuration API must use configured versions.');
 

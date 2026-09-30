@@ -547,8 +547,8 @@
           {"name": "categoryId", "in": "query", "schema": {"type": "integer", "minimum": 1}},
           {"name": "serviceId", "in": "query", "schema": {"type": "integer", "minimum": 1}},
           {"name": "brandId", "in": "query", "schema": {"type": "integer", "minimum": 1}},
-          {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1, "default": 1}},
-          {"name": "perPage", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 100, "default": 20}},
+          {"name": "page", "in": "query", "description": "무한 스크롤에서 1부터 시작해 meta.totalPages까지 증가시킬 페이지 번호", "schema": {"type": "integer", "minimum": 1, "default": 1}},
+          {"name": "perPage", "in": "query", "description": "페이지당 항목 수. 무한 스크롤 권장값은 20입니다.", "schema": {"type": "integer", "minimum": 1, "maximum": 100, "default": 20}},
           {"name": "limit", "in": "query", "description": "앱 호환용 perPage 별칭", "schema": {"type": "integer", "minimum": 1, "maximum": 100}}
         ],
         "responses": {
@@ -598,8 +598,8 @@
           {"name": "rating", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 5}},
           {"name": "hasImages", "in": "query", "schema": {"type": "boolean"}},
           {"name": "sort", "in": "query", "schema": {"type": "string", "enum": ["latest", "ratingDesc", "ratingAsc", "ratingHigh", "ratingLow"], "default": "latest"}},
-          {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1, "default": 1}},
-          {"name": "perPage", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 100, "default": 20}},
+          {"name": "page", "in": "query", "description": "무한 스크롤에서 1부터 시작해 meta.totalPages까지 증가시킬 페이지 번호", "schema": {"type": "integer", "minimum": 1, "default": 1}},
+          {"name": "perPage", "in": "query", "description": "페이지당 항목 수. 무한 스크롤 권장값은 20입니다.", "schema": {"type": "integer", "minimum": 1, "maximum": 100, "default": 20}},
           {"name": "limit", "in": "query", "description": "앱 호환용 perPage 별칭", "schema": {"type": "integer", "minimum": 1, "maximum": 100}}
         ],
         "responses": {
@@ -932,8 +932,8 @@
       }
     },
     "parameters": {
-      "Page": {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1, "default": 1}},
-      "PerPage": {"name": "perPage", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 100, "default": 20}},
+      "Page": {"name": "page", "in": "query", "description": "무한 스크롤에서 1부터 시작해 meta.totalPages까지 증가시킬 페이지 번호", "schema": {"type": "integer", "minimum": 1, "default": 1}},
+      "PerPage": {"name": "perPage", "in": "query", "description": "페이지당 항목 수. 무한 스크롤 권장값은 20입니다.", "schema": {"type": "integer", "minimum": 1, "maximum": 100, "default": 20}},
       "BusinessId": {"name": "businessId", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}},
       "NotificationId": {"name": "notificationId", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}},
       "AdId": {"name": "adId", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}
