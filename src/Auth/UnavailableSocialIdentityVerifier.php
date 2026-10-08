@@ -13,6 +13,7 @@ final class UnavailableSocialIdentityVerifier implements SocialIdentityVerifier
         ?string $authorizationCode,
         ?string $idToken,
         string $redirectUri,
+        ?string $state = null,
     ): array {
         throw new ServiceUnavailableException(
             'SOCIAL_PROVIDER_NOT_CONFIGURED',

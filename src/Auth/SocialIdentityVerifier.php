@@ -14,5 +14,6 @@ interface SocialIdentityVerifier
         ?string $authorizationCode,
         ?string $idToken,
         string $redirectUri,
+        ?string $state = null,
     ): array;
 }

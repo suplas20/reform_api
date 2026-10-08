@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use App\Auth\UnavailableSocialIdentityVerifier;
+use App\Auth\NaverSocialIdentityVerifier;
+use App\Auth\KakaoSocialIdentityVerifier;
+use App\Auth\GoogleSocialIdentityVerifier;
+use App\Auth\ProviderSocialIdentityVerifier;
 use App\Controller\Api\ApiDocumentationController;
 use App\Controller\Api\V1\AdController;
 use App\Controller\Api\V1\AppConfigController;
@@ -108,7 +111,23 @@ final class ApplicationFactory
         $reviewRepository = new ReviewRepository($connection);
         $authService = new AuthService(
             new AuthRepository($connection),
-            new UnavailableSocialIdentityVerifier(),
+            new ProviderSocialIdentityVerifier([
+                'NAVER' => new NaverSocialIdentityVerifier(
+                    (string) $servicesConfig['auth']['naver']['client_id'],
+                    (string) $servicesConfig['auth']['naver']['client_secret'],
+                    $servicesConfig['auth']['naver']['redirect_uris'],
+                ),
+                'GOOGLE' => new GoogleSocialIdentityVerifier(
+                    $servicesConfig['auth']['google']['web_client_ids'],
+                    $servicesConfig['storage']['cache_path'] . '/google-jwks.json',
+                    null,
+                    $servicesConfig['auth']['google']['authorized_client_ids'],
+                ),
+                'KAKAO' => new KakaoSocialIdentityVerifier(
+                    $servicesConfig['auth']['kakao']['native_app_keys'],
+                    $servicesConfig['storage']['cache_path'] . '/kakao-jwks.json',
+                ),
+            ]),
             $transactionManager,
             (int) $servicesConfig['auth']['access_ttl_seconds'],
             (int) $servicesConfig['auth']['refresh_ttl_seconds'],

@@ -1,0 +1,7 @@
+<?php
+
+declare(strict_types=1);
+
+// Optional local development policy; ignored outside APP_ENV=local.
+// Keep final production token policy in server environment variables.
+return ['access_ttl_seconds' => 900, 'refresh_ttl_seconds' => 3600];

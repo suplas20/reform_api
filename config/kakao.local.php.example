@@ -1,0 +1,8 @@
+<?php
+
+declare(strict_types=1);
+
+// Native SDK ID token audiences: the Native app key, not the REST API key.
+return [
+    'native_app_keys' => [],
+];

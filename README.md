@@ -226,3 +226,54 @@ composer install --no-dev --prefer-dist --optimize-autoloader
 - SQL: Repository 내부의 PDO Prepared Statement만 사용
 
 상세 기준은 `AGENTS.MD`와 `.docs/reform_platform_system_design.md`를 따릅니다.
+
+## 네이버 로그인
+
+`config/social.local.php.example`을 `config/social.local.php`로 복사하고 Client ID, Client Secret, 허용 Callback URL을 설정합니다.
+로컬 설정이 없으면 `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET`, `NAVER_REDIRECT_URIS`(쉼표 구분)를 사용합니다.
+Secret은 Git이나 모바일 앱에 포함하지 않습니다.
+앱은 인가 코드와 state를 `/api/v1/auth/social-login`으로 전송하며, 서버가 네이버 토큰 교환과 회원정보 조회를 수행합니다.
+`GET /api/v1/auth/naver/callback`은 code/state 또는 오류를 고정 앱 복귀 주소로 전달합니다.
+PHP HTTPS stream 통신을 위해 `allow_url_fopen`과 CA 인증서 설정이 필요합니다.
+서비스 토큰 만료 정책(`AUTH_ACCESS_TTL_SECONDS`, `AUTH_REFRESH_TTL_SECONDS`)은 기존 설정을 사용합니다.
+[네이버 공식 인증 명세](https://developers.naver.com/docs/login/api/api.md)를 참고하세요.
+
+## 카카오 네이티브 로그인
+
+카카오 Developers에서 카카오 로그인과 OpenID Connect를 활성화합니다. 서버는 SDK가 발급한 ID 토큰의 RS256 서명, 발급자, Native 앱 키(aud), 만료 시각과 회원번호를 검증한 후 기존 회원 조회 및 서비스 토큰 발급을 수행합니다. REST API 키나 클라이언트가 전달한 회원번호로 인증하지 않습니다.
+
+`config/kakao.local.php.example`을 `config/kakao.local.php`로 복사하고 `native_app_keys`에 앱의 Native 앱 키를 설정합니다. 배포 시 `KAKAO_NATIVE_APP_KEYS` 환경변수(여러 값은 쉼표 구분)로도 설정할 수 있습니다. PHP OpenSSL 확장이 필요합니다. 키 검증 방식은 현재 카카오 Native SDK의 ID 토큰 방식에 한정하며, 다른 방식은 별도 검토 후 추가합니다.
+
+`POST /api/v1/auth/social-login`에 `provider: "kakao"`, `idToken`, `device.deviceId`를 전송합니다. ID 토큰 방식에는 `redirectUri`가 필요하지 않고, 인가 코드 방식에는 필수입니다. 두 인증 값을 동시에 보내면 거절됩니다. 개인정보 동의가 없으면 이름·이메일은 생략됩니다.
+
+공개 서명키만 `storage/cache/kakao-jwks.json`에 1시간 보관하며, 알 수 없는 kid에는 키를 다시 조회합니다. 캐시를 기록할 수 없어도 로그인은 동작하고, 공개키 조회나 토큰 검증에 실패하면 인증을 거절합니다. 토큰은 로그에 기록하지 않습니다. 서비스 토큰 만료 정책은 기존 `AUTH_ACCESS_TTL_SECONDS` / `AUTH_REFRESH_TTL_SECONDS`를 그대로 사용합니다.
+
+검증: `php tests/kakao_login.php`, `composer test`.
+
+로컬 개발 서버의 만료 정책이 비어 있다면 `config/auth.local.php.example`을 `config/auth.local.php`로 복사합니다. 기존 통합 테스트와 같은 액세스 15분·리프레시 1시간의 개발용 값이며 최종 배포 정책이 아닙니다. 이 파일은 Git에서 제외되고 `APP_ENV=local`에서만 읽습니다. 운영에서는 서버 환경변수를 설정해야 하며, 값이 없으면 기존처럼 서비스 토큰 발급을 거절합니다.
+
+## Google 로그인
+
+앱에서 받은 Google ID 토큰을 `/api/v1/auth/social-login`에 `provider: "google"`,
+`idToken`, `device.deviceId`로 전달한다. 서버는 Google의 고정 JWKS 주소에서 가져온
+RSA 공개키로 RS256 서명을 검증하고 issuer, audience, 만료 시각, 발급 시각, subject,
+존재하는 경우 authorized party(`azp`)를 검증한다. Google `sub`를 회원 식별자로 사용하고
+검증된 이메일과 선택적인 이름만 매핑한다. 서비스 access/refresh token 발급은 기존 정책을 사용한다.
+
+`config/google.local.php.example`을 `config/google.local.php`로 복사해 설정하거나 다음 환경변수를 사용한다.
+
+```dotenv
+GOOGLE_WEB_CLIENT_IDS=웹_애플리케이션_OAuth_클라이언트_ID
+GOOGLE_AUTHORIZED_CLIENT_IDS=Android_ID,iOS_ID,웹_ID
+```
+
+로컬 파일이 환경변수보다 우선한다. `web_client_ids`에는 웹 유형 ID만 넣는다.
+`authorized_client_ids`에는 같은 프로젝트의 Android/iOS/웹 ID를 넣는다.
+Client Secret은 필요하지 않다. 공개키 캐시는 `storage/cache/google-jwks.json`이며,
+캐시를 쓸 수 없어도 검증은 가능하다. HTTPS stream과 OpenSSL이 필요하다.
+배포에는 코드와 운영 클라이언트 ID 설정을 함께 반영한다.
+
+```sh
+php tests/google_login.php
+composer test
+```

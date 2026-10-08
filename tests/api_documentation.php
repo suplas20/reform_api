@@ -329,8 +329,8 @@ foreach ($specification['paths'] as $operations) {
 }
 
 assertApiDocumentation(
-    $documentedOperationCount === 48,
-    sprintf('OpenAPI must expose 48 operations; got %d.', $documentedOperationCount),
+    $documentedOperationCount === 49,
+    sprintf('OpenAPI must expose 49 operations; got %d.', $documentedOperationCount),
 );
 
 $assetRequest = Request::create('/api/docs/assets/swagger-ui.css', 'GET');

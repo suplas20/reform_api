@@ -3,6 +3,7 @@
 
 /vendor/
 
+/config/social.local.php
 /config/database.local.php
 /config/public_data.local.php
 
@@ -17,3 +18,9 @@
 /.phpunit.result.cache
 /.idea/
 /.vscode/
+
+/config/kakao.local.php
+
+/config/auth.local.php
+
+/config/google.local.php

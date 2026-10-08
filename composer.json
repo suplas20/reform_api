@@ -20,6 +20,9 @@
     "scripts": {
         "test": [
             "@php tests/smoke.php",
+            "@php tests/naver_login.php",
+            "@php tests/kakao_login.php",
+            "@php tests/google_login.php",
             "@php tests/semas_import.php",
             "@php tests/business_api.php",
             "@php tests/reference_api.php",

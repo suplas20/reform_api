@@ -661,6 +661,21 @@
         }
       }
     },
+    "/api/v1/auth/naver/callback": {
+      "get": {
+        "tags": ["Auth"], "summary": "네이버 인증 결과를 모바일 앱으로 전달", "operationId": "naverCallback",
+        "description": "인증 코드 또는 오류와 state를 고정 앱 주소 reform://auth/naver-callback으로 전달합니다. 앱 토큰은 이 URL에 포함하지 않습니다.",
+        "parameters": [
+          {"name": "state", "in": "query", "required": true, "schema": {"type": "string", "pattern": "^[A-Za-z0-9_-]{20,200}$"}},
+          {"name": "code", "in": "query", "schema": {"type": "string", "maxLength": 4000}},
+          {"name": "error", "in": "query", "schema": {"type": "string", "maxLength": 100}}
+        ],
+        "responses": {
+          "302": {"description": "앱 복귀", "headers": {"Location": {"schema": {"type": "string"}}}},
+          "422": {"$ref": "#/components/responses/ValidationFailed"}
+        }
+      }
+    },
     "/api/v1/auth/social-login": {
       "post": {
         "tags": ["Auth"], "summary": "SNS 로그인", "operationId": "socialLogin",
@@ -668,6 +683,7 @@
         "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SocialLoginRequest"}}}},
         "responses": {
           "200": {"description": "앱 access/refresh token", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/GenericSuccessResponse"}}}},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
           "422": {"$ref": "#/components/responses/ValidationFailed"},
           "503": {"description": "SNS 제공자 검증 또는 토큰 정책이 설정되지 않음", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}}
         }
@@ -960,12 +976,13 @@
         }
       },
       "SocialLoginRequest": {
-        "type": "object", "additionalProperties": false, "required": ["provider", "redirectUri", "device"],
-        "anyOf": [{"required": ["authorizationCode"]}, {"required": ["idToken"]}],
+        "type": "object", "additionalProperties": false, "required": ["provider", "device"],
+        "oneOf": [{"required": ["authorizationCode", "redirectUri"], "not": {"required": ["idToken"]}}, {"required": ["idToken"], "not": {"required": ["authorizationCode"]}}],
         "properties": {
           "provider": {"type": "string", "enum": ["kakao", "naver", "google", "apple"]},
-          "authorizationCode": {"type": "string", "maxLength": 4000},
-          "idToken": {"type": "string", "maxLength": 10000},
+          "authorizationCode": {"type": "string", "minLength": 1, "maxLength": 4000},
+          "idToken": {"type": "string", "minLength": 1, "maxLength": 10000, "description": "카카오 또는 Google Native SDK의 OpenID Connect ID 토큰. 이 방식에는 redirectUri가 필요하지 않습니다."},
+          "state": {"type": "string", "pattern": "^[A-Za-z0-9_-]{20,200}$", "description": "네이버 인가 코드 교환 시 필수. 앱에서 최초 요청과 콜백 state가 같은지 검증한 값."},
           "redirectUri": {"type": "string", "maxLength": 1000},
           "device": {"type": "object", "required": ["deviceId"], "properties": {"deviceId": {"type": "string", "maxLength": 100}}}
         }

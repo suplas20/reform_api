@@ -1,0 +1,10 @@
+<?php
+
+declare(strict_types=1);
+
+// Copy to google.local.php. Use the Web OAuth ID as the expected ID-token audience.
+return [
+    'web_client_ids' => [],
+    // Allowed azp values: Android, iOS and Web OAuth client IDs in the same project.
+    'authorized_client_ids' => [],
+];

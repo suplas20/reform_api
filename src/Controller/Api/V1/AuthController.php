@@ -10,6 +10,7 @@ use App\Http\RequestValidator;
 use App\Service\AuthService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 final class AuthController
@@ -28,6 +29,16 @@ final class AuthController
             $this->invalid();
         }
 
+        $authorizationCode = $this->optionalString($input['authorizationCode'] ?? null, 4000);
+        $idToken = $this->optionalString($input['idToken'] ?? null, 10000);
+        if (($authorizationCode === null) === ($idToken === null)) {
+            $this->invalid();
+        }
+        $redirectUri = $this->optionalString($input['redirectUri'] ?? null, 1000);
+        if ($authorizationCode !== null && $redirectUri === null) {
+            $this->invalid();
+        }
+
         $device = $input['device'] ?? null;
 
         if (!is_array($device)) {
@@ -36,11 +47,33 @@ final class AuthController
 
         return ApiResponse::success($this->authService->socialLogin(
             strtoupper($provider),
-            $this->optionalString($input['authorizationCode'] ?? null, 4000),
-            $this->optionalString($input['idToken'] ?? null, 10000),
-            $this->requiredString($input['redirectUri'] ?? null, 1000),
+            $authorizationCode,
+            $idToken,
+            $redirectUri ?? '',
             $this->requiredString($device['deviceId'] ?? null, 100),
+            $this->optionalString($input['state'] ?? null, 200),
         ));
+    }
+
+    public function naverCallback(Request $request): RedirectResponse
+    {
+        $state = $this->requiredString($request->query->all()['state'] ?? null, 200);
+        if (preg_match('/^[A-Za-z0-9_-]{20,200}$/D', $state) !== 1) {
+            $this->invalid();
+        }
+        $params = ['state' => $state];
+        $error = $this->optionalString($request->query->all()['error'] ?? null, 100);
+        if ($error !== null) {
+            $params['error'] = $error === 'access_denied' ? 'access_denied' : 'server_error';
+        } else {
+            $params['code'] = $this->requiredString($request->query->all()['code'] ?? null, 4000);
+        }
+        // Fixed app destination: never accept a return URL from request input.
+        return new RedirectResponse(
+            'reform://auth/naver-callback?' . http_build_query($params, '', '&', PHP_QUERY_RFC3986),
+            302,
+            ['Cache-Control' => 'no-store', 'Referrer-Policy' => 'no-referrer'],
+        );
     }
 
     public function refresh(Request $request): JsonResponse

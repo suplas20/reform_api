@@ -188,6 +188,7 @@ return static function (
     }
 
     if ($authController !== null) {
+        $routes->add('api.v1.auth.naver.callback', new Route('/api/v1/auth/naver/callback', ['_controller' => [$authController, 'naverCallback']], methods: ['GET']));
         $routes->add('api.v1.auth.social_login', new Route('/api/v1/auth/social-login', ['_controller' => [$authController, 'socialLogin']], methods: ['POST']));
         $routes->add('api.v1.auth.refresh', new Route('/api/v1/auth/refresh', ['_controller' => [$authController, 'refresh']], methods: ['POST']));
         $routes->add('api.v1.auth.logout', new Route('/api/v1/auth/logout', ['_controller' => [$authController, 'logout']], methods: ['POST']));

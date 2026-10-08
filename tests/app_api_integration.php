@@ -164,7 +164,7 @@ try {
     assertAppApi($appConfig->getStatusCode() === 200, 'App configuration API must use configured versions.');
 
     $socialLogin = appRequest($application, 'POST', '/api/v1/auth/social-login', [
-        'provider' => 'kakao',
+        'provider' => 'apple',
         'authorizationCode' => 'provider-code',
         'redirectUri' => 'reform://auth/callback',
         'device' => ['deviceId' => 'integration-device'],

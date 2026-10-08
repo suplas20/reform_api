@@ -30,12 +30,14 @@ final class AuthService
         ?string $idToken,
         string $redirectUri,
         string $deviceId,
+        ?string $state = null,
     ): array {
         $identity = $this->socialIdentityVerifier->verify(
             $provider,
             $authorizationCode,
             $idToken,
             $redirectUri,
+            $state,
         );
         $existing = $this->authRepository->findSocialUser($provider, $identity['providerUserId']);
         $isNewUser = $existing === null;
