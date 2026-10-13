@@ -167,6 +167,47 @@ composer db:import:semas:sync
 수집은 상가업소번호 기준 Upsert 방식이며, 동일 명령을 다시 실행해도 업체가 중복 생성되지 않습니다.
 공유호스팅 HTTP 요청이나 상시 Worker에서는 실행하지 않고, 승인된 로컬/배포 유지보수 절차에서만 실행합니다.
 
+## 국가데이터처 행정동 원본 수집
+
+[행정동 정보 API](https://infuser.odcloud.kr/oas/docs?namespace=15136373/v1)의 기본 주소는
+`https://api.odcloud.kr/api`입니다. 인증키는 `config/administrative_regions.local.php.example`을
+`config/administrative_regions.local.php`로 복사해 `service_key`에 설정하거나,
+`ADMINISTRATIVE_REGIONS_SERVICE_KEY` 환경변수로 전달합니다. 로컬 파일은 Git에서 제외됩니다.
+기존 SEMAS 인증 설정과는 별도로 관리하며 인증키는 `Authorization: Infuser ...` 헤더에만 넣습니다.
+
+```bash
+composer db:migrate
+composer db:import:regions
+composer db:import:regions:status
+```
+
+수집은 로컬 유지보수 CLI에서만 실행합니다. HTTP 경로, 큐, 상시 Worker를 추가하지 않습니다.
+`administrative_region_imports`에는 자료 버전, 전체 행 수, 완료 페이지, 검증 해시와 완료 상태를,
+`administrative_region_records`에는 원본 아홉 필드와 검증된 날짜를 저장합니다.
+실제 응답에는 여러 개정 시점, 같은 코드의 여러 행, 코드 없는 배경 설명과 줄바꿈도 포함됩니다.
+행정동번호나 코드 하나를 고유키로 가정하지 않고 `스냅샷 + 원본 행 위치`를 식별자로 사용하여
+동일한 내용의 원본 행까지 보존합니다. 각 페이지의 원본과 체크포인트는 같은 트랜잭션으로 저장됩니다.
+
+중단 후 같은 명령을 실행하면 첫 페이지와 마지막 완료 페이지의 해시 및 전체 행 수를 비교하고
+다음 페이지부터 재개합니다. 원본이 바뀌면 중단하며 이전 데이터를 덮어쓰지 않습니다.
+완료된 스냅샷은 재실행해도 API 호출이나 중복 저장을 하지 않습니다. 새 자료를 수집할 때는
+`config/administrative_regions.php`의 자료 버전·경로를 확인하고 새 `snapshot_key`를 지정합니다.
+API가 정렬이나 스냅샷 일관성을 보장한다는 명세는 없으므로 페이지 해시 검증만으로 수집 도중의
+모든 변경을 검출할 수는 없습니다. 제공 자료를 갱신하지 않는 시간대에 수집하는 것이 권장됩니다.
+
+통계용 코드와 기존 `regions.code`의 `KR-...` 코드는 직접 대응한다고 가정하지 않습니다.
+`배경여부`, `연결번호`, 현행·폐지 판별 규칙은 명세에 정의되어 있지 않아 자동 활성화하지 않습니다.
+원본의 `region_id`는 검증된 대응표가 마련되기 전까지 비워 두며, 기존 `regions`, 업체 위치,
+`GET /api/v1/regions` 계약은 유지합니다. 실제 부모 코드가 자기 자신을 가리키는 상위 지역도 있어
+원본 부모 코드를 곧바로 서비스 계층 FK로 복사하지 않습니다.
+
+```bash
+php tests/administrative_regions.php
+php tests/administrative_region_repository.php
+```
+
+두 번째 테스트는 로컬 MariaDB를 사용하며 테스트 데이터는 롤백합니다.
+
 ## 로컬 서버
 
 ```bash

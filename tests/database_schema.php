@@ -76,6 +76,8 @@ function assertRequiredIndexes(
 }
 
 $expectedTables = [
+    'administrative_region_imports',
+    'administrative_region_records',
     'ad_events',
     'ads',
     'admins',
@@ -128,6 +130,8 @@ $expectedTables = [
 ];
 
 $expectedDeleteRules = [
+    'fk_administrative_record_import' => 'RESTRICT',
+    'fk_administrative_record_region' => 'RESTRICT',
     'fk_ad_events_ad' => 'CASCADE',
     'fk_ad_events_user' => 'SET NULL',
     'fk_auth_sessions_user' => 'CASCADE',

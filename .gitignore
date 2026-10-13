@@ -24,3 +24,5 @@
 /config/auth.local.php
 
 /config/google.local.php
+
+/config/administrative_regions.local.php

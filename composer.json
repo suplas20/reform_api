@@ -24,6 +24,7 @@
             "@php tests/kakao_login.php",
             "@php tests/google_login.php",
             "@php tests/semas_import.php",
+            "@php tests/administrative_regions.php",
             "@php tests/business_api.php",
             "@php tests/reference_api.php",
             "@php tests/event_api.php",
@@ -41,11 +42,17 @@
         "db:import:semas:collect": "@php bin/import-semas-businesses.php collect",
         "db:import:semas:classify": "@php bin/import-semas-businesses.php classify",
         "db:import:semas:sync": "@php bin/import-semas-businesses.php sync",
+        "db:import:regions": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php bin/import-administrative-regions.php collect"
+        ],
+        "db:import:regions:status": "@php bin/import-administrative-regions.php status",
         "test:seed": "@php tests/seed_data.php",
         "test:database": [
             "@php tests/database_schema.php",
             "@php tests/public_repository.php",
-            "@php tests/app_api_integration.php"
+            "@php tests/app_api_integration.php",
+            "@php tests/administrative_region_repository.php"
         ],
         "serve": [
             "Composer\\Config::disableProcessTimeout",
