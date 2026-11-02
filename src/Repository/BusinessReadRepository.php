@@ -11,6 +11,12 @@ interface BusinessReadRepository
      */
     public function countPublic(string $publishedAt, array $criteria = []): int;
 
+    /** @return list<array<string, mixed>> Selected region first, including nullable representative coordinates. */
+    public function findActiveRegionAncestors(int $regionId): array;
+
+    /** @return list<int> Districts belonging to a city flattened into level 2. */
+    public function findActiveCityDistrictIds(int $provinceId, string $cityName): array;
+
     /**
      * @return list<array<string, mixed>>
      * @param array<string, mixed> $criteria

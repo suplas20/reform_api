@@ -65,9 +65,14 @@ final class ReferenceService implements ReferenceDataProvider
                 'parentId' => self::nullableInt($region['parent_id']),
                 'code' => self::nullableString($region['code']),
                 'name' => (string) $region['name'],
+                'fullName' => self::regionFullName($region),
                 'slug' => (string) $region['slug'],
                 'level' => (int) $region['level'],
                 'sortOrder' => (int) $region['sort_order'],
+                'hasChildren' => (bool) $region['has_children'],
+                'latitude' => $region['center_latitude'] === null ? null : (float) $region['center_latitude'],
+                'longitude' => $region['center_longitude'] === null ? null : (float) $region['center_longitude'],
+                'centerSource' => $region['center_source'],
             ],
             $this->regionRepository->findActive($parentId, $level, $keyword),
         );
@@ -98,6 +103,20 @@ final class ReferenceService implements ReferenceDataProvider
     private static function nullableString(mixed $value): ?string
     {
         return $value === null ? null : (string) $value;
+    }
+
+    /** @param array<string, mixed> $region */
+    private static function regionFullName(array $region): string
+    {
+        $names = [];
+        foreach ([$region['ancestor_name'], $region['parent_name'], $region['name']] as $name) {
+            // Sejong's province and district use the same display name.
+            if ($name !== null && $name !== '' && end($names) !== $name) {
+                $names[] = (string) $name;
+            }
+        }
+
+        return implode(' ', $names);
     }
 
     private static function nullableInt(mixed $value): ?int

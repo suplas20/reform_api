@@ -82,6 +82,28 @@ http://127.0.0.1:8080/api/docs/openapi.json
 
 API 계약 원본은 `openapi/openapi.json`이며 API 변경과 같은 작업에서 함께 갱신합니다.
 
+### 현재 위치 기반 업체 검색
+
+기존 `GET /api/v1/businesses`에서 사용자 위도·경도, 반경(km), 거리순 정렬을 함께 전달합니다.
+기존 `lat`/`lng` 별칭과 검색어·카테고리·서비스·지역·브랜드 필터 및 페이지네이션을 그대로 지원합니다.
+
+```text
+GET /api/v1/businesses?latitude=37.5&longitude=127.03&radiusKm=3&sort=distance&page=1&perPage=20
+```
+
+`radiusKm`는 1·3·5·10 등 양수를 지원합니다. 생략하면 반경을 제한하지 않으며,
+거리순 정렬에는 위도·경도가 모두 필요합니다. 좌표는 위도 -90..90, 경도 -180..180 범위의 유한수여야 합니다.
+사용자 좌표를 전달하면 정렬 방식에 관계없이 `distanceMeters`(m)와 기존 `distanceKm`(km)를 반환합니다.
+사용자 좌표가 없거나 업체 대표 위치의 좌표가 없거나 유효하지 않으면 두 거리는 `null`입니다.
+좌표가 없는 업체는 반경 검색에서 제외되며, 반경 없는 거리순 검색에서는 마지막에 표시됩니다.
+
+대표 위치는 기존 주소 표시와 동일하게 `is_primary DESC, id ASC`의 첫 위치입니다.
+여러 지점이 있어도 반경·정렬·응답 거리를 이 대표 위치에 맞춥니다.
+반경 검색은 기존 `(latitude, longitude)` 인덱스로 bounding box 후보를 조회한 뒤
+MariaDB `ST_DISTANCE_SPHERE(POINT(longitude, latitude), POINT(userLongitude, userLatitude), 6370986)`로
+구면 직선거리를 검증합니다. 날짜변경선과 극지방을 가로지르는 반경도 처리합니다.
+지도 업체 API 호출과 사용자 위치의 DB 저장은 하지 않습니다. DB 구조 변경은 없습니다.
+
 ### 목록 페이지네이션
 
 작업 사례, 리뷰, 문의, 찜, 최근 본 업체, 알림, FAQ 목록은 모두 페이지 번호 기반
@@ -195,18 +217,81 @@ composer db:import:regions:status
 API가 정렬이나 스냅샷 일관성을 보장한다는 명세는 없으므로 페이지 해시 검증만으로 수집 도중의
 모든 변경을 검출할 수는 없습니다. 제공 자료를 갱신하지 않는 시간대에 수집하는 것이 권장됩니다.
 
-통계용 코드와 기존 `regions.code`의 `KR-...` 코드는 직접 대응한다고 가정하지 않습니다.
-`배경여부`, `연결번호`, 현행·폐지 판별 규칙은 명세에 정의되어 있지 않아 자동 활성화하지 않습니다.
-원본의 `region_id`는 검증된 대응표가 마련되기 전까지 비워 두며, 기존 `regions`, 업체 위치,
-`GET /api/v1/regions` 계약은 유지합니다. 실제 부모 코드가 자기 자신을 가리키는 상위 지역도 있어
-원본 부모 코드를 곧바로 서비스 계층 FK로 복사하지 않습니다.
+앱용 `regions` 반영은 별도의 로컬 명령으로 실행합니다.
+
+```bash
+composer db:import:regions:plan  # 변경 없이 추가·제외 항목 확인
+composer db:import:regions:sync  # 한 트랜잭션으로 반영
+```
+
+완료된 스냅샷에서 가장 최근 개정일의 코드 있는 행만 사용합니다. 현재 수집본의 기준일은
+2025-04-01이며 2026년 전국 행정구역 전체를 보장하는 자료는 아닙니다. 같은 코드의 중복 행은
+합치고, 이름·부모가 충돌하면 전체 작업을 중단합니다. 코드 없는 설명과 하위 구를 가진 집계용
+시 행은 앱 지역으로 추가하지 않습니다. 시군구의 자기 참조 부모는 시도로 정규화하고,
+`수원시 장안구` 같은 복합 이름과 세종시 표기 차이를 맞춰 기존 지역 ID를 유지합니다.
+
+통계 코드와 `KR-...` 코드는 직접 변환하지 않습니다. 추가 지역은 `KOSTAT-...` 코드를 사용하며,
+원본 최신 행의 `region_id`에 확인된 대응을 기록합니다. 기존 `regions`와 업체 위치 연결은
+수정하거나 삭제하지 않습니다. 재실행 시 중복을 추가하지 않습니다. 수집·반영 명령은 같은
+로컬 파일 잠금을 사용합니다.
+
+`config/administrative_region_sync.php`는 현재 DB의 통합 시도와 개편 시군구에 대한 검토된
+연결 규칙입니다. 인천·화성의 변경된 소속은 현재 업체 원본의 일치 항목과
+[인천광역시 관할 목록](https://www.incheon.go.kr/IC01070101),
+[화성시 읍면동 목록](https://www.hscity.go.kr/www/intro/ctyhllInfo/hsFax/department.jsp)으로
+확인합니다. 분동된 운서동·아라동은 예전 명칭으로 활성화하지 않고 제외 사유를 출력합니다.
+후속 동의 새 코드는 이번 원본에 없어 별도 최신 자료가 필요합니다. 새 기준일 자료를
+수집했다면 연결 규칙을 재검토해야 반영 명령이 실행됩니다. 원본 전체 이력은 삭제하지 않습니다.
+
+앱은 기존 `GET /api/v1/regions`로 조회합니다. `level=1`은 시도, `level=2`는 시군구,
+`level=3`은 읍면동이고 `parentId`로 바로 아래 지역을 조회합니다. 이번 작업은 지역 선택용
+참조 데이터를 추가하며, 업체의 기존 시군구 연결을 읍면동으로 재배정하지 않습니다.
+
+수동 위치 설정 화면은 인증 없이 다음 순서로 호출합니다. `{sidoId}`, `{sigunguId}`에는
+앞선 응답에서 사용자가 선택한 `id`를 넣습니다.
+
+```http
+GET /api/v1/regions?level=1
+GET /api/v1/regions?parentId={sidoId}&level=2
+GET /api/v1/regions?parentId={sigunguId}&level=3
+GET /api/v1/regions?level=3&query=역삼
+```
+
+각 지역의 `fullName`(예: `서울특별시 강남구 역삼1동`)으로 선택 위치를 표시하고,
+`hasChildren`으로 활성 하위 지역이 있는지 확인합니다. `parentId`는 직계 하위 지역만
+조회합니다. 모든 조건을 생략하면 기존처럼 전체 활성 지역을 반환합니다. API 계약과
+응답 예시는 `/api/docs` 및 `.docs/reform_mobile_api_definition_v1.md` 13.3절에 있습니다.
+
+업체 목록에 `regionId`를 보내면 해당 지역과 하위 지역을 검색하고, 전체 결과가 0개일 때만
+동→구→시 순서로 범위를 넓힙니다. 예를 들어 역삼1동에 연결된 업체가 없으면 강남구를,
+강남구에도 없으면 서울특별시를 검색합니다. 수원시처럼 여러 일반구가 있으면 같은 시의
+구들까지만 검색합니다. 검색어·카테고리·서비스·브랜드·인증·반경 필터는 유지합니다.
+요청 좌표가 없으면 선택한 지역의 대표좌표를 사용하고, 동→구→시로 범위를 넓혀도 최초
+선택한 동의 기준점으로 거리를 계산합니다. 기준점이 있는 확장 검색은 가까운 순입니다.
+응답의 `meta.regionSearch`에는 선택 ID, 실제 검색 ID 목록, 검색 지역명, 확장 여부가 포함됩니다.
+`meta.distanceOrigin`은 요청 좌표인지 지역 대표좌표인지와 실제 계산 기준점을 제공합니다.
+기준점이 전혀 없으면 거리는 null이고, 거리순·반경 요청은 422를 반환합니다. 범위를 넘긴
+페이지가 비었다고 다른 지역으로 확대하지 않으며, 업체 연결과 사용자 좌표는 변경·저장하지 않습니다.
+
+지역 대표좌표는 기상청 공개 동네예보 지점 좌표(2026-07-01)를 사용합니다. 동사무소 등을
+기준으로 한 대표지점이며 경계의 기하학적 중심이 아닙니다. 출처·변환 방식과 매칭되지 않은
+지역은 [좌표 자료 안내](database/reference/README.md)에 기록합니다. API 요청 중에는 외부
+지도 API 또는 좌표 수집을 실행하지 않습니다.
+
+```bash
+composer db:migrate
+composer db:import:region-centers:plan
+composer db:import:region-centers
+```
 
 ```bash
 php tests/administrative_regions.php
+php tests/administrative_region_sync.php
 php tests/administrative_region_repository.php
+php tests/administrative_region_sync_repository.php
 ```
 
-두 번째 테스트는 로컬 MariaDB를 사용하며 테스트 데이터는 롤백합니다.
+Repository 테스트는 로컬 MariaDB를 사용하며 테스트 데이터는 롤백합니다.
 
 ## 로컬 서버
 

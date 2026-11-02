@@ -5,11 +5,59 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use PDO;
+use InvalidArgumentException;
 
 final class BusinessRepository implements BusinessReadRepository, BusinessSuggestionRepository
 {
+    private const EARTH_RADIUS_METERS = 6370986.0;
+
     public function __construct(private readonly PDO $connection)
     {
+    }
+
+    public function findActiveRegionAncestors(int $regionId): array
+    {
+        $statement = $this->connection->prepare(
+            <<<'SQL'
+                WITH RECURSIVE region_ancestors AS (
+                    SELECT id, parent_id, name, level, center_latitude, center_longitude, center_source, 0 AS depth
+                    FROM regions
+                    WHERE id = :region_id AND status = :selected_status
+                    UNION ALL
+                    SELECT parent.id, parent.parent_id, parent.name, parent.level,
+                           parent.center_latitude, parent.center_longitude, parent.center_source, child.depth + 1
+                    FROM regions AS parent
+                    INNER JOIN region_ancestors AS child ON parent.id = child.parent_id
+                    WHERE parent.status = :parent_status
+                      AND parent.level < child.level AND child.depth < 2
+                )
+                SELECT id, parent_id, name, level, center_latitude, center_longitude, center_source
+                FROM region_ancestors ORDER BY depth
+                SQL,
+        );
+        $statement->execute(['region_id' => $regionId, 'selected_status' => 'ACTIVE', 'parent_status' => 'ACTIVE']);
+        return array_map(static fn (array $row): array => [
+            'id' => (int) $row['id'],
+            'parent_id' => $row['parent_id'] === null ? null : (int) $row['parent_id'],
+            'name' => (string) $row['name'], 'level' => (int) $row['level'],
+            'center_latitude' => $row['center_latitude'] === null ? null : (float) $row['center_latitude'],
+            'center_longitude' => $row['center_longitude'] === null ? null : (float) $row['center_longitude'],
+            'center_source' => $row['center_source'],
+        ], $statement->fetchAll());
+    }
+
+    public function findActiveCityDistrictIds(int $provinceId, string $cityName): array
+    {
+        $statement = $this->connection->prepare(
+            "SELECT id FROM regions
+             WHERE parent_id = :province_id AND level = :level AND status = :status
+               AND (name = :city_name OR name LIKE :district_prefix ESCAPE '!')
+             ORDER BY id",
+        );
+        $statement->execute(['province_id' => $provinceId, 'level' => 2, 'status' => 'ACTIVE',
+            'city_name' => $cityName,
+            'district_prefix' => strtr($cityName, ['!' => '!!', '%' => '!%', '_' => '!_']) . ' %']);
+        return array_map(static fn (mixed $id): int => (int) $id, $statement->fetchAll(PDO::FETCH_COLUMN));
     }
 
     public function countPublic(string $publishedAt, array $criteria = []): int
@@ -45,23 +93,23 @@ final class BusinessRepository implements BusinessReadRepository, BusinessSugges
         [$conditions, $parameters] = $this->searchConditions($criteria, 'page');
         $distanceSelect = '';
 
-        if (($criteria['sort'] ?? null) === 'distance') {
+        if (($criteria['lat'] ?? null) !== null && ($criteria['lng'] ?? null) !== null) {
             $distanceSelect = sprintf(
-                ', (%s) AS distance_km',
+                ', (%s) AS distance_meters',
                 $this->primaryLocationDistanceExpression(
-                    ':page_sort_lat_cos',
-                    ':page_sort_lat_sin',
-                    ':page_sort_lng',
+                    ':page_distance_lat',
+                    ':page_distance_lng',
                 ),
             );
-            $parameters['page_sort_lat_cos'] = $criteria['lat'];
-            $parameters['page_sort_lat_sin'] = $criteria['lat'];
-            $parameters['page_sort_lng'] = $criteria['lng'];
+            $parameters['page_distance_lat'] = $criteria['lat'];
+            $parameters['page_distance_lng'] = $criteria['lng'];
         }
 
         $orderBy = match ($criteria['sort'] ?? 'recommended') {
-            'distance' => 'distance_km ASC, businesses.id DESC',
+            'distance' => 'distance_meters IS NULL ASC, distance_meters ASC, businesses.id DESC',
             'rating' => 'business_reputation_stats.rating_avg IS NULL ASC, business_reputation_stats.rating_avg DESC, businesses.id DESC',
+            'name' => 'businesses.name ASC, businesses.id DESC',
+            'ratingAsc' => 'business_reputation_stats.rating_avg IS NULL ASC, business_reputation_stats.rating_avg ASC, businesses.id DESC',
             'reviewCount' => 'review_count DESC, businesses.id DESC',
             default => 'businesses.published_at DESC, businesses.id DESC',
         };
@@ -630,7 +678,27 @@ final class BusinessRepository implements BusinessReadRepository, BusinessSugges
             );
         }
 
-        if (($criteria['regionId'] ?? null) !== null) {
+        if (($criteria['regionId'] ?? null) !== null || isset($criteria['regionIds'])) {
+            $regionIds = $criteria['regionIds'] ?? [$criteria['regionId']];
+            if (!is_array($regionIds) || $regionIds === [] || count($regionIds) > 100) {
+                throw new InvalidArgumentException('Region scope must contain 1 to 100 positive integer IDs.');
+            }
+            foreach ($regionIds as $regionId) {
+                if (!is_int($regionId) || $regionId < 1) {
+                    throw new InvalidArgumentException('Region scope IDs must be positive integers.');
+                }
+            }
+            $regionIds = array_values(array_unique($regionIds));
+            $scopePlaceholders = [];
+            // Native prepares require separate placeholders for each occurrence.
+            foreach (['self', 'parent', 'ancestor'] as $scope) {
+                $scopePlaceholders[$scope] = [];
+                foreach ($regionIds as $index => $regionId) {
+                    $parameter = $prefix . '_region_' . $scope . '_' . $index;
+                    $scopePlaceholders[$scope][] = ':' . $parameter;
+                    $parameters[$parameter] = $regionId;
+                }
+            }
             $conditions[] = sprintf(
                 <<<'SQL'
                     AND EXISTS (
@@ -638,17 +706,20 @@ final class BusinessRepository implements BusinessReadRepository, BusinessSugges
                         FROM business_locations
                         INNER JOIN regions AS location_regions
                             ON location_regions.id = business_locations.region_id
+                        LEFT JOIN regions AS location_parent
+                            ON location_parent.id = location_regions.parent_id
                         WHERE business_locations.business_id = businesses.id
                           AND (
-                              business_locations.region_id = :%1$s_region_id
-                              OR location_regions.parent_id = :%1$s_parent_region_id
+                              business_locations.region_id IN (%1$s)
+                              OR location_regions.parent_id IN (%2$s)
+                              OR location_parent.parent_id IN (%3$s)
                           )
                     )
                     SQL,
-                $prefix,
+                implode(', ', $scopePlaceholders['self']),
+                implode(', ', $scopePlaceholders['parent']),
+                implode(', ', $scopePlaceholders['ancestor']),
             );
-            $parameters[$prefix . '_region_id'] = $criteria['regionId'];
-            $parameters[$prefix . '_parent_region_id'] = $criteria['regionId'];
         }
 
         if (($criteria['brandId'] ?? null) !== null) {
@@ -671,32 +742,48 @@ final class BusinessRepository implements BusinessReadRepository, BusinessSugges
         }
 
         if (($criteria['radiusKm'] ?? null) !== null) {
-            $latCosParameter = ':' . $prefix . '_radius_lat_cos';
-            $latSinParameter = ':' . $prefix . '_radius_lat_sin';
+            $latParameter = ':' . $prefix . '_radius_lat';
             $lngParameter = ':' . $prefix . '_radius_lng';
-            $radiusParameter = ':' . $prefix . '_radius_km';
+            [$bounds, $boundParameters] = $this->boundingBoxConditions($criteria, $prefix);
+            $candidateConditions = implode(' AND ', $bounds);
+            // Native PDO prepares require a distinct placeholder for each occurrence.
+            [$distanceBounds, $distanceBoundParameters] = $this->boundingBoxConditions($criteria, $prefix . '_guard');
             $conditions[] = sprintf(
-                'AND EXISTS (
-                    SELECT 1
+                'AND businesses.id IN (
+                    SELECT business_locations.business_id
                     FROM business_locations
-                    WHERE business_locations.business_id = businesses.id
-                      AND %s <= %s
+                    WHERE %1$s
+                      AND business_locations.id = (
+                          SELECT primary_location.id
+                          FROM business_locations AS primary_location
+                          WHERE primary_location.business_id = business_locations.business_id
+                          ORDER BY primary_location.is_primary DESC, primary_location.id ASC
+                          LIMIT 1
+                      )
+                      AND CASE WHEN %4$s THEN %2$s ELSE NULL END <= %3$s
                 )',
-                $this->distanceExpression($latCosParameter, $latSinParameter, $lngParameter),
-                $radiusParameter,
+                $candidateConditions,
+                $this->distanceExpression($latParameter, $lngParameter),
+                ':' . $prefix . '_radius_meters',
+                implode(' AND ', $distanceBounds),
             );
-            $parameters[$prefix . '_radius_lat_cos'] = $criteria['lat'];
-            $parameters[$prefix . '_radius_lat_sin'] = $criteria['lat'];
+            $parameters[$prefix . '_radius_lat'] = $criteria['lat'];
             $parameters[$prefix . '_radius_lng'] = $criteria['lng'];
-            $parameters[$prefix . '_radius_km'] = $criteria['radiusKm'];
+            // No point on the sphere can be farther than pi * R. Clamp before multiplying
+            // to preserve existing positive-radius inputs without float overflow.
+            $maximumDistance = M_PI * self::EARTH_RADIUS_METERS;
+            $parameters[$prefix . '_radius_meters'] = $criteria['radiusKm'] >= $maximumDistance / 1000
+                ? ceil($maximumDistance)
+                : $criteria['radiusKm'] * 1000;
+            $parameters += $boundParameters;
+            $parameters += $distanceBoundParameters;
         }
 
         return [$conditions, $parameters];
     }
 
     private function primaryLocationDistanceExpression(
-        string $latitudeCos,
-        string $latitudeSin,
+        string $latitude,
         string $longitude,
     ): string
     {
@@ -706,27 +793,63 @@ final class BusinessRepository implements BusinessReadRepository, BusinessSugges
                 WHERE business_locations.business_id = businesses.id
                 ORDER BY business_locations.is_primary DESC, business_locations.id ASC
                 LIMIT 1)',
-            $this->distanceExpression($latitudeCos, $latitudeSin, $longitude),
+            $this->distanceExpression($latitude, $longitude),
         );
     }
 
     private function distanceExpression(
-        string $latitudeCos,
-        string $latitudeSin,
+        string $latitude,
         string $longitude,
     ): string
     {
         return sprintf(
-            '6371 * ACOS(LEAST(1, GREATEST(-1,
-                COS(RADIANS(%1$s))
-                * COS(RADIANS(business_locations.latitude))
-                * COS(RADIANS(business_locations.longitude) - RADIANS(%3$s))
-                + SIN(RADIANS(%2$s))
-                * SIN(RADIANS(business_locations.latitude))
-            )))',
-            $latitudeCos,
-            $latitudeSin,
+            'CASE WHEN business_locations.latitude BETWEEN -90 AND 90
+                       AND business_locations.longitude BETWEEN -180 AND 180
+                  THEN ST_DISTANCE_SPHERE(
+                      POINT(business_locations.longitude, business_locations.latitude),
+                      POINT(%2$s, %1$s), 6370986
+                  ) ELSE NULL END',
+            $latitude,
             $longitude,
         );
+    }
+
+    /**
+     * Bounding box of the spherical search circle, including pole and dateline crossings.
+     * Keep columns unwrapped so the existing (latitude, longitude) index remains usable.
+     * @param array<string, mixed> $criteria
+     * @return array{list<string>, array<string, float>}
+     */
+    private function boundingBoxConditions(array $criteria, string $prefix): array
+    {
+        $angularRadius = min($criteria['radiusKm'] / (self::EARTH_RADIUS_METERS / 1000), M_PI);
+        $latitude = deg2rad($criteria['lat']);
+        // Expand slightly for decimal-coordinate and floating-point boundary rounding.
+        $epsilon = 0.00000001;
+        $minimumLatitude = max(-90.0, rad2deg($latitude - $angularRadius) - $epsilon);
+        $maximumLatitude = min(90.0, rad2deg($latitude + $angularRadius) + $epsilon);
+        $conditions = [
+            'business_locations.latitude BETWEEN :' . $prefix . '_min_lat AND :' . $prefix . '_max_lat',
+            'business_locations.longitude BETWEEN -180 AND 180',
+        ];
+        $parameters = [
+            $prefix . '_min_lat' => $minimumLatitude,
+            $prefix . '_max_lat' => $maximumLatitude,
+        ];
+        if ($minimumLatitude <= -90.0 || $maximumLatitude >= 90.0) {
+            return [$conditions, $parameters];
+        }
+
+        $longitudeDelta = rad2deg(asin(min(1.0, sin($angularRadius) / cos($latitude)))) + $epsilon;
+        $west = $criteria['lng'] - $longitudeDelta;
+        $east = $criteria['lng'] + $longitudeDelta;
+        $wrapsDateline = $west < -180.0 || $east > 180.0;
+        $parameters[$prefix . '_west_lng'] = $west < -180.0 ? $west + 360.0 : $west;
+        $parameters[$prefix . '_east_lng'] = $east > 180.0 ? $east - 360.0 : $east;
+        $conditions[] = $wrapsDateline
+            ? '(business_locations.longitude >= :' . $prefix . '_west_lng OR business_locations.longitude <= :' . $prefix . '_east_lng)'
+            : 'business_locations.longitude BETWEEN :' . $prefix . '_west_lng AND :' . $prefix . '_east_lng';
+
+        return [$conditions, $parameters];
     }
 }

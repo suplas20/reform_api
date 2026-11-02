@@ -479,8 +479,9 @@ GET /api/v1/regions
 
 | Field | Type | Required | 설명 |
 |---|---|---:|---|
-| parentId | integer | N | 시/도 하위 시/군/구 조회 |
-| level | integer | N | Region Level |
+| parentId | integer | N | 선택한 상위 지역 ID. 직계 하위 지역만 조회 |
+| level | integer | N | 1: 시도, 2: 시군구, 3: 읍면동 |
+| query | string | N | 지역명 부분 검색. parentId·level과 함께 사용 가능 |
 
 ### Root Example
 
@@ -494,6 +495,21 @@ GET /api/v1/regions?level=1
 GET /api/v1/regions?parentId=1
 ```
 
+수동 위치 설정에서는 다음 순서로 사용한다. `{sidoId}`, `{sigunguId}`는 직전 응답에서 선택한
+`id`이며 `code`를 전달하지 않는다.
+
+```http
+GET /api/v1/regions?level=1
+GET /api/v1/regions?parentId={sidoId}&level=2
+GET /api/v1/regions?parentId={sigunguId}&level=3
+GET /api/v1/regions?level=3&query=역삼
+```
+
+인증 없이 조회할 수 있다. 모든 필터를 생략하면 기존과 같이 전체 활성 지역을 반환한다.
+`parentId`와 `level`을 함께 보내면 두 조건을 모두 적용한다. 잘못된 형식의 ID·배열 검색어는
+422이며, 존재하지 않는 부모 ID 또는 하위 지역이 없는 지역의 조회는 빈 배열을 반환한다.
+응답은 기존처럼 페이지 구분 없는 목록이다.
+
 ### Response
 
 ```json
@@ -503,15 +519,34 @@ GET /api/v1/regions?parentId=1
     {
       "id": 10,
       "parentId": 1,
-      "code": "11680",
+      "code": "KR-11680",
       "name": "강남구",
+      "fullName": "서울특별시 강남구",
       "slug": "gangnam",
       "level": 2,
-      "sortOrder": 10
+      "sortOrder": 10,
+      "hasChildren": true,
+      "latitude": 37.5145750,
+      "longitude": 127.0495556,
+      "centerSource": "KMA-20260701"
     }
   ]
 }
 ```
+
+`fullName`은 같은 이름의 동을 구분하고 선택 결과를 표시하기 위한 전체 지역명이다.
+`hasChildren`은 현재 DB에 활성 직계 하위 지역이 있는지를 나타내며 다음 선택 목록을
+열 때 사용한다. 기준 자료의 누락·개편 때문에 false일 수도 있으므로 전국 최신 데이터의
+완전성을 나타내는 값은 아니다. 위치 선택 자체는 사용자 위치를 DB에 저장하지 않는다.
+
+`latitude`·`longitude`는 지역 선택의 거리 기준점으로 사용하는 대표좌표이며 `centerSource`는
+제공기관과 기준일이다. KMA-20260701은 기상청 동네예보 지점 좌표(2026-07-01 기준)로,
+동사무소 등을 중심으로 한 대표지점이다. 기하학적 중심이나 사용자 GPS 위치가 아니다.
+자료와 대응이 확인되지 않은 지역의 좌표·출처는 null이다.
+
+이 API는 지역 선택용 참조 데이터를 제공한다. 현재 업체의 `region_id` 연결은 시군구 단위여서
+읍면동을 선택한 뒤 그 읍면동의 업체를 정확히 검색하려면 별도의 업체–읍면동 연결 보완이 필요하다.
+현재 업체 목록 API는 선택한 동의 검색 결과가 없으면 구, 시 순서로 검색 범위를 자동 확대한다.
 
 ---
 
@@ -582,7 +617,7 @@ Bearer Token이 있으면 `isFavorite` 값을 사용자 기준으로 채울 수 
 | keyword | string | N | 업체명/검색 Keyword |
 | categoryId | integer | N | 물품 카테고리 |
 | serviceId | integer | N | 작업 종류 |
-| regionId | integer | N | 지역 |
+| regionId | integer | N | 선택한 지역 ID. 결과가 없으면 동→구→시로 자동 확장 |
 | brandId | integer | N | 취급 브랜드 |
 | lat | decimal | N | 현재/지도 중심 Latitude |
 | lng | decimal | N | 현재/지도 중심 Longitude |
@@ -606,6 +641,50 @@ Bearer Token이 있으면 `isFavorite` 값을 사용자 기준으로 채울 수 
 
 `전체` 선택 시 `radiusKm`을 전달하지 않는다.
 
+### 빈 지역의 검색 범위 확장
+
+선택한 `regionId`와 그 하위 지역을 먼저 조회한다. 동일한 검색 조건의 전체 결과 수가 0이면
+동→구→시 순서로 검색 범위를 넓히고, 결과가 있는 첫 범위에서 멈춘다. 시도 필터는 동 단위에
+연결된 업체까지 포함한다. 현재 업체가 시군구에만 연결되어 있는 경우에도 동 선택 후 해당
+시군구의 업체를 조회할 수 있다.
+
+서울의 `역삼1동 → 강남구 → 서울특별시`, 일반구가 있는 시의
+`파장동 → 수원시 장안구 → 수원시 전체 구`와 같이 처리한다. 수원시를 넘어 경기도 전체로
+확대하지 않는다. 춘천시처럼 시군구 행이 시 전체를 나타내면 그 시에서 멈춘다.
+존재하지 않는 지역 또는 비활성 부모를 통해서는 범위를 확대하지 않는다.
+
+검색어·카테고리·서비스·브랜드·인증·반경 조건은 모든 단계에서 유지한다. 거리 기준점이 있으면
+확장된 결과는 `sort`와 관계없이 거리순으로 정렬하고 좌표가 없는 업체는 마지막에 표시한다.
+요청 좌표가 없으면 최초 선택한 지역의 저장된 대표좌표를 거리 기준점으로 사용한다.
+**동→구→시로 결과 범위를 넓혀도 처음 선택한 동의 좌표를 그대로 유지한다.** 기본 recommended는
+지역 대표좌표가 있으면 거리순을 사용하고, 별도로 요청한 이름순·별점순 등은 직접 검색에서 유지한다.
+요청 좌표와 선택 지역의 대표좌표가 모두 없으면 거리 값은 null이며, 거리순·반경 요청은
+422 `LOCATION_COORDINATES_UNAVAILABLE`을 반환한다. 부모 좌표로 임의 대체하지 않는다.
+페이지의 결과가 비었다는
+이유로 범위를 확장하지 않으며, `total`과 `totalPages`는 실제 적용된 범위에 대한 값이다.
+
+`regionId`가 있는 요청에는 다음처럼 `meta.regionSearch`를 포함한다. 결과가 없으면 마지막으로
+검색한 범위를 나타내며, `regionId`를 생략한 요청에는 이 필드가 없다.
+
+```json
+{
+  "requestedRegionId": 677,
+  "appliedRegionIds": [32],
+  "appliedRegionName": "강남구",
+  "expanded": true
+}
+```
+
+일반구를 묶어서 시 전체로 검색하면 `appliedRegionIds`에는 같은 시의 구 ID들이 들어간다.
+앱은 `expanded`와 `appliedRegionName`으로 “선택한 동에 업체가 없어 강남구의 업체를 표시합니다”를
+안내할 수 있다. 위치 좌표는 저장하지 않는다.
+
+`meta.distanceOrigin`은 계산에 사용한 기준점이다. `type=COORDINATES`는 요청 좌표,
+`type=REGION_CENTER`는 처음 선택한 지역의 대표좌표이며 `regionId`, `regionName`,
+`latitude`, `longitude`, `source`를 포함한다. 기준점을 확인하지 못하면 null이다.
+요청에 좌표가 있으면 지역 대표좌표보다 우선한다. 저장되는 대표좌표는 공공 참조 데이터이고
+사용자 좌표는 요청 중에만 사용한다.
+
 ### Sort
 
 v1 Contract:
@@ -613,7 +692,9 @@ v1 Contract:
 ```text
 recommended
 distance
+name
 rating
+ratingAsc
 reviewCount
 recent
 ```
@@ -623,6 +704,8 @@ recent
 ```text
 recommended
 ```
+
+`name`은 업체명 오름차순, `reviewCount`는 내부 리뷰 수 내림차순, `rating`은 내부 별점 내림차순, `ratingAsc`는 내부 별점 오름차순이다. 별점이 없는 업체는 별점 정렬에서 마지막에 표시한다. 동률은 업체 ID 내림차순이며 모든 정렬은 페이지 분할 전에 적용한다.
 
 `recommended`의 정확한 Ranking Weight는 별도 검색 Ranking 정책으로 관리하며 Mobile Client Contract에 노출하지 않는다.
 

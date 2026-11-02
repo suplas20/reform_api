@@ -50,11 +50,11 @@ final class BusinessController
             $this->throwInvalidPagination();
         }
 
-        if ($criteria['radiusKm'] !== null && $criteria['lat'] === null) {
+        if ($criteria['radiusKm'] !== null && $criteria['lat'] === null && $criteria['regionId'] === null) {
             $this->throwInvalidPagination();
         }
 
-        if ($criteria['sort'] === 'distance' && $criteria['lat'] === null) {
+        if ($criteria['sort'] === 'distance' && $criteria['lat'] === null && $criteria['regionId'] === null) {
             $this->throwInvalidPagination();
         }
 
@@ -66,6 +66,10 @@ final class BusinessController
             $perPage,
             $result['total'],
             $result['totalPages'],
+            [
+                ...($result['regionSearch'] === null ? [] : ['regionSearch' => $result['regionSearch']]),
+                'distanceOrigin' => $result['distanceOrigin'],
+            ],
         );
     }
 
@@ -151,7 +155,7 @@ final class BusinessController
 
         $validated = filter_var($value, FILTER_VALIDATE_FLOAT);
 
-        if ($validated === false || $validated < $minimum || $validated > $maximum) {
+        if ($validated === false || !is_finite($validated) || $validated < $minimum || $validated > $maximum) {
             $this->throwInvalidPagination();
         }
 
@@ -185,7 +189,7 @@ final class BusinessController
 
         if (
             !is_string($value)
-            || !in_array($value, ['recommended', 'distance', 'rating', 'reviewCount', 'recent'], true)
+            || !in_array($value, ['recommended', 'distance', 'name', 'rating', 'ratingAsc', 'reviewCount', 'recent'], true)
         ) {
             $this->throwInvalidPagination();
         }

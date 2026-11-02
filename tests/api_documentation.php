@@ -38,6 +38,16 @@ $controller = new ApiDocumentationController(
 $businessController = new BusinessController(
     new BusinessService(
         new class implements BusinessReadRepository {
+            public function findActiveRegionAncestors(int $regionId): array
+            {
+                return [];
+            }
+
+            public function findActiveCityDistrictIds(int $provinceId, string $cityName): array
+            {
+                return [];
+            }
+
             public function countPublic(string $publishedAt, array $criteria = []): int
             {
                 return 0;

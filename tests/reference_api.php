@@ -64,9 +64,11 @@ final class FakeReferenceDataProvider implements ReferenceDataProvider
             'parentId' => 1,
             'code' => '11680',
             'name' => '강남구',
+            'fullName' => '서울특별시 강남구',
             'slug' => 'gangnam',
             'level' => 2,
             'sortOrder' => 10,
+            'hasChildren' => true,
         ]];
     }
 
@@ -103,6 +105,16 @@ $referenceController = new ReferenceController($referenceData);
 $businessController = new BusinessController(
     new BusinessService(
         new class implements BusinessReadRepository {
+            public function findActiveRegionAncestors(int $regionId): array
+            {
+                return [];
+            }
+
+            public function findActiveCityDistrictIds(int $provinceId, string $cityName): array
+            {
+                return [];
+            }
+
             public function countPublic(string $publishedAt, array $criteria = []): int
             {
                 return 0;
@@ -224,6 +236,21 @@ $regions = json_decode($regionsResponse->getContent(), true, flags: JSON_THROW_O
 assertReferenceApi(200, $regionsResponse->getStatusCode(), 'Regions status is invalid.');
 assertReferenceApi([1, 2, '강남'], $referenceData->lastArguments['regions'], 'Regions query is invalid.');
 assertReferenceApi('11680', $regions['data'][0]['code'], 'Regions payload is invalid.');
+assertReferenceApi('서울특별시 강남구', $regions['data'][0]['fullName'], 'Region selection display name is invalid.');
+assertReferenceApi(true, $regions['data'][0]['hasChildren'], 'Region selection child availability is invalid.');
+assertReferenceApi(false, isset($regions['meta']), 'Region selection must retain the existing unpaginated contract.');
+
+foreach ([
+    ['/api/v1/regions?level=1', [null, 1, null]],
+    ['/api/v1/regions?parentId=10', [10, null, null]],
+    ['/api/v1/regions?parentId=10&level=3', [10, 3, null]],
+    ['/api/v1/regions?query=%20%EA%B0%95%EB%82%A8%20', [null, null, '강남']],
+    ['/api/v1/regions', [null, null, null]],
+] as [$path, $arguments]) {
+    $response = $application->handle(Request::create($path, 'GET'));
+    assertReferenceApi(200, $response->getStatusCode(), 'Region selection request failed.');
+    assertReferenceApi($arguments, $referenceData->lastArguments['regions'], 'Region selection filters are invalid.');
+}
 
 $brandsResponse = $application->handle(
     Request::create('/api/v1/brands?keyword=Chan&page=2&perPage=20', 'GET'),
@@ -239,6 +266,11 @@ foreach ([
     '/api/v1/categories?parentId=0',
     '/api/v1/services?limit=0',
     '/api/v1/regions?level[]=1',
+    '/api/v1/regions?parentId=0',
+    '/api/v1/regions?parentId[]=1',
+    '/api/v1/regions?parentId=1%20OR%201=1',
+    '/api/v1/regions?level=-1',
+    '/api/v1/regions?query[]=강남',
     '/api/v1/brands?page=0',
     '/api/v1/brands?keyword[]=bag',
 ] as $invalidPath) {

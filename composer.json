@@ -25,6 +25,7 @@
             "@php tests/google_login.php",
             "@php tests/semas_import.php",
             "@php tests/administrative_regions.php",
+            "@php tests/administrative_region_sync.php",
             "@php tests/business_api.php",
             "@php tests/reference_api.php",
             "@php tests/event_api.php",
@@ -47,12 +48,22 @@
             "@php bin/import-administrative-regions.php collect"
         ],
         "db:import:regions:status": "@php bin/import-administrative-regions.php status",
+        "db:import:regions:plan": "@php bin/sync-administrative-regions.php plan",
+        "db:import:regions:sync": "@php bin/sync-administrative-regions.php apply",
+        "db:import:region-centers:plan": "@php bin/import-region-centers.php plan",
+        "db:import:region-centers": "@php bin/import-region-centers.php apply",
         "test:seed": "@php tests/seed_data.php",
         "test:database": [
             "@php tests/database_schema.php",
             "@php tests/public_repository.php",
+            "@php tests/region_selection_repository.php",
+            "@php tests/region_centers.php",
+            "@php tests/business_location_search.php",
+            "@php tests/business_region_fallback.php",
+            "@php tests/business_sorting.php",
             "@php tests/app_api_integration.php",
-            "@php tests/administrative_region_repository.php"
+            "@php tests/administrative_region_repository.php",
+            "@php tests/administrative_region_sync_repository.php"
         ],
         "serve": [
             "Composer\\Config::disableProcessTimeout",
