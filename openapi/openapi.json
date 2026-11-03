@@ -909,7 +909,7 @@
     "/api/v1/ads": {
       "get": {
         "tags": ["Ad"], "summary": "광고 조회", "operationId": "getAd",
-        "parameters": [{"name": "placement", "in": "query", "required": true, "schema": {"type": "string", "enum": ["home_feed_01", "search_result_01"]}}],
+        "parameters": [{"name": "placement", "in": "query", "required": true, "schema": {"type": "string", "enum": ["home_feed_01", "search_result_01", "home_nearby_01", "home_nearby_02", "home_nearby_03", "business_detail_01"]}}],
         "responses": {"200": {"$ref": "#/components/responses/GenericSuccess"}, "422": {"$ref": "#/components/responses/ValidationFailed"}, "503": {"$ref": "#/components/responses/ServiceUnavailable"}}
       }
     },

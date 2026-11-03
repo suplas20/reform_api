@@ -14,6 +14,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class AdController
 {
+    public const PLACEMENTS = [
+        'home_feed_01', 'search_result_01',
+        'home_nearby_01', 'home_nearby_02', 'home_nearby_03',
+        'business_detail_01',
+    ];
     public function __construct(
         private readonly AuthService $authService,
         private readonly AdService $service,
@@ -22,7 +27,7 @@ final class AdController
 
     public function show(Request $request): JsonResponse
     {
-        $placement = RequestValidator::enum($request->query->get('placement'), ['home_feed_01', 'search_result_01']);
+        $placement = RequestValidator::enum($request->query->get('placement'), self::PLACEMENTS);
 
         return ApiResponse::success($this->service->get($placement));
     }

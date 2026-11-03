@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use App\Controller\Api\ApiDocumentationController;
 use App\Controller\Api\V1\BusinessController;
+use App\Controller\Api\V1\AdController;
+use App\Http\RequestValidator;
 use App\Controller\Api\V1\EventController;
 use App\Controller\Api\V1\ReferenceController;
 use App\Controller\Api\V1\SearchController;
@@ -364,5 +366,20 @@ assertApiDocumentation(
     str_contains((string) $initializerResponse->getContent(), '/api/docs/openapi.json'),
     'Swagger UI initializer does not reference the OpenAPI specification.',
 );
+
+
+// Every app placement must be accepted by the endpoint and documented identically.
+$adParameters = $specification['paths']['/api/v1/ads']['get']['parameters'];
+$adPlacement = array_values(array_filter($adParameters, static fn (array $item): bool => ($item['name'] ?? null) === 'placement'))[0];
+assertApiDocumentation($adPlacement['schema']['enum'] === AdController::PLACEMENTS, 'Ad placement contract must match controller validation.');
+foreach (AdController::PLACEMENTS as $placement) {
+    assertApiDocumentation(RequestValidator::enum($placement, AdController::PLACEMENTS) === $placement, 'Valid app ad placement was rejected.');
+}
+try {
+    RequestValidator::enum('unknown_placement', AdController::PLACEMENTS);
+    assertApiDocumentation(false, 'Unknown ad placements must remain rejected.');
+} catch (App\Exception\ValidationException) {
+    // Expected: retain strict validation for unsupported placements.
+}
 
 fwrite(STDOUT, "API documentation tests passed.\n");
