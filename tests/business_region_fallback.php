@@ -111,171 +111,81 @@ final class RegionFallbackReadStatement extends PDOStatement
 $db = (new ConnectionFactory(require dirname(__DIR__) . '/config/database.php'))->connection();
 $db->beginTransaction();
 try {
-    $prefix = 'region-fallback-' . bin2hex(random_bytes(6));
+    $prefix = 'nearby-scope-' . bin2hex(random_bytes(6));
     $fixtures = new RegionFallbackFixtureRepository($db, $prefix);
-    $metro = $fixtures->region(null, $prefix . '특별시', 1);
-    $district = $fixtures->region($metro, '선택구', 2);
+    $city = $fixtures->region(null, $prefix . '시', 1);
+    $district = $fixtures->region($city, '선택구', 2);
     $dong = $fixtures->region($district, '선택동', 3);
-    $otherDistrict = $fixtures->region($metro, '인근구', 2);
-    $otherDong = $fixtures->region($otherDistrict, '인근동', 3);
-    $outsideMetro = $fixtures->region(null, $prefix . '다른시', 1);
-    $outsideDistrict = $fixtures->region($outsideMetro, '다른구', 2);
-    $local = $fixtures->business('local-only', $dong, 37.51);
-    $fixtures->business('local-outside-dong', $district, 37.50001);
-    $near = $fixtures->business('district-near', $district, 37.501);
-    $far = $fixtures->business('district-far', $district, 37.507);
-    $missing = $fixtures->business('district-missing', $district, null);
-    $fixtures->business('district-other', $otherDistrict, 37.50001);
-    $cityFar = $fixtures->business('city-far', $otherDistrict, 37.52);
-    $cityNear = $fixtures->business('city-near', $otherDong, 37.502);
-    $fixtures->location($cityNear, $otherDong, 37.502, 0);
-    $fixtures->business('city-outside', $outsideDistrict, 37.50001);
-    foreach (['DRAFT', 'FUTURE', 'DELETED'] as $state) {
-        $fixtures->business('city-hidden-' . $state, $dong, 37.50001, $state);
-    }
-    $filterMatch = $fixtures->business('filtered-match', $otherDong, 37.503);
-    $fixtures->business('filtered-wrong', $district, 37.50001);
-    $filters = $fixtures->filters($filterMatch);
-
-    $province = $fixtures->region(null, $prefix . '도', 1);
-    $cityName = $prefix . '수원시';
-    $cityDistrict = $fixtures->region($province, $cityName . ' 장안구', 2);
-    $cityDong = $fixtures->region($cityDistrict, '파장동', 3);
-    $siblingDistrict = $fixtures->region($province, $cityName . ' 영통구', 2);
-    $siblingDong = $fixtures->region($siblingDistrict, '영통동', 3);
-    $otherCityDistrict = $fixtures->region($province, $prefix . '성남시 분당구', 2);
-    $flatCityMatch = $fixtures->business('flat-match', $siblingDong, 37.503);
-    $fixtures->business('flat-other-city', $otherCityDistrict, 37.50001);
-    $plainCity = $fixtures->region($province, $prefix . '춘천시', 2);
-    $plainDong = $fixtures->region($plainCity, '빈동', 3);
-    $fixtures->business('plain-outside', $otherCityDistrict, 37.50001);
-    $inactiveDistrict = $fixtures->region($metro, '폐지구', 2, 'INACTIVE');
-    $inactiveParentDong = $fixtures->region($inactiveDistrict, '잔여동', 3);
-
-    $centerCity = $fixtures->region(null, $prefix . '기준시', 1);
-    $centerDistrict = $fixtures->region($centerCity, '기준구', 2);
-    $centerDong = $fixtures->region($centerDistrict, '기준동', 3);
-    $centerMissingDong = $fixtures->region($centerDistrict, '좌표없는동', 3);
-    $centerOtherDistrict = $fixtures->region($centerCity, '확장구', 2);
+    $otherDistrict = $fixtures->region($city, '인근구', 2);
+    $otherCity = $fixtures->region(null, $prefix . '다른시', 1);
+    $otherCityDistrict = $fixtures->region($otherCity, '다른시구', 2);
+    $missingDong = $fixtures->region($district, '미확인동', 3);
+    $forecastDong = $fixtures->region($district, '예보좌표동', 3);
     $centers = new RegionCenterRepository($db);
-    foreach ([$centerCity => 39.0, $centerDistrict => 38.0, $centerDong => 37.5] as $id => $latitude) {
-        $centers->update($id, ['latitude' => $latitude, 'longitude' => 127.03, 'source_code' => 'test-' . $id], 'TEST-CENTERS', gmdate('Y-m-d H:i:s'));
+    $centers->update($dong, ['latitude' => 37.5, 'longitude' => 127.03, 'source_code' => 'office'], 'OFFICE-TEST-CENTERS', gmdate('Y-m-d H:i:s'));
+    $centers->update($district, ['latitude' => 38.0, 'longitude' => 127.03, 'source_code' => 'parent'], 'OFFICE-TEST-CENTERS', gmdate('Y-m-d H:i:s'));
+    $centers->update($forecastDong, ['latitude' => 37.5, 'longitude' => 127.03, 'source_code' => 'forecast'], 'KMA-LEGACY', gmdate('Y-m-d H:i:s'));
+    $local = $fixtures->business('match-local', $dong, 37.502);
+    $neighbor = $fixtures->business('match-neighbor', $otherDistrict, 37.501);
+    $otherCityMatch = $fixtures->business('match-other-city', $otherCityDistrict, 37.503);
+    $fiveKm = $fixtures->business('match-5km', $district, 37.5 + rad2deg(4999.8 / 6370986));
+    $tenKm = $fixtures->business('match-10km', $otherCityDistrict, 37.5 + rad2deg(9999.8 / 6370986));
+    $twentyKm = $fixtures->business('match-20km', $otherDistrict, 37.5 + rad2deg(19999.8 / 6370986));
+    $fixtures->business('match-outside', $district, 37.5 + rad2deg(20000.2 / 6370986));
+    $fixtures->business('match-missing', $dong, null);
+    $fixtures->location($neighbor, $otherDistrict, 37.501, 0);
+    foreach (['DRAFT', 'FUTURE', 'DELETED'] as $state) {
+        $fixtures->business('match-hidden-' . $state, $dong, 37.50001, $state);
     }
-    $centerNear = $fixtures->business('center-district-near', $centerDistrict, 37.501);
-    $centerFar = $fixtures->business('center-district-far', $centerDistrict, 37.502);
-    $centerCityNear = $fixtures->business('center-city-near', $centerOtherDistrict, 37.504);
-    $centerCityFar = $fixtures->business('center-city-far', $centerOtherDistrict, 37.506);
-    $centerLocal = $fixtures->business('center-local', $centerDong, 37.503);
-
+    $filters = $fixtures->filters($neighbor);
     $queries = [];
     $db->setAttribute(PDO::ATTR_STATEMENT_CLASS, [RegionFallbackReadStatement::class,
         [static function (string $sql) use (&$queries): void { $queries[] = $sql; }]]);
-    $repository = new BusinessRepository($db);
-    $service = new BusinessService($repository);
-    $search = static fn (string $group, int $region, array $extra = [], int $page = 1, int $perPage = 100): array => $service->getPublicList(
-        $page, $perPage, $extra + ['keyword' => $prefix . '-' . $group, 'regionId' => $region,
-            'lat' => 37.5, 'lng' => 127.03, 'sort' => 'recommended'],
-    );
-    $result = $search('local-', $dong);
-    assertRegionFallback($result['total'] === 1 && $result['items'][0]['id'] === $local && !$result['regionSearch']['expanded'],
-        'A nonempty dong must not expand even if another business is closer.');
-    $result = $search('district-', $dong);
-    assertRegionFallback(array_column($result['items'], 'id') === [$near, $far, $missing]
-        && $result['regionSearch']['appliedRegionIds'] === [$district], 'Empty dong must use its district and sort by distance, with null coordinates last.');
-    assertRegionFallback($result['items'][0]['distanceMeters'] > 0 && $result['items'][2]['distanceMeters'] === null,
-        'Fallback must retain meter distances and nullable coordinate behavior.');
-    $result = $search('city-', $dong);
-    assertRegionFallback($result['total'] === 2 && array_column($result['items'], 'id') === [$cityNear, $cityFar]
-        && $result['regionSearch']['appliedRegionIds'] === [$metro], 'Empty district must use the city, including businesses stored at dong level without duplicates.');
-    assertRegionFallback($result['regionSearch']['requestedRegionId'] === $dong && $result['regionSearch']['expanded'], 'Response must distinguish requested and applied scope.');
-    $fromDistrict = $search('city-', $district);
-    assertRegionFallback(array_column($fromDistrict['items'], 'id') === [$cityNear, $cityFar], 'A district selection must also expand to its city if empty.');
-    $withRadius = $search('city-', $dong, ['radiusKm' => 1.0]);
-    assertRegionFallback($withRadius['total'] === 1 && $withRadius['items'][0]['id'] === $cityNear, 'Explicit radius must survive region expansion.');
-    assertRegionFallback($search('city-', $dong, ['radiusKm' => 0.001])['total'] === 0, 'Fallback must never silently remove the radius limit.');
-    $filtered = $search('filtered-', $dong, $filters + ['radiusKm' => 1.0]);
-    assertRegionFallback($filtered['total'] === 1 && $filtered['items'][0]['id'] === $filterMatch
-        && $filtered['regionSearch']['appliedRegionIds'] === [$metro], 'Category, service, brand and verification must apply to each scope.');
-    for ($page = 1; $page <= 4; ++$page) {
-        $paged = $search('district-', $dong, page: $page, perPage: 1);
-        assertRegionFallback($paged['total'] === 3 && $paged['totalPages'] === 3 && $paged['regionSearch']['appliedRegionIds'] === [$district],
-            'Empty pages must not trigger further expansion or change total counts.');
-        assertRegionFallback(array_column($paged['items'], 'id') === ($page <= 3 ? [[$near, $far, $missing][$page - 1]] : []),
-            'Fallback distance sort must happen before pagination.');
+    $service = new BusinessService(new BusinessRepository($db));
+    $manual = ['keyword' => $prefix . '-match-', 'regionId' => $dong];
+    $automatic = ['keyword' => $prefix . '-match-', 'lat' => 37.5, 'lng' => 127.03];
+    foreach ([null, 10.0, 20.0] as $requestedRadius) {
+        $radius = $requestedRadius ?? 5.0;
+        $radiusFilter = $requestedRadius === null ? [] : ['radiusKm' => $requestedRadius];
+        $selected = $service->getPublicList(1, 100, $manual + $radiusFilter);
+        $gps = $service->getPublicList(1, 100, $automatic + $radiusFilter);
+        $expected = [$neighbor, $local, $otherCityMatch, $fiveKm];
+        if ($radius >= 10) { $expected[] = $tenKm; }
+        if ($radius >= 20) { $expected[] = $twentyKm; }
+        assertRegionFallback(array_column($selected['items'], 'id') === $expected, 'Manual searches must cross district/city borders and stop at the circle.');
+        assertRegionFallback($selected['items'] === $gps['items'] && $selected['total'] === $gps['total'], 'Identical GPS and office origins must return identical ordered businesses and distances.');
+        assertRegionFallback($selected['distanceOrigin']['type'] === 'REGION_CENTER' && $selected['distanceOrigin']['regionId'] === $dong, 'Manual origin must remain the selected office.');
+        assertRegionFallback($selected['regionSearch']['appliedRegionIds'] === [] && !$selected['regionSearch']['expanded'], 'No administrative scope may be applied.');
+        assertRegionFallback($gps['regionSearch'] === null && $gps['distanceOrigin']['type'] === 'COORDINATES', 'GPS origin metadata must remain compatible.');
     }
-    $manual = $search('district-', $dong, ['lat' => null, 'lng' => null, 'sort' => 'name']);
-    assertRegionFallback(array_column($manual['items'], 'id') === [$far, $missing, $near]
-        && $manual['items'][0]['distanceMeters'] === null, 'Manual location without coordinates must retain the requested non-distance sort.');
-    $flat = $search('flat-', $cityDong);
-    assertRegionFallback($flat['total'] === 1 && $flat['items'][0]['id'] === $flatCityMatch
-        && $flat['regionSearch']['appliedRegionIds'] === [$cityDistrict, $siblingDistrict]
-        && $flat['regionSearch']['appliedRegionName'] === $cityName, 'City expansion must not include a different city in the same province.');
-    $flatFromDistrict = $search('flat-', $cityDistrict);
-    assertRegionFallback($flatFromDistrict['total'] === 1 && $flatFromDistrict['items'][0]['id'] === $flatCityMatch, 'Flattened district selections must expand to sibling districts.');
-    $plain = $search('plain-', $plainDong);
-    assertRegionFallback($plain['total'] === 0 && $plain['regionSearch']['appliedRegionIds'] === [$plainCity], 'A full city selection must stop at the city boundary.');
-    $unknown = $search('city-', PHP_INT_MAX);
-    assertRegionFallback($unknown['total'] === 0 && !$unknown['regionSearch']['expanded'], 'Unknown regions must not become nationwide searches.');
-    $empty = $search('no-matches-', $dong);
-    assertRegionFallback($empty['items'] === [] && $empty['total'] === 0 && $empty['totalPages'] === 0,
-        'All empty scopes must produce an empty result without removing the keyword.');
-    $inactive = $search('city-', $inactiveParentDong);
-    assertRegionFallback($inactive['total'] === 0 && !$inactive['regionSearch']['expanded'], 'Fallback must not traverse an inactive parent.');
-    $withoutRegion = $service->getPublicList(1, 100, ['keyword' => $prefix . '-city-']);
-    assertRegionFallback($withoutRegion['total'] === 3 && $withoutRegion['regionSearch'] === null, 'Requests without a region must preserve their original behavior.');
-    foreach ([[], [0], ['1 OR 1=1']] as $invalidIds) {
+    $selected = $service->getPublicList(1, 100, $manual);
+    $paged = [];
+    for ($page = 1; $page <= 3; ++$page) {
+        $result = $service->getPublicList($page, 2, $manual);
+        assertRegionFallback($result['total'] === 4 && $result['totalPages'] === 2, 'Pagination must retain the same radial count.');
+        $paged = array_merge($paged, array_column($result['items'], 'id'));
+    }
+    assertRegionFallback($paged === array_column($selected['items'], 'id'), 'Pagination must preserve stable distance ordering without duplicates.');
+    $filtered = $service->getPublicList(1, 100, $manual + $filters);
+    assertRegionFallback(array_column($filtered['items'], 'id') === [$neighbor], 'Category, service, brand and verification filters must still apply across boundaries.');
+    $empty = $service->getPublicList(1, 100, ['keyword' => $prefix . '-no-match-', 'regionId' => $dong]);
+    assertRegionFallback($empty['total'] === 0 && $empty['items'] === [], 'An empty circle must not trigger administrative expansion.');
+    $explicit = $service->getPublicList(1, 100, $manual + ['lat' => 37.501, 'lng' => 127.03]);
+    assertRegionFallback($explicit['distanceOrigin']['type'] === 'COORDINATES' && $explicit['items'][0]['distanceMeters'] < 0.01, 'Explicit coordinates must take priority over the office, with no region boundary.');
+    foreach ([$missingDong, $forecastDong, PHP_INT_MAX] as $unverifiedId) {
         try {
-            $repository->countPublic(gmdate('Y-m-d H:i:s'), ['regionIds' => $invalidIds]);
-            throw new LogicException('Invalid internal region scopes must not execute.');
-        } catch (InvalidArgumentException) {
+            $service->getPublicList(1, 100, ['keyword' => $prefix, 'regionId' => $unverifiedId]);
+            throw new LogicException('Unverified offices must not fall back to parent centers or administrative lists.');
+        } catch (ValidationException $error) {
+            assertRegionFallback($error->errorCode() === 'LOCATION_COORDINATES_UNAVAILABLE', 'Missing office must have the documented error code.');
         }
     }
-    $response = (new BusinessController($service))->index(Request::create('/api/v1/businesses', 'GET',
-        ['regionId' => (string) $dong, 'keyword' => $prefix . '-city-', 'latitude' => '37.5', 'longitude' => '127.03']));
+    $response = (new BusinessController($service))->index(Request::create('/api/v1/businesses', 'GET', ['regionId' => (string) $dong, 'keyword' => $prefix . '-match-', 'radiusKm' => '20']));
     $json = json_decode($response->getContent(), true, flags: JSON_THROW_ON_ERROR);
-    assertRegionFallback($response->getStatusCode() === 200 && $json['success'] === true
-        && $json['meta']['regionSearch']['expanded'] === true && $json['meta']['total'] === 2
-        && array_column($json['data'], 'id') === [$cityNear, $cityFar], 'API response and coordinate aliases must expose fallback results and metadata.');
-    assertRegionFallback($queries !== [], 'Integration searches must exercise real prepared statements.');
-    // A region-only request must use the selected dong's reference point, never
-    // the district/city centers even when those scopes supply the results.
-    foreach ([['center-district-', [$centerNear, $centerFar], $centerDistrict],
-        ['center-city-', [$centerCityNear, $centerCityFar], $centerCity]] as [$group, $expectedIds, $scopeId]) {
-        $centered = $search($group, $centerDong, ['lat' => null, 'lng' => null]);
-        assertRegionFallback(array_column($centered['items'], 'id') === $expectedIds
-            && $centered['regionSearch']['appliedRegionIds'] === [$scopeId]
-            && $centered['distanceOrigin']['type'] === 'REGION_CENTER'
-            && $centered['distanceOrigin']['regionId'] === $centerDong
-            && $centered['distanceOrigin']['latitude'] === 37.5,
-            'Expanded manual-region searches must keep the selected dong origin and distance ordering.');
-        assertRegionFallback($centered['items'][0]['distanceMeters'] > 100 && $centered['items'][0]['distanceMeters'] < 500,
-            'Distances must be measured from the selected dong, not its far-away parent center.');
-    }
-    $centeredLocal = $search('center-local', $centerDong, ['lat' => null, 'lng' => null]);
-    assertRegionFallback(!$centeredLocal['regionSearch']['expanded'] && $centeredLocal['items'][0]['id'] === $centerLocal
-        && $centeredLocal['items'][0]['distanceKm'] > 0, 'Direct dong results must use the same region center.');
-    $explicitOrigin = $search('center-district-', $centerDong, ['lat' => 37.501, 'lng' => 127.03]);
-    assertRegionFallback($explicitOrigin['distanceOrigin']['type'] === 'COORDINATES'
-        && $explicitOrigin['items'][0]['distanceMeters'] < 0.01, 'Explicit request coordinates must retain priority over stored centers.');
-    $noCenter = $search('center-district-', $centerMissingDong, ['lat' => null, 'lng' => null]);
-    assertRegionFallback($noCenter['distanceOrigin'] === null && $noCenter['items'][0]['distanceMeters'] === null,
-        'A missing dong center must never silently use its parent center.');
-    try {
-        $search('center-district-', $centerMissingDong, ['lat' => null, 'lng' => null, 'sort' => 'distance']);
-        throw new LogicException('Distance sorting with no valid origin must fail validation.');
-    } catch (ValidationException) {
-    }
-    $centerResponse = (new BusinessController($service))->index(Request::create('/api/v1/businesses', 'GET',
-        ['regionId' => (string) $centerDong, 'keyword' => $prefix . '-center-city-', 'sort' => 'distance', 'radiusKm' => '0.5']));
-    $centerJson = json_decode($centerResponse->getContent(), true, flags: JSON_THROW_ON_ERROR);
-    assertRegionFallback($centerResponse->getStatusCode() === 200 && $centerJson['meta']['total'] === 1
-        && $centerJson['data'][0]['id'] === $centerCityNear
-        && $centerJson['meta']['distanceOrigin']['regionId'] === $centerDong,
-        'Region-only API requests must support radius and distance sort using the original region center.');
+    assertRegionFallback($response->getStatusCode() === 200 && $json['meta']['total'] === 6 && $json['meta']['distanceOrigin']['regionId'] === $dong, 'Region-only API requests must support a 20km circle.');
+    assertRegionFallback($queries !== [] && !array_filter($queries, static fn (string $sql): bool => str_contains($sql, 'location_regions')), 'Nearby queries must not contain region-boundary SQL.');
     $db->rollBack();
-    echo "Business region fallback tests passed (dong, district, city, filters, distance, pagination, read-only; fixtures rolled back).\n";
+    echo "Business nearby scope tests passed (GPS/office equality, cross-border circles, 5/10/20km, filters, pagination, validation, read-only; fixtures rolled back).\n";
 } finally {
-    if ($db->inTransaction()) {
-        $db->rollBack();
-    }
+    if ($db->inTransaction()) { $db->rollBack(); }
 }

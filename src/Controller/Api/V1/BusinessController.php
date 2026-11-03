@@ -41,7 +41,7 @@ final class BusinessController
             'brandId' => $this->optionalPositiveInt($query['brandId'] ?? null),
             'lat' => $this->optionalFloat($query['lat'] ?? $query['latitude'] ?? null, -90.0, 90.0),
             'lng' => $this->optionalFloat($query['lng'] ?? $query['longitude'] ?? null, -180.0, 180.0),
-            'radiusKm' => $this->optionalFloat($query['radiusKm'] ?? null, 0.000001, PHP_FLOAT_MAX),
+            'radiusKm' => $this->optionalFloat($query['radiusKm'] ?? null, 0.000001, BusinessService::MAX_RADIUS_KM),
             'verifiedOnly' => $this->optionalBoolean($query['verifiedOnly'] ?? null) ?? false,
             'sort' => $this->sort($query['sort'] ?? null),
         ];

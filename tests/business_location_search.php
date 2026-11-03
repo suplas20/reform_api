@@ -76,7 +76,7 @@ try {
         return $id;
     };
 
-    $distances = [0, 500, 999.8, 1000.2, 1500, 2999.8, 3000.2, 3500, 4999.8, 5000.2, 7000, 9999.8, 10000.2, 11000];
+    $distances = [0, 500, 999.8, 1000.2, 1500, 2999.8, 3000.2, 3500, 4999.8, 5000.2, 7000, 9999.8, 10000.2, 11000, 19999.8, 20000.2];
     $ids = [];
     foreach ($distances as $index => $distance) {
         $ids[$index] = $addBusiness('seoul', 'distance-' . $index, destinationForTest(37.5, 127.03, $distance));
@@ -101,7 +101,6 @@ try {
     $addBusiness('dateline', 'outside', [0, -179.9]);
     $poleId = $addBusiness('pole', 'across', [89.999, -135]);
     $addBusiness('pole', 'outside', [89, 45]);
-    $antipodeId = $addBusiness('antipode', 'opposite', [0, 180]);
 
     $queries = [];
     $connection->setAttribute(PDO::ATTR_STATEMENT_CLASS, [LocationSearchStatement::class, [
@@ -110,11 +109,14 @@ try {
     $service = new BusinessService(new BusinessRepository($connection));
     $search = static fn (array $criteria, int $page = 1, int $perPage = 100): array => $service->getPublicList($page, $perPage, $criteria + ['keyword' => $suffix . '-seoul-', 'lat' => 37.5, 'lng' => 127.03, 'sort' => 'distance']);
 
-    foreach ([1, 3, 5, 10] as $radius) {
+    foreach ([1, 3, 5, 10, 20] as $radius) {
         $result = $search(['radiusKm' => (float) $radius]);
         $expected = count(array_filter($distances, static fn ($distance): bool => $distance <= $radius * 1000)) + 1;
-        if ($radius === 10) {
+        if ($radius >= 10) {
             ++$expected; // The 5 km bounding-box corner is within 10 km.
+        }
+        if ($radius === 20) {
+            ++$expected; // The 11km primary location is inside 20km.
         }
         assertLocationSearch($result['total'] === $expected && count($result['items']) === $expected, 'Radius count and page membership must agree.');
         $last = -1.0;
@@ -131,9 +133,10 @@ try {
     assertLocationSearch($first['total'] === $second['total'], 'Location pagination totals must agree.');
     $unsorted = $search(['sort' => 'recent', 'radiusKm' => 5.0]);
     assertLocationSearch($unsorted['items'][0]['distanceMeters'] !== null, 'Coordinates must produce distances with other sorts too.');
-    $withoutRadius = $search([]);
-    $lastIds = array_column(array_slice($withoutRadius['items'], -3), 'id');
-    assertLocationSearch(count(array_intersect($lastIds, [$unknownId, $invalidId, $missingPrimaryId])) === 3, 'Missing and invalid primary coordinates must sort last.');
+    $defaultRadius = $search([]);
+    assertLocationSearch(array_column($defaultRadius['items'], 'id') === array_column($search(['radiusKm' => 5.0])['items'], 'id'), 'Omitted radius must use the same 5km circle.');
+    $withoutRadius = $search(['radiusKm' => 20.0]);
+    assertLocationSearch(array_intersect(array_column($withoutRadius['items'], 'id'), [$unknownId, $invalidId, $missingPrimaryId]) === [], 'Radius searches must exclude missing and invalid primary coordinates.');
     $far = array_values(array_filter($withoutRadius['items'], static fn ($item): bool => $item['id'] === $farPrimaryId))[0];
     assertLocationSearch(abs($far['distanceMeters'] - 11000) < 0.05, 'Distance and radius must use the displayed primary location, not a different branch.');
     $origin = array_values(array_filter($withoutRadius['items'], static fn ($item): bool => $item['id'] === $ids[0]))[0];
@@ -148,10 +151,13 @@ try {
         $result = $search(['keyword' => $suffix . '-pole-', 'lat' => $latitude, 'lng' => 45.0, 'radiusKm' => 1.0]);
         assertLocationSearch($result['total'] === 1 && $result['items'][0]['id'] === $poleId, 'Polar bounding boxes must cover all longitudes.');
     }
-    $world = $search(['radiusKm' => PHP_FLOAT_MAX]);
-    assertLocationSearch($world['total'] === count($withoutRadius['items']) - 3, 'Very large finite radii must not overflow or include invalid coordinates.');
-    $antipode = $search(['keyword' => $suffix . '-antipode-', 'lat' => 0.0, 'lng' => 0.0, 'radiusKm' => PHP_FLOAT_MAX]);
-    assertLocationSearch($antipode['total'] === 1 && $antipode['items'][0]['id'] === $antipodeId, 'World-sized searches must include the exact antipode despite parameter rounding.');
+    foreach ([20.001, PHP_FLOAT_MAX] as $invalidRadius) {
+        try {
+            $search(['radiusKm' => $invalidRadius]);
+            throw new LogicException('Radii above 20km must fail validation.');
+        } catch (App\Exception\ValidationException) {
+        }
+    }
     $noUserCoordinates = $service->getPublicList(1, 100, ['keyword' => $suffix . '-seoul-']);
     assertLocationSearch($noUserCoordinates['items'][0]['distanceMeters'] === null, 'Requests without user coordinates must keep null distances.');
 

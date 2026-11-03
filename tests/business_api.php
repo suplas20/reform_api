@@ -373,6 +373,7 @@ assertBusinessApiValue(127.03, $repository->lastCriteria['lng'], 'Longitude filt
 assertBusinessApiValue(5.0, $repository->lastCriteria['radiusKm'], 'Radius filter is invalid.');
 assertBusinessApiValue(true, $repository->lastCriteria['verifiedOnly'], 'Verification filter is invalid.');
 assertBusinessApiValue('distance', $repository->lastCriteria['sort'], 'Sort filter is invalid.');
+assertBusinessApiValue(false, isset($repository->lastCriteria['regionId']), 'A location origin must not restrict searches to region boundaries.');
 
 $appAliasResponse = $application->handle(
     Request::create(
@@ -388,6 +389,8 @@ assertBusinessApiValue(127.03, $repository->lastCriteria['lng'], 'Longitude alia
 assertBusinessApiValue(1, $appAliasPayload['meta']['perPage'], 'Limit alias is invalid.');
 assertBusinessApiValue(1234.5, $appAliasPayload['data'][0]['distanceMeters'], 'Meter distance must be returned even without distance sort.');
 assertBusinessApiValue(1.2345, $appAliasPayload['data'][0]['distanceKm'], 'Kilometer distance must remain compatible.');
+assertBusinessApiValue(5.0, $repository->lastCriteria['radiusKm'], 'Location searches must default to 5km.');
+assertBusinessApiValue('distance', $repository->lastCriteria['sort'], 'Recommended nearby searches must default to distance order.');
 
 foreach (['distance', 'name', 'reviewCount', 'rating', 'ratingAsc'] as $sort) {
     $response = $application->handle(Request::create('/api/v1/businesses?latitude=37.5&longitude=127.03&sort=' . $sort));
@@ -395,7 +398,7 @@ foreach (['distance', 'name', 'reviewCount', 'rating', 'ratingAsc'] as $sort) {
     assertBusinessApiValue($sort, $repository->lastCriteria['sort'], 'Business sort must reach the repository unchanged.');
 }
 
-foreach ([1, 3, 5, 10] as $radius) {
+foreach ([1, 3, 5, 10, 20] as $radius) {
     $response = $application->handle(Request::create(
         '/api/v1/businesses?latitude=37.5&longitude=127.03&radiusKm=' . $radius . '&sort=distance',
     ));
@@ -423,6 +426,8 @@ foreach ([
     '/api/v1/businesses?latitude=37.5&longitude=INF',
     '/api/v1/businesses?latitude=37.5&longitude=127.03&radiusKm=0',
     '/api/v1/businesses?latitude=37.5&longitude=127.03&radiusKm=-1',
+    '/api/v1/businesses?latitude=37.5&longitude=127.03&radiusKm=20.001',
+    '/api/v1/businesses?regionId=392&radiusKm=21',
     '/api/v1/businesses?latitude=37.5&longitude=127.03&radiusKm=1e309',
 ] as $invalidPaginationPath) {
     $invalidPaginationResponse = $application->handle(

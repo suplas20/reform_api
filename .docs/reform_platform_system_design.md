@@ -1280,7 +1280,7 @@ id DESC
 ```
 
 현재 목록 Item은 상세 응답에서 `description`과 `phone`을 제외한 기본 정보와 자체·외부 평판을 포함한다.
-Mobile API 정의서 14장의 검색어·카테고리·서비스·지역·브랜드·좌표·인증 Filter 및 정렬은 구현했다. 정식 추천 Ranking이 확정되기 전까지 `recommended`는 최신 게시순을 사용한다. 공개 이미지 URL 정책은 보류 결정에 따라 이미지 기반 Summary DTO와 Work Case API를 확장하지 않는다.
+Mobile API 정의서 14장의 검색어·카테고리·서비스·지역·브랜드·좌표·인증 Filter 및 정렬은 구현했다. 정식 추천 Ranking이 확정되기 전까지 `recommended`는 위치가 있으면 가까운 거리순, 위치 없는 일반 목록은 최신 게시순을 사용한다. 공개 이미지 URL 정책은 보류 결정에 따라 이미지 기반 Summary DTO와 Work Case API를 확장하지 않는다.
 
 ### Business Detail 비이미지 구현
 
@@ -1430,21 +1430,18 @@ BusinessRepository
 
 # 21. 위치 검색
 
-업체 목록의 `regionId` 검색은 선택 지역의 전체 결과가 0개일 때만 상위 지역으로 확장한다.
-동→구→시 순서로 조회하고 처음 결과가 있는 범위를 사용한다. `수원시 장안구`처럼
-시군구가 시와 구 이름을 합친 행이면 같은 시의 시군구 ID를 묶어 검색하며 도 전체로 넓히지
-않는다. 이미 시 전체를 나타내는 시군구 행에서는 멈춘다. 모든 단계에서 기존 필터·공개 조건을
-유지하고, 확장 후 거리 기준점이 있으면 거리순을 우선 적용한다. Service가 범위 선택을
-조정하고 Repository가 부모 조회·범위 SQL을 담당한다.
-페이지별 행 수가 아니라 전체 COUNT로 확장 여부를 결정하며 같은 범위로 페이지를 조회한다.
-선택 지역이 있는 요청의 실제 범위는 `meta.regionSearch`로 반환한다.
+업체 목록은 자동·수동 위치 모두 기준점 중심의 원형 반경으로 검색한다. 기본은 5km,
+최대는 20km이며 행정구역 경계를 제한하지 않는다. `regionId`는 업체 필터가 아니라
+선택한 읍면동 주민센터의 기준점을 찾는 용도다. Service가 기준점을 확인한 뒤 Repository에
+전달할 조건에서 regionId/regionIds를 제거하고 radiusKm를 확정한다. 동→구→시 확장은 수행하지
+않으며 결과가 없어도 반경을 자동으로 늘리지 않는다. 위치 없는 일반 목록은 기존대로 조회한다.
+기본 recommended는 위치가 있을 때 가까운 거리순이며 명시적인 다른 정렬은 유지한다.
 
-수동 지역 검색에 요청 좌표가 없으면 `regions.center_latitude/center_longitude`를 사용한다.
-최초 선택한 동의 기준점을 한 번 정한 뒤 구·시로 범위를 넓혀도 변경하지 않는다.
-기준점은 기상청 동네예보의 지역 대표지점이며 다각형의 기하학적 중심은 아니다. 출처·기준일과
-제공기관 코드를 함께 보관하고 검증되지 않은 지역에 부모 좌표나 업체 평균 좌표를 넣지 않는다.
-요청 좌표가 있으면 우선 사용한다. 실제 기준점과 출처는 `meta.distanceOrigin`으로 반환한다.
-선택 지역의 좌표도 없으면 거리는 null이며 거리순·반경 요청은 422로 처리한다.
+수동 위치는 OFFICE- 출처로 검증된 해당 동 주민센터 좌표만 사용한다. 예보 지점·행정구역 중앙점·
+부모 지역 좌표로 대체하지 않는다. 요청 좌표가 있으면 우선한다. 주민센터 좌표 미확인 시
+422 LOCATION_COORDINATES_UNAVAILABLE이다. 지역 참조 API는 미확인 좌표를 null로 반환한다.
+`meta.distanceOrigin`에 실제 기준점을 반환한다. 기존 `meta.regionSearch`는 구조를 유지하며
+행정구역 필터가 없으므로 appliedRegionIds=[], appliedRegionName=null, expanded=false다.
 
 원본 좌표를 항상 유지한다.
 
@@ -1454,7 +1451,7 @@ longitude
 ```
 
 `GET /api/v1/businesses`는 `latitude`/`longitude`와 기존 별칭 `lat`/`lng`를 지원한다.
-`radiusKm`로 1·3·5·10km 등의 반경을 지정하고 `sort=distance`로 가까운 거리순 조회한다.
+`radiusKm`로 1·3·5·10·20km 등의 반경(기본 5km, 최대 20km)을 지정하고 `sort=distance`로 가까운 거리순 조회한다.
 좌표는 유한수와 범위를 검증하고 두 값을 함께 받아야 한다. 사용자 좌표는 요청 중에만 사용하며 DB에 저장하지 않는다.
 
 반경이 있으면 `business_locations`의 기존 `(latitude, longitude)` 인덱스를 사용 가능한
@@ -1465,8 +1462,8 @@ bounding box 조건으로 후보를 줄이고, MariaDB `ST_DISTANCE_SPHERE()`로
 
 업체 주소에 표시되는 대표 위치(`is_primary DESC, id ASC`의 첫 행)를 거리·반경·정렬에 공통 적용한다.
 좌표를 전달하면 정렬 종류에 관계없이 `distanceMeters`(m)와 기존 호환용 `distanceKm`를 반환한다.
-요청 좌표와 지역 대표좌표를 모두 확인하지 못하거나 업체 대표 위치 좌표 누락·오류 시 거리는 null이다.
-이러한 업체는 반경 검색에서 제외하고, 반경 없는 거리순 검색에서는 마지막에 둔다.
+업체 대표 위치 좌표 누락·오류 시 해당 업체는 반경 검색에서 제외한다.
+위치 없는 일반 목록에서는 거리가 null이다.
 동일 거리에서는 기존 `businesses.id DESC`를 적용해 페이지 순서를 유지한다.
 
 향후 PostgreSQL/PostGIS 이전 가능성을 고려한다.

@@ -12,6 +12,9 @@ use DateTimeZone;
 
 final class BusinessService
 {
+    public const DEFAULT_RADIUS_KM = 5.0;
+    public const MAX_RADIUS_KM = 20.0;
+
     public function __construct(private readonly BusinessReadRepository $businessRepository)
     {
     }
@@ -43,38 +46,27 @@ final class BusinessService
 
         $publishedAt = gmdate('Y-m-d H:i:s');
         $requestedRegionId = $criteria['regionId'] ?? null;
-        $ancestors = $requestedRegionId === null ? [] : $this->businessRepository->findActiveRegionAncestors($requestedRegionId);
-        // Resolve once from the originally selected place, before any search-area expansion.
-        // A parent district/city center must never replace the selected dong's origin.
+        $ancestors = $requestedRegionId === null || ($criteria['lat'] ?? null) !== null
+            ? [] : $this->businessRepository->findActiveRegionAncestors($requestedRegionId);
         $distanceOrigin = $this->resolveDistanceOrigin($criteria, $ancestors[0] ?? null);
+        $radius = $criteria['radiusKm'] ?? null;
+        if ($radius !== null && (!is_numeric($radius) || !is_finite((float) $radius)
+            || $radius <= 0 || $radius > self::MAX_RADIUS_KM)) {
+            throw new ValidationException('VALIDATION_ERROR', '검색 반경은 0km 초과 20km 이하여야 합니다.');
+        }
         if ($distanceOrigin !== null) {
             $criteria['lat'] = $distanceOrigin['latitude'];
             $criteria['lng'] = $distanceOrigin['longitude'];
-            if ($distanceOrigin['type'] === 'REGION_CENTER' && ($criteria['sort'] ?? 'recommended') === 'recommended') {
+            $criteria['radiusKm'] = $radius === null ? self::DEFAULT_RADIUS_KM : (float) $radius;
+            // The selected region identifies the office origin, never a boundary filter.
+            unset($criteria['regionId'], $criteria['regionIds']);
+            if (($criteria['sort'] ?? 'recommended') === 'recommended') {
                 $criteria['sort'] = 'distance';
             }
-        } elseif (($criteria['radiusKm'] ?? null) !== null || ($criteria['sort'] ?? null) === 'distance') {
-            throw new ValidationException('LOCATION_COORDINATES_UNAVAILABLE', '선택한 지역의 기준 좌표가 없습니다. 다른 지역이나 현재 위치를 선택해주세요.');
+        } elseif ($requestedRegionId !== null || $radius !== null || ($criteria['sort'] ?? null) === 'distance') {
+            throw new ValidationException('LOCATION_COORDINATES_UNAVAILABLE', '선택한 지역의 주민센터 좌표가 아직 확인되지 않았습니다. 다른 지역이나 현재 위치를 선택해주세요.');
         }
-        $appliedRegionIds = $requestedRegionId === null ? [] : [$requestedRegionId];
-        $appliedRegionName = $ancestors[0]['name'] ?? null;
-        $expanded = false;
         $total = $this->businessRepository->countPublic($publishedAt, $criteria);
-        if ($total === 0 && $ancestors !== []) {
-            foreach ($this->fallbackRegionScopes($ancestors) as $scope) {
-                $appliedRegionIds = $scope['ids'];
-                $appliedRegionName = $scope['name'];
-                $expanded = true;
-                $criteria['regionIds'] = $appliedRegionIds;
-                if (($criteria['lat'] ?? null) !== null && ($criteria['lng'] ?? null) !== null) {
-                    $criteria['sort'] = 'distance';
-                }
-                $total = $this->businessRepository->countPublic($publishedAt, $criteria);
-                if ($total > 0) {
-                    break;
-                }
-            }
-        }
         $businesses = $this->businessRepository->findPublicPage(
             $publishedAt,
             $perPage,
@@ -105,9 +97,9 @@ final class BusinessService
             'totalPages' => $total === 0 ? 0 : (int) ceil($total / $perPage),
             'regionSearch' => $requestedRegionId === null ? null : [
                 'requestedRegionId' => $requestedRegionId,
-                'appliedRegionIds' => $appliedRegionIds,
-                'appliedRegionName' => $appliedRegionName,
-                'expanded' => $expanded,
+                'appliedRegionIds' => [],
+                'appliedRegionName' => null,
+                'expanded' => false,
             ],
             'distanceOrigin' => $distanceOrigin,
         ];
@@ -121,6 +113,9 @@ final class BusinessService
             return ['type' => 'COORDINATES', 'regionId' => null, 'regionName' => null,
                 'latitude' => (float) $criteria['lat'], 'longitude' => (float) $criteria['lng'], 'source' => null];
         }
+        if (!str_starts_with((string) ($region['center_source'] ?? ''), 'OFFICE-')) {
+            return null;
+        }
         $latitude = $region['center_latitude'] ?? null;
         $longitude = $region['center_longitude'] ?? null;
         if ($latitude === null || $longitude === null || !is_finite((float) $latitude) || !is_finite((float) $longitude)
@@ -129,33 +124,6 @@ final class BusinessService
         }
         return ['type' => 'REGION_CENTER', 'regionId' => (int) $region['id'], 'regionName' => $region['name'],
             'latitude' => (float) $latitude, 'longitude' => (float) $longitude, 'source' => $region['center_source'] ?? null];
-    }
-
-    /**
-     * @param list<array<string, mixed>> $ancestors
-     * @return iterable<array{ids: list<int>, name: string}>
-     */
-    private function fallbackRegionScopes(array $ancestors): iterable
-    {
-        foreach (array_slice($ancestors, 1) as $index => $ancestor) {
-            $previous = $ancestors[$index];
-            if ($previous['level'] === 2 && $ancestor['level'] === 1) {
-                // Non-metropolitan cities are flattened into level 2 (e.g. 수원시 장안구).
-                // Expand to the same city's districts, never the entire surrounding province.
-                if (preg_match('/\A(.+시) [^ ]+구\z/u', $previous['name'], $matches) === 1) {
-                    $ids = $this->businessRepository->findActiveCityDistrictIds($ancestor['id'], $matches[1]);
-                    if ($ids !== []) {
-                        yield ['ids' => $ids, 'name' => $matches[1]];
-                    }
-                    return;
-                }
-                // A level-2 city already represents the full city (e.g. 춘천시).
-                if (str_ends_with($previous['name'], '시')) {
-                    return;
-                }
-            }
-            yield ['ids' => [$ancestor['id']], 'name' => $ancestor['name']];
-        }
     }
 
     /**

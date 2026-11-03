@@ -66,45 +66,62 @@ try {
     $service = new RegionCenterImportService($repository, new TransactionManager($db));
     $rows = static fn (): array => array_values(array_filter($repository->regions(), static fn (array $r): bool => in_array((int) $r['id'], $ids, true)));
     $source = [
-        ['source_code' => '9900000000', 'province' => $province, 'district' => '', 'dong' => '', 'latitude' => '38', 'longitude' => '127'],
-        ['source_code' => '9911000000', 'province' => $province, 'district' => '테스트시장안구', 'dong' => '', 'latitude' => '37.9', 'longitude' => '127'],
-        ['source_code' => '9911051000', 'province' => $province, 'district' => '테스트시장안구', 'dong' => '홍제제1동', 'latitude' => '37.5', 'longitude' => '127.03'],
-        ['source_code' => '9912000000', 'province' => $province, 'district' => '다른구', 'dong' => '', 'latitude' => '37.4', 'longitude' => '127.03'],
-        ['source_code' => '9912051000', 'province' => $province, 'district' => '다른구', 'dong' => '홍제제1동', 'latitude' => '0', 'longitude' => '0'],
+        ['province' => $province, 'district' => '테스트시장안구', 'dong' => '홍제제1동',
+            'office_name' => '홍제제1동 주민센터', 'road_address' => '테스트로 1',
+            'latitude' => '37.5', 'longitude' => '127.03', 'source' => 'OFFICE-TEST-20261103',
+            'source_url' => 'https://www.ddm.go.kr/www/contents.do?key=293', 'verified_at' => '2026-11-03'],
+        ['province' => $province, 'district' => '다른구', 'dong' => '홍제제1동',
+            'office_name' => '홍제제1동 행정복지센터', 'road_address' => '테스트로 2',
+            'latitude' => '37.4', 'longitude' => '127.04', 'source' => 'OFFICE-TEST-20261103',
+            'source_url' => 'https://www.ddm.go.kr/www/contents.do?key=293', 'verified_at' => '2026-11-03'],
     ];
-    $plan = $service->plan($source, $rows(), 'TEST-CENTERS');
-    assertCenter($plan['matched'] === 5 && count($plan['updates']) === 5 && $plan['unmatched'] === [],
-        'Scoped name matching, native codes, ordinal names and flattened city spacing must resolve.');
+    $plan = $service->plan($source, $rows());
+    assertCenter($plan['matched'] === 2 && count($plan['updates']) === 2 && $plan['unmatched'] === [],
+        'Office names must match full province/district/town hierarchy, including ordinal and spacing variants.');
     foreach ($plan['updates'] as $update) {
-        $repository->update($update['id'], $update['center'], 'TEST-CENTERS', gmdate('Y-m-d H:i:s'));
+        $repository->update($update['id'], $update['center'], $update['center']['source'], gmdate('Y-m-d H:i:s'));
     }
-    $repeat = $service->plan($source, $rows(), 'TEST-CENTERS');
-    assertCenter($repeat['matched'] === 5 && $repeat['updates'] === [], 'Repeated center imports must be idempotent.');
+    $repeat = $service->plan($source, $rows());
+    assertCenter($repeat['matched'] === 2 && $repeat['updates'] === [], 'Repeated office imports must be idempotent.');
     $controller = new ReferenceController(new ReferenceService(new CategoryRepository($db), new ServiceRepository($db), new RegionRepository($db), new BrandRepository($db)));
     $response = $controller->regions(Request::create('/api/v1/regions', 'GET', ['parentId' => (string) $district]));
     $json = json_decode($response->getContent(), true, flags: JSON_THROW_ON_ERROR);
     assertCenter($json['data'][0]['id'] === $dong && $json['data'][0]['latitude'] === 37.5
-        && $json['data'][0]['longitude'] === 127.03 && $json['data'][0]['centerSource'] === 'TEST-CENTERS',
-        'Region API must return typed reference coordinates and provenance.');
-    $zero = $controller->regions(Request::create('/api/v1/regions', 'GET', ['parentId' => (string) $otherDistrict]));
-    $zeroJson = json_decode($zero->getContent(), true, flags: JSON_THROW_ON_ERROR);
-    assertCenter($zeroJson['data'][0]['latitude'] === 0 && $zeroJson['data'][0]['longitude'] === 0, 'Valid zero coordinates must survive JSON mapping.');
-    $ambiguous = $source;
-    $ambiguous[] = [...$source[2], 'source_code' => '9911052000'];
-    $ambiguousPlan = $service->plan($ambiguous, $rows(), 'TEST-CENTERS');
-    assertCenter(count($ambiguousPlan['unmatched']) === 1 && $ambiguousPlan['unmatched'][0]['id'] === $dong,
-        'Ambiguous dong matches must never receive guessed coordinates.');
-    invalidCenter(fn () => $service->plan([...$source, $source[0]], $rows(), 'TEST-CENTERS'));
-    foreach (['91', 'NaN', 'INF'] as $badLatitude) {
-        $invalid = $source;
-        $invalid[2]['latitude'] = $badLatitude;
-        invalidCenter(fn () => $service->plan($invalid, $rows(), 'TEST-CENTERS'));
+        && $json['data'][0]['longitude'] === 127.03 && $json['data'][0]['centerSource'] === 'OFFICE-TEST-20261103',
+        'Region API must expose only actual community office coordinates and provenance.');
+    $ambiguous = $service->plan([...$source, $source[0]], $rows());
+    assertCenter($ambiguous['matched'] === 1 && count($ambiguous['unmatched']) === 1
+        && $ambiguous['unmatched'][0]['id'] === $dong && $ambiguous['unmatched'][0]['reason'] === 'AMBIGUOUS_OFFICE',
+        'Conflicting office references must never be guessed.');
+    $missing = $service->plan([$source[0]], $rows());
+    assertCenter($missing['matched'] === 1 && $missing['unmatched'][0]['id'] === $otherDong,
+        'A town in a different district must never inherit another town office.');
+    foreach ([['latitude' => '91'], ['longitude' => 'NaN'], ['source' => 'FORECAST'],
+        ['source_url' => 'https://example.com/office'], ['verified_at' => '2026-02-30'],
+        ['office_name' => '다른동 주민센터'], ['office_name' => '홍제1동 아파트'], ['road_address' => '']] as $invalid) {
+        invalidCenter(fn () => $service->plan([[...$source[0], ...$invalid]], $rows()));
     }
+    $repository->update($dong, ['latitude' => 37.6, 'longitude' => 127.06, 'source_code' => 'old'],
+        'KMA-LEGACY', gmdate('Y-m-d H:i:s'));
+    $legacy = $controller->regions(Request::create('/api/v1/regions', 'GET', ['parentId' => (string) $district]));
+    $legacyJson = json_decode($legacy->getContent(), true, flags: JSON_THROW_ON_ERROR);
+    assertCenter($legacyJson['data'][0]['latitude'] === null && $legacyJson['data'][0]['longitude'] === null
+        && $legacyJson['data'][0]['centerSource'] === null, 'Forecast coordinates must not be exposed as office positions.');
+    try {
+        $repository->clearUnreferencedCenters([]);
+        throw new LogicException('An empty import scope must never clear all centers.');
+    } catch (InvalidArgumentException) {
+    }
+    $repository->clearUnreferencedCenters([$otherDong]);
+    $cleared = array_column($rows(), null, 'id');
+    assertCenter($cleared[$dong]['center_latitude'] === null && $cleared[$dong]['center_source'] === null
+        && $cleared[$otherDong]['center_source'] === 'OFFICE-TEST-20261103',
+        'Retiring legacy coordinates must preserve verified offices.');
     $config = require dirname(__DIR__) . '/config/region_centers.php';
     invalidCenter(fn () => $service->run($config['path'], str_repeat('0', 64), $config['source'], false));
-    assertCenter(hash_file('sha256', $config['path']) === $config['sha256'], 'Committed reference file must match its reviewed checksum.');
+    assertCenter(hash_file('sha256', $config['path']) === $config['sha256'], 'Committed office reference must match its checksum.');
     $db->rollBack();
-    echo "Region center import and API tests passed (scoped matching, validation, idempotence; fixtures rolled back).\n";
+    echo "Region center import and API tests passed (community offices only, scoped matching, validation, idempotence; fixtures rolled back).\n";
 } finally {
     if ($db->inTransaction()) {
         $db->rollBack();

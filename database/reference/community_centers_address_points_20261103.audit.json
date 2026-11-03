@@ -1,0 +1,1731 @@
+[
+  {
+    "original": {
+      "province": "경기도",
+      "district": "성남시 분당구",
+      "dong": "분당동",
+      "office_name": "분당동주민센터",
+      "road_address": "경기도 성남시 분당구 불정로 312(분당동 42)",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15093649-20260625",
+      "source_url": "https://www.data.go.kr/data/15093649/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "경기도",
+      "district": "성남시 분당구",
+      "dong": "분당동",
+      "office_name": "분당동주민센터",
+      "road_address": "경기도 성남시 분당구 불정로 312(분당동 42)",
+      "latitude": "37.3702161",
+      "longitude": "127.1311480",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "경기도",
+      "district": "성남시 분당구",
+      "dong": "정자1동",
+      "office_name": "정자1동주민센터",
+      "road_address": "경기도 성남시 분당구 성남대로407번길 12(정자동)",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15093649-20260625",
+      "source_url": "https://www.data.go.kr/data/15093649/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "경기도",
+      "district": "성남시 분당구",
+      "dong": "정자1동",
+      "office_name": "정자1동주민센터",
+      "road_address": "경기도 성남시 분당구 성남대로407번길 12(정자동)",
+      "latitude": "37.3727616",
+      "longitude": "127.1063236",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "경기도",
+      "district": "성남시 분당구",
+      "dong": "야탑3동",
+      "office_name": "야탑3동주민센터",
+      "road_address": "경기 성남시 분당구 벌말로30번길 43(야탑동)",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15093649-20260625",
+      "source_url": "https://www.data.go.kr/data/15093649/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "경기도",
+      "district": "성남시 분당구",
+      "dong": "야탑3동",
+      "office_name": "야탑3동주민센터",
+      "road_address": "경기 성남시 분당구 벌말로30번길 43(야탑동)",
+      "latitude": "37.4102524",
+      "longitude": "127.1431600",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "부여군",
+      "dong": "석성면",
+      "office_name": "석성면주민센터",
+      "road_address": "충청남도 부여군 석성면 증산로 61-1 석성면사무소",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15013928-20260119",
+      "source_url": "https://www.data.go.kr/data/15013928/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "부여군",
+      "dong": "석성면",
+      "office_name": "석성면주민센터",
+      "road_address": "충청남도 부여군 석성면 증산로 61-1 석성면사무소",
+      "latitude": "36.2532737",
+      "longitude": "127.0023326",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "province": "경기도",
+    "district": "성남시 중원구",
+    "dong": "성남동",
+    "office_name": "성남동행정복지센터",
+    "road_address": "경기도 성남시 중원구 광명로 89, 1층(성남센트럴푸르지오시티)",
+    "latitude": "",
+    "longitude": "",
+    "source": "OFFICE-DATA-15093632-20251103",
+    "source_url": "https://www.data.go.kr/data/15093632/fileData.do",
+    "verified_at": "2026-11-03",
+    "reason": "NO_EXACT_STREET_ADDRESS"
+  },
+  {
+    "province": "경기도",
+    "district": "성남시 중원구",
+    "dong": "상대원2동",
+    "office_name": "상대원2동행정복지센터",
+    "road_address": "경기도 성남시 중원구 둔촌대로 388, 103호(상대원동)",
+    "latitude": "",
+    "longitude": "",
+    "source": "OFFICE-DATA-15093632-20251103",
+    "source_url": "https://www.data.go.kr/data/15093632/fileData.do",
+    "verified_at": "2026-11-03",
+    "reason": "NO_EXACT_STREET_ADDRESS"
+  },
+  {
+    "original": {
+      "province": "대구광역시",
+      "district": "수성구",
+      "dong": "만촌2동",
+      "office_name": "만촌2동주민센터",
+      "road_address": "대구광역시 수성구 무열로 12(만촌동)",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15046135-20241113",
+      "source_url": "https://www.data.go.kr/data/15046135/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "대구광역시",
+      "district": "수성구",
+      "dong": "만촌2동",
+      "office_name": "만촌2동주민센터",
+      "road_address": "대구광역시 수성구 무열로 12(만촌동)",
+      "latitude": "35.8598591",
+      "longitude": "128.6472263",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "대구광역시",
+      "district": "수성구",
+      "dong": "황금2동",
+      "office_name": "황금2동주민센터",
+      "road_address": "대구광역시 수성구 청솔로2길 64(황금동)",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15046135-20241113",
+      "source_url": "https://www.data.go.kr/data/15046135/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "대구광역시",
+      "district": "수성구",
+      "dong": "황금2동",
+      "office_name": "황금2동주민센터",
+      "road_address": "대구광역시 수성구 청솔로2길 64(황금동)",
+      "latitude": "35.8471947",
+      "longitude": "128.6237245",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "대구광역시",
+      "district": "수성구",
+      "dong": "파동",
+      "office_name": "파동주민센터",
+      "road_address": "대구광역시 수성구 파동로 136(파동)",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15046135-20241113",
+      "source_url": "https://www.data.go.kr/data/15046135/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "대구광역시",
+      "district": "수성구",
+      "dong": "파동",
+      "office_name": "파동주민센터",
+      "road_address": "대구광역시 수성구 파동로 136(파동)",
+      "latitude": "35.8154528",
+      "longitude": "128.6151275",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "대구광역시",
+      "district": "수성구",
+      "dong": "두산동",
+      "office_name": "두산동주민센터",
+      "road_address": "대구광역시 수성구 상화로 95(두산동)",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15046135-20241113",
+      "source_url": "https://www.data.go.kr/data/15046135/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "대구광역시",
+      "district": "수성구",
+      "dong": "두산동",
+      "office_name": "두산동주민센터",
+      "road_address": "대구광역시 수성구 상화로 95(두산동)",
+      "latitude": "35.8353136",
+      "longitude": "128.6175259",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "전북특별자치도",
+      "district": "남원시",
+      "dong": "주천면",
+      "office_name": "주천면행정복지센터",
+      "road_address": "전북특별자치도 남원시 주천면 정령치로 61",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15089951-20241109",
+      "source_url": "https://www.data.go.kr/data/15089951/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "전북특별자치도",
+      "district": "남원시",
+      "dong": "주천면",
+      "office_name": "주천면행정복지센터",
+      "road_address": "전북특별자치도 남원시 주천면 정령치로 61",
+      "latitude": "35.3912516",
+      "longitude": "127.4422119",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "전북특별자치도",
+      "district": "남원시",
+      "dong": "송동면",
+      "office_name": "송동면행정복지센터",
+      "road_address": "전북특별자치도 남원시 송동면 송기길 56",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15089951-20241109",
+      "source_url": "https://www.data.go.kr/data/15089951/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "전북특별자치도",
+      "district": "남원시",
+      "dong": "송동면",
+      "office_name": "송동면행정복지센터",
+      "road_address": "전북특별자치도 남원시 송동면 송기길 56",
+      "latitude": "35.3544579",
+      "longitude": "127.3372469",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "전북특별자치도",
+      "district": "남원시",
+      "dong": "산내면",
+      "office_name": "산내면행정복지센터",
+      "road_address": "전북특별자치도 남원시 산내면 대정길 21",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15089951-20241109",
+      "source_url": "https://www.data.go.kr/data/15089951/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "전북특별자치도",
+      "district": "남원시",
+      "dong": "산내면",
+      "office_name": "산내면행정복지센터",
+      "road_address": "전북특별자치도 남원시 산내면 대정길 21",
+      "latitude": "35.4191043",
+      "longitude": "127.6228637",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "전북특별자치도",
+      "district": "임실군",
+      "dong": "임실읍",
+      "office_name": "임실읍사무소",
+      "road_address": "전라북도 임실군 임실읍 봉황로 144",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15013585-20231018",
+      "source_url": "https://www.data.go.kr/data/15013585/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "전북특별자치도",
+      "district": "임실군",
+      "dong": "임실읍",
+      "office_name": "임실읍사무소",
+      "road_address": "전라북도 임실군 임실읍 봉황로 144",
+      "latitude": "35.6134867",
+      "longitude": "127.2794060",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "대전광역시",
+      "district": "유성구",
+      "dong": "신성동",
+      "office_name": "신성동주민센터",
+      "road_address": "대전광역시 유성구 신성로 55(하기동)",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15013708-20230724",
+      "source_url": "https://www.data.go.kr/data/15013708/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "대전광역시",
+      "district": "유성구",
+      "dong": "신성동",
+      "office_name": "신성동주민센터",
+      "road_address": "대전광역시 유성구 신성로 55(하기동)",
+      "latitude": "36.3891063",
+      "longitude": "127.3473512",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "대전광역시",
+      "district": "대덕구",
+      "dong": "송촌동",
+      "office_name": "송촌동행정복지센터",
+      "road_address": "대전광역시 대덕구 동춘당로94번길 11",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15013682-20230602",
+      "source_url": "https://www.data.go.kr/data/15013682/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "대전광역시",
+      "district": "대덕구",
+      "dong": "송촌동",
+      "office_name": "송촌동행정복지센터",
+      "road_address": "대전광역시 대덕구 동춘당로94번길 11",
+      "latitude": "36.3657088",
+      "longitude": "127.4398585",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "광천읍",
+      "office_name": "광천읍행정복지센터",
+      "road_address": "충청남도 홍성군 광천읍 광천로 342",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15013865-20230220",
+      "source_url": "https://www.data.go.kr/data/15013865/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "광천읍",
+      "office_name": "광천읍행정복지센터",
+      "road_address": "충청남도 홍성군 광천읍 광천로 342",
+      "latitude": "36.5045939",
+      "longitude": "126.6254752",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "province": "충청남도",
+    "district": "홍성군",
+    "dong": "홍북읍",
+    "office_name": "홍북읍행정복지센터",
+    "road_address": "충청남도 홍성군 홍북읍 홍북로 449",
+    "latitude": "",
+    "longitude": "",
+    "source": "OFFICE-DATA-15013865-20230220",
+    "source_url": "https://www.data.go.kr/data/15013865/fileData.do",
+    "verified_at": "2026-11-03",
+    "reason": "NO_UNIQUE_OFFICE_BUILDING_AT_OFFICIAL_ADDRESS"
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "금마면",
+      "office_name": "금마면행정복지센터",
+      "road_address": "충청남도 홍성군 금마면 광금북로 478",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15013865-20230220",
+      "source_url": "https://www.data.go.kr/data/15013865/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "금마면",
+      "office_name": "금마면행정복지센터",
+      "road_address": "충청남도 홍성군 금마면 광금북로 478",
+      "latitude": "36.6117934",
+      "longitude": "126.7326876",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "홍동면",
+      "office_name": "홍동면행정복지센터",
+      "road_address": "충청남도 홍성군 홍동면 홍장남로 712",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15013865-20230220",
+      "source_url": "https://www.data.go.kr/data/15013865/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "홍동면",
+      "office_name": "홍동면행정복지센터",
+      "road_address": "충청남도 홍성군 홍동면 홍장남로 712",
+      "latitude": "36.5591477",
+      "longitude": "126.6883666",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "장곡면",
+      "office_name": "장곡면행정복지센터",
+      "road_address": "충청남도 홍성군 장곡면 홍남동로 461",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15013865-20230220",
+      "source_url": "https://www.data.go.kr/data/15013865/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "장곡면",
+      "office_name": "장곡면행정복지센터",
+      "road_address": "충청남도 홍성군 장곡면 홍남동로 461",
+      "latitude": "36.5051580",
+      "longitude": "126.6912865",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "은하면",
+      "office_name": "은하면행정복지센터",
+      "road_address": "충청남도 홍성군 은하면 은하로 258",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15013865-20230220",
+      "source_url": "https://www.data.go.kr/data/15013865/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "은하면",
+      "office_name": "은하면행정복지센터",
+      "road_address": "충청남도 홍성군 은하면 은하로 258",
+      "latitude": "36.5319535",
+      "longitude": "126.5904906",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "결성면",
+      "office_name": "결성면행정복지센터",
+      "road_address": "충청남도 홍성군 결성면 홍남서로738번길 5",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15013865-20230220",
+      "source_url": "https://www.data.go.kr/data/15013865/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "결성면",
+      "office_name": "결성면행정복지센터",
+      "road_address": "충청남도 홍성군 결성면 홍남서로738번길 5",
+      "latitude": "36.5241365",
+      "longitude": "126.5467455",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "서부면",
+      "office_name": "서부면행정복지센터",
+      "road_address": "충청남도 홍성군 서부면 서부로544번길 17-2",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15013865-20230220",
+      "source_url": "https://www.data.go.kr/data/15013865/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "서부면",
+      "office_name": "서부면행정복지센터",
+      "road_address": "충청남도 홍성군 서부면 서부로544번길 17-2",
+      "latitude": "36.5803516",
+      "longitude": "126.5172295",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "갈산면",
+      "office_name": "갈산면행정복지센터",
+      "road_address": "충청남도 홍성군 갈산면 갈산로 93",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15013865-20230220",
+      "source_url": "https://www.data.go.kr/data/15013865/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "갈산면",
+      "office_name": "갈산면행정복지센터",
+      "road_address": "충청남도 홍성군 갈산면 갈산로 93",
+      "latitude": "36.6051951",
+      "longitude": "126.5500457",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "구항면",
+      "office_name": "구항면행정복지센터",
+      "road_address": "충청남도 홍성군 구항면 구항길 109",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15013865-20230220",
+      "source_url": "https://www.data.go.kr/data/15013865/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "홍성군",
+      "dong": "구항면",
+      "office_name": "구항면행정복지센터",
+      "road_address": "충청남도 홍성군 구항면 구항길 109",
+      "latitude": "36.5879527",
+      "longitude": "126.6106571",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "경기도",
+      "district": "남양주시",
+      "dong": "퇴계원읍",
+      "office_name": "퇴계원읍주민센터",
+      "road_address": "경기도 남양주시 퇴계원읍 도제원로 13",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15156732-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15156732/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "경기도",
+      "district": "남양주시",
+      "dong": "퇴계원읍",
+      "office_name": "퇴계원읍주민센터",
+      "road_address": "경기도 남양주시 퇴계원읍 도제원로 13",
+      "latitude": "37.6491837",
+      "longitude": "127.1447400",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "경기도",
+      "district": "남양주시",
+      "dong": "별내면",
+      "office_name": "별내면주민센터",
+      "road_address": "경기도 남양주시 별내면 청학로8번길 22",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15156732-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15156732/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "경기도",
+      "district": "남양주시",
+      "dong": "별내면",
+      "office_name": "별내면주민센터",
+      "road_address": "경기도 남양주시 별내면 청학로8번길 22",
+      "latitude": "37.7026774",
+      "longitude": "127.1248906",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "경기도",
+      "district": "남양주시",
+      "dong": "다산2동",
+      "office_name": "다산2동주민센터",
+      "road_address": "경기도 남양주시 다산지금로16번길 75",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15156732-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15156732/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "경기도",
+      "district": "남양주시",
+      "dong": "다산2동",
+      "office_name": "다산2동주민센터",
+      "road_address": "경기도 남양주시 다산지금로16번길 75",
+      "latitude": "37.6077010",
+      "longitude": "127.1694742",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "전남광주통합특별시",
+      "district": "서구",
+      "dong": "농성2동",
+      "office_name": "농성2동행정복지센터",
+      "road_address": "광주광역시 서구 화정로 314 (농성동)",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15033518-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15033518/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "전남광주통합특별시",
+      "district": "서구",
+      "dong": "농성2동",
+      "office_name": "농성2동행정복지센터",
+      "road_address": "광주광역시 서구 화정로 314 (농성동)",
+      "latitude": "35.1503790",
+      "longitude": "126.8902211",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "대전광역시",
+      "district": "중구",
+      "dong": "석교동",
+      "office_name": "석교동행정복지센터",
+      "road_address": "대전광역시 중구 대종로 267 (부사동)",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15035653-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15035653/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "대전광역시",
+      "district": "중구",
+      "dong": "석교동",
+      "office_name": "석교동행정복지센터",
+      "road_address": "대전광역시 중구 대종로 267 (부사동)",
+      "latitude": "36.3110252",
+      "longitude": "127.4382659",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "대전광역시",
+      "district": "중구",
+      "dong": "대사동",
+      "office_name": "대사동행정복지센터",
+      "road_address": "대전광역시 중구 충무로74번길 14 (대사동)",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15035653-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15035653/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "대전광역시",
+      "district": "중구",
+      "dong": "대사동",
+      "office_name": "대사동행정복지센터",
+      "road_address": "대전광역시 중구 충무로74번길 14 (대사동)",
+      "latitude": "36.3164192",
+      "longitude": "127.4247712",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "천안시 동남구",
+      "dong": "북면",
+      "office_name": "북면행정복지센터",
+      "road_address": "충청남도 천안시 동남구 북면 위례성로 724",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "천안시 동남구",
+      "dong": "북면",
+      "office_name": "북면행정복지센터",
+      "road_address": "충청남도 천안시 동남구 북면 위례성로 724",
+      "latitude": "36.8274728",
+      "longitude": "127.2732435",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "천안시 동남구",
+      "dong": "동면",
+      "office_name": "동면행정복지센터",
+      "road_address": "충청남도 천안시 동남구 동면 동산1길 15",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "천안시 동남구",
+      "dong": "동면",
+      "office_name": "동면행정복지센터",
+      "road_address": "충청남도 천안시 동남구 동면 동산1길 15",
+      "latitude": "36.7761964",
+      "longitude": "127.3443010",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "천안시 서북구",
+      "dong": "직산읍",
+      "office_name": "직산읍행정복지센터",
+      "road_address": "충청남도 천안시 서북구 직산읍 삼은4길 2",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "천안시 서북구",
+      "dong": "직산읍",
+      "office_name": "직산읍행정복지센터",
+      "road_address": "충청남도 천안시 서북구 직산읍 삼은4길 2",
+      "latitude": "36.8790065",
+      "longitude": "127.1504675",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "천안시 서북구",
+      "dong": "백석동",
+      "office_name": "백석동행정복지센터",
+      "road_address": "충청남도 천안시 서북구 번영로 208",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "천안시 서북구",
+      "dong": "백석동",
+      "office_name": "백석동행정복지센터",
+      "road_address": "충청남도 천안시 서북구 번영로 208",
+      "latitude": "36.8190973",
+      "longitude": "127.1133052",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "천안시 서북구",
+      "dong": "불당2동",
+      "office_name": "불당2동행정복지센터",
+      "road_address": "충청남도 천안시 서북구 불당25로 182",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "천안시 서북구",
+      "dong": "불당2동",
+      "office_name": "불당2동행정복지센터",
+      "road_address": "충청남도 천안시 서북구 불당25로 182",
+      "latitude": "36.8173065",
+      "longitude": "127.1087019",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "천안시 서북구",
+      "dong": "부성1동",
+      "office_name": "부성1동행정복지센터",
+      "road_address": "충청남도 천안시 서북구 부대중앙길 51",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "천안시 서북구",
+      "dong": "부성1동",
+      "office_name": "부성1동행정복지센터",
+      "road_address": "충청남도 천안시 서북구 부대중앙길 51",
+      "latitude": "36.8427475",
+      "longitude": "127.1522299",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "천안시 서북구",
+      "dong": "부성2동",
+      "office_name": "부성2동행정복지센터",
+      "road_address": "충청남도 천안시 서북구 부성7길 39-5",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "천안시 서북구",
+      "dong": "부성2동",
+      "office_name": "부성2동행정복지센터",
+      "road_address": "충청남도 천안시 서북구 부성7길 39-5",
+      "latitude": "36.8373371",
+      "longitude": "127.1379230",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "공주시",
+      "dong": "이인면",
+      "office_name": "이인면행정복지센터",
+      "road_address": "충청남도 공주시 이인면 검바위로 217",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "공주시",
+      "dong": "이인면",
+      "office_name": "이인면행정복지센터",
+      "road_address": "충청남도 공주시 이인면 검바위로 217",
+      "latitude": "36.3620086",
+      "longitude": "127.0632331",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "공주시",
+      "dong": "계룡면",
+      "office_name": "계룡면행정복지센터",
+      "road_address": "충청남도 공주시 계룡면 영규대사로 489",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "공주시",
+      "dong": "계룡면",
+      "office_name": "계룡면행정복지센터",
+      "road_address": "충청남도 공주시 계룡면 영규대사로 489",
+      "latitude": "36.3603564",
+      "longitude": "127.1417625",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "공주시",
+      "dong": "우성면",
+      "office_name": "우성면행정복지센터",
+      "road_address": "충청남도 공주시 우성면 동대리길 51",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "공주시",
+      "dong": "우성면",
+      "office_name": "우성면행정복지센터",
+      "road_address": "충청남도 공주시 우성면 동대리길 51",
+      "latitude": "36.4709631",
+      "longitude": "127.0499560",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "보령시",
+      "dong": "천북면",
+      "office_name": "천북면사무소",
+      "road_address": "충청남도 보령시 천북면 홍보로 462",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "보령시",
+      "dong": "천북면",
+      "office_name": "천북면사무소",
+      "road_address": "충청남도 보령시 천북면 홍보로 462",
+      "latitude": "36.4787561",
+      "longitude": "126.5272892",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "보령시",
+      "dong": "청소면",
+      "office_name": "청소면행정복지센터",
+      "road_address": "충청남도 보령시 청소면 청소큰길 167",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "보령시",
+      "dong": "청소면",
+      "office_name": "청소면행정복지센터",
+      "road_address": "충청남도 보령시 청소면 청소큰길 167",
+      "latitude": "36.4454522",
+      "longitude": "126.5895393",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "보령시",
+      "dong": "주산면",
+      "office_name": "주산면사무소",
+      "road_address": "충청남도 보령시 주산면 충서로 389-6",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "보령시",
+      "dong": "주산면",
+      "office_name": "주산면사무소",
+      "road_address": "충청남도 보령시 주산면 충서로 389-6",
+      "latitude": "36.1983673",
+      "longitude": "126.6316951",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "보령시",
+      "dong": "미산면",
+      "office_name": "미산면사무소",
+      "road_address": "충청남도 보령시 미산면 내평봉성길 5",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "보령시",
+      "dong": "미산면",
+      "office_name": "미산면사무소",
+      "road_address": "충청남도 보령시 미산면 내평봉성길 5",
+      "latitude": "36.2106053",
+      "longitude": "126.6764501",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "아산시",
+      "dong": "염치읍",
+      "office_name": "염치읍행정복지센터",
+      "road_address": "충청남도 아산시 염치읍 염치로 37",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "아산시",
+      "dong": "염치읍",
+      "office_name": "염치읍행정복지센터",
+      "road_address": "충청남도 아산시 염치읍 염치로 37",
+      "latitude": "36.8165077",
+      "longitude": "126.9766255",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "아산시",
+      "dong": "배방읍",
+      "office_name": "배방읍행정복지센터",
+      "road_address": "충청남도 아산시배방읍 배방로 38",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "아산시",
+      "dong": "배방읍",
+      "office_name": "배방읍행정복지센터",
+      "road_address": "충청남도 아산시배방읍 배방로 38",
+      "latitude": "36.7738675",
+      "longitude": "127.0538846",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "아산시",
+      "dong": "송악면",
+      "office_name": "송악면행정복지센터",
+      "road_address": "충청남도 아산시 송악면 송악로 790",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "아산시",
+      "dong": "송악면",
+      "office_name": "송악면행정복지센터",
+      "road_address": "충청남도 아산시 송악면 송악로 790",
+      "latitude": "36.7316252",
+      "longitude": "127.0090574",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "province": "충청남도",
+    "district": "아산시",
+    "dong": "영인면",
+    "office_name": "영인면행정복지센터",
+    "road_address": "충청남도 아산시 영인면 영인로 78",
+    "latitude": "",
+    "longitude": "",
+    "source": "OFFICE-DATA-15032211-UNDATED",
+    "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+    "verified_at": "2026-11-03",
+    "reason": "ADDRESS_HAS_TOO_MANY_BUILDINGS"
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "아산시",
+      "dong": "인주면",
+      "office_name": "인주면행정복지센터",
+      "road_address": "충청남도 아산시 인주면 현대로 1295",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "아산시",
+      "dong": "인주면",
+      "office_name": "인주면행정복지센터",
+      "road_address": "충청남도 아산시 인주면 현대로 1295",
+      "latitude": "36.8690114",
+      "longitude": "126.8846068",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "아산시",
+      "dong": "선장면",
+      "office_name": "선장면행정복지센터",
+      "road_address": "충청남도 아산시 선장면 선장로 137",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "아산시",
+      "dong": "선장면",
+      "office_name": "선장면행정복지센터",
+      "road_address": "충청남도 아산시 선장면 선장로 137",
+      "latitude": "36.7914332",
+      "longitude": "126.8615724",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "아산시",
+      "dong": "도고면",
+      "office_name": "도고면행정복지센터",
+      "road_address": "충청남도 아산시 도고면 도고면로 91",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "아산시",
+      "dong": "도고면",
+      "office_name": "도고면행정복지센터",
+      "road_address": "충청남도 아산시 도고면 도고면로 91",
+      "latitude": "36.7572835",
+      "longitude": "126.8771651",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "서산시",
+      "dong": "지곡면",
+      "office_name": "지곡면행정복지센터",
+      "road_address": "충청남도 서산시 지곡면 화천1로 76",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "서산시",
+      "dong": "지곡면",
+      "office_name": "지곡면행정복지센터",
+      "road_address": "충청남도 서산시 지곡면 화천1로 76",
+      "latitude": "36.8635213",
+      "longitude": "126.4369004",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "서산시",
+      "dong": "동문1동",
+      "office_name": "동문1동행정복지센터",
+      "road_address": "충청남도 서산시 학동3로 53",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "서산시",
+      "dong": "동문1동",
+      "office_name": "동문1동행정복지센터",
+      "road_address": "충청남도 서산시 학동3로 53",
+      "latitude": "36.7900374",
+      "longitude": "126.4592115",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "서산시",
+      "dong": "수석동",
+      "office_name": "수석동행정복지센터",
+      "road_address": "충청남도 서산시 무석1로 2",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "서산시",
+      "dong": "수석동",
+      "office_name": "수석동행정복지센터",
+      "road_address": "충청남도 서산시 무석1로 2",
+      "latitude": "36.7713624",
+      "longitude": "126.4672478",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "논산시",
+      "dong": "강경읍",
+      "office_name": "강경읍사무소",
+      "road_address": "충청남도 논산시 강경읍 계백로 162",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "논산시",
+      "dong": "강경읍",
+      "office_name": "강경읍사무소",
+      "road_address": "충청남도 논산시 강경읍 계백로 162",
+      "latitude": "36.1580760",
+      "longitude": "127.0179649",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "논산시",
+      "dong": "연무읍",
+      "office_name": "연무읍사무소",
+      "road_address": "충청남도 논산시 연무읍 안심로 50",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "논산시",
+      "dong": "연무읍",
+      "office_name": "연무읍사무소",
+      "road_address": "충청남도 논산시 연무읍 안심로 50",
+      "latitude": "36.1251240",
+      "longitude": "127.0990305",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "논산시",
+      "dong": "노성면",
+      "office_name": "노성면사무소",
+      "road_address": "충청남도 논산시 노성면 노성로585번길 12-8",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "논산시",
+      "dong": "노성면",
+      "office_name": "노성면사무소",
+      "road_address": "충청남도 논산시 노성면 노성로585번길 12-8",
+      "latitude": "36.2781843",
+      "longitude": "127.1302395",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "province": "충청남도",
+    "district": "논산시",
+    "dong": "벌곡면",
+    "office_name": "벌곡면사무소",
+    "road_address": "충청남도 논산시 벌곡면 황룡제로 594",
+    "latitude": "",
+    "longitude": "",
+    "source": "OFFICE-DATA-15032211-UNDATED",
+    "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+    "verified_at": "2026-11-03",
+    "reason": "NO_UNIQUE_OFFICE_BUILDING_AT_OFFICIAL_ADDRESS"
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "논산시",
+      "dong": "양촌면",
+      "office_name": "양촌면사무소",
+      "road_address": "충청남도 논산시 양촌면 매죽헌로1665번길 28",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "논산시",
+      "dong": "양촌면",
+      "office_name": "양촌면사무소",
+      "road_address": "충청남도 논산시 양촌면 매죽헌로1665번길 28",
+      "latitude": "36.1385449",
+      "longitude": "127.2326545",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "논산시",
+      "dong": "부창동",
+      "office_name": "부창동행정복지센터",
+      "road_address": "충청남도 논산시 시민로 389",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "논산시",
+      "dong": "부창동",
+      "office_name": "부창동행정복지센터",
+      "road_address": "충청남도 논산시 시민로 389",
+      "latitude": "36.1996244",
+      "longitude": "127.0870497",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "계룡시",
+      "dong": "두마면",
+      "office_name": "두마면사무소",
+      "road_address": "충청남도 계룡시 두마면 팥거리2길 14",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "계룡시",
+      "dong": "두마면",
+      "office_name": "두마면사무소",
+      "road_address": "충청남도 계룡시 두마면 팥거리2길 14",
+      "latitude": "36.2668955",
+      "longitude": "127.2727553",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "province": "충청남도",
+    "district": "당진시",
+    "dong": "면천면",
+    "office_name": "면천면사무소",
+    "road_address": "충청남도 당진시 면천면 면천로 623",
+    "latitude": "",
+    "longitude": "",
+    "source": "OFFICE-DATA-15032211-UNDATED",
+    "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+    "verified_at": "2026-11-03",
+    "reason": "ADDRESS_HAS_TOO_MANY_BUILDINGS"
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "당진시",
+      "dong": "순성면",
+      "office_name": "순성면사무소",
+      "road_address": "충청남도 당진시 순성면 순성로 535",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "당진시",
+      "dong": "순성면",
+      "office_name": "순성면사무소",
+      "road_address": "충청남도 당진시 순성면 순성로 535",
+      "latitude": "36.8453821",
+      "longitude": "126.7144219",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "금산군",
+      "dong": "금산읍",
+      "office_name": "금산읍행정복지센터",
+      "road_address": "충청남도 금산군 금산읍 비호로 69",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "금산군",
+      "dong": "금산읍",
+      "office_name": "금산읍행정복지센터",
+      "road_address": "충청남도 금산군 금산읍 비호로 69",
+      "latitude": "36.1071628",
+      "longitude": "127.4908992",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "금산군",
+      "dong": "군북면",
+      "office_name": "군북면행정복지센터",
+      "road_address": "충청남도 금산군 군북면 산꽃로 17",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "금산군",
+      "dong": "군북면",
+      "office_name": "군북면행정복지센터",
+      "road_address": "충청남도 금산군 군북면 산꽃로 17",
+      "latitude": "36.1690461",
+      "longitude": "127.5277601",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "province": "충청남도",
+    "district": "서천군",
+    "dong": "서천읍",
+    "office_name": "서천읍행정복지센터",
+    "road_address": "충청남도 서천군 서천읍 서천로 92",
+    "latitude": "",
+    "longitude": "",
+    "source": "OFFICE-DATA-15032211-UNDATED",
+    "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+    "verified_at": "2026-11-03",
+    "reason": "NO_UNIQUE_OFFICE_BUILDING_AT_OFFICIAL_ADDRESS"
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "서천군",
+      "dong": "시초면",
+      "office_name": "시초면행정복지센터",
+      "road_address": "충청남도 서천군 시초면 시초북로 37",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "서천군",
+      "dong": "시초면",
+      "office_name": "시초면행정복지센터",
+      "road_address": "충청남도 서천군 시초면 시초북로 37",
+      "latitude": "36.1215869",
+      "longitude": "126.7526989",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  },
+  {
+    "original": {
+      "province": "충청남도",
+      "district": "청양군",
+      "dong": "목면",
+      "office_name": "목면행정복지센터",
+      "road_address": "충청남도 청양군 목면 안심길 107",
+      "latitude": "",
+      "longitude": "",
+      "source": "OFFICE-DATA-15032211-UNDATED",
+      "source_url": "https://www.data.go.kr/data/15032211/fileData.do",
+      "verified_at": "2026-11-03"
+    },
+    "resolved": {
+      "province": "충청남도",
+      "district": "청양군",
+      "dong": "목면",
+      "office_name": "목면행정복지센터",
+      "road_address": "충청남도 청양군 목면 안심길 107",
+      "latitude": "36.4190235",
+      "longitude": "127.0038696",
+      "source": "OFFICE-JUSO-ADDR-20261103",
+      "source_url": "https://www.juso.go.kr/map/totalMapView",
+      "verified_at": "2026-11-03"
+    }
+  }
+]

@@ -1,0 +1,1852 @@
+[
+  {
+    "regionId": 430,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "서울특별시",
+        "district": "성북구",
+        "dong": "길음2동",
+        "office_name": "길음2동주민센터",
+        "road_address": "서울특별시 성북구 동소문로47가길 55 (길음동)",
+        "latitude": "37.6070649",
+        "longitude": "127.0266355",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "서울특별시",
+        "district": "성북구",
+        "dong": "길음2동",
+        "office_name": "길음2동주민센터",
+        "road_address": "서울특별시 성북구 삼양로2길 70 (길음동)",
+        "latitude": "37.6068073",
+        "longitude": "127.0272794",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 1207,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "인천광역시",
+        "district": "미추홀구",
+        "dong": "숭의4동",
+        "office_name": "숭의4동행정복지센터",
+        "road_address": "인천광역시 미추홀구 경인로156번길 32 (숭의동)",
+        "latitude": "37.4648392",
+        "longitude": "126.6591374",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "인천광역시",
+        "district": "미추홀구",
+        "dong": "숭의4동",
+        "office_name": "숭의4동행정복지센터",
+        "road_address": "인천광역시 미추홀구 장천로93번길 19 (숭의동)",
+        "latitude": "37.4628724",
+        "longitude": "126.6538770",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 1218,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "인천광역시",
+        "district": "미추홀구",
+        "dong": "주안5동",
+        "office_name": "주안5동행정복지센터",
+        "road_address": "인천광역시 미추홀구 석정로 462 (주안동)",
+        "latitude": "37.4658187",
+        "longitude": "126.6868836",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "인천광역시",
+        "district": "미추홀구",
+        "dong": "주안5동",
+        "office_name": "주안5동행정복지센터",
+        "road_address": "인천광역시 미추홀구 석정로461번길 21 (주안동)",
+        "latitude": "37.4671881",
+        "longitude": "126.6864982",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 2701,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "전북특별자치도",
+        "district": "군산시",
+        "dong": "해신동",
+        "office_name": "해신동주민센터",
+        "road_address": "전북특별자치도 군산시 중앙로 220 (금동)",
+        "latitude": "35.9893781",
+        "longitude": "126.7076213",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전북특별자치도",
+        "district": "군산시",
+        "dong": "해신동",
+        "office_name": "해신동주민센터",
+        "road_address": "전북특별자치도 군산시 중앙로 224 (금동)",
+        "latitude": "35.9897290",
+        "longitude": "126.7070274",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 2705,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "전북특별자치도",
+        "district": "군산시",
+        "dong": "중앙동",
+        "office_name": "중앙동주민센터",
+        "road_address": "전북특별자치도 군산시 신영3길 11 (신영동)",
+        "latitude": "35.9854798",
+        "longitude": "126.7184592",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전북특별자치도",
+        "district": "군산시",
+        "dong": "중앙동",
+        "office_name": "중앙동주민센터",
+        "road_address": "전북특별자치도 군산시 큰샘길 47 (죽성동)",
+        "latitude": "35.9859920",
+        "longitude": "126.7173781",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 2707,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "전북특별자치도",
+        "district": "군산시",
+        "dong": "조촌동",
+        "office_name": "조촌동행정복지센터",
+        "road_address": "전북특별자치도 군산시 부골1길 40 (조촌동)",
+        "latitude": "35.9736366",
+        "longitude": "126.7418017",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전북특별자치도",
+        "district": "군산시",
+        "dong": "조촌동",
+        "office_name": "조촌동행정복지센터",
+        "road_address": "전북특별자치도 군산시 조촌5길 15 (조촌동)",
+        "latitude": "35.9744535",
+        "longitude": "126.7371646",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 1018,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "대구광역시",
+        "district": "북구",
+        "dong": "검단동",
+        "office_name": "검단동행정복지센터",
+        "road_address": "대구광역시 북구 검단로 230 (검단동)",
+        "latitude": "35.9137739",
+        "longitude": "128.6297538",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "대구광역시",
+        "district": "북구",
+        "dong": "검단동",
+        "office_name": "검단동행정복지센터",
+        "road_address": "대구광역시 북구 검단로41길 12 (검단동)",
+        "latitude": "35.9134686",
+        "longitude": "128.6272209",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 751,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "부산광역시",
+        "district": "서구",
+        "dong": "서대신4동",
+        "office_name": "서대신4동주민센터",
+        "road_address": "부산광역시 서구 꽃마을로 49 (서대신동3가)",
+        "latitude": "35.1182244",
+        "longitude": "129.0112631",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "부산광역시",
+        "district": "서구",
+        "dong": "서대신4동",
+        "office_name": "서대신4동주민센터",
+        "road_address": "부산광역시 서구 꽃마을로 58 (서대신동3가)",
+        "latitude": "35.1192482",
+        "longitude": "129.0117880",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 1526,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경기도",
+        "district": "수원시 팔달구",
+        "dong": "지동",
+        "office_name": "지동행정복지센터",
+        "road_address": "경기도 수원시 팔달구 세지로 339 (지동)",
+        "latitude": "37.2815328",
+        "longitude": "127.0246720",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경기도",
+        "district": "수원시 팔달구",
+        "dong": "지동",
+        "office_name": "지동주민센터",
+        "road_address": "경기도 수원시 팔달구 팔달문로115번길 5 (지동)",
+        "latitude": "37.2818217",
+        "longitude": "127.0285064",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 566,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "서울특별시",
+        "district": "강서구",
+        "dong": "방화2동",
+        "office_name": "방화2동주민센터",
+        "road_address": "서울특별시 강서구 개화동로21길 52 (방화동)",
+        "latitude": "37.5717240",
+        "longitude": "126.8058299",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "서울특별시",
+        "district": "강서구",
+        "dong": "방화2동",
+        "office_name": "방화2동주민센터",
+        "road_address": "서울특별시 강서구 개화동로23길 20 (방화동)",
+        "latitude": "37.5667130",
+        "longitude": "126.8067078",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 1328,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "전남광주통합특별시",
+        "district": "광산구",
+        "dong": "수완동",
+        "office_name": "수완동행정복지센터",
+        "road_address": "전남광주통합특별시 광산구 월곡산정로 12",
+        "latitude": "35.1649105",
+        "longitude": "126.8037218",
+        "source": "OFFICE-DATA-15013117-20260831",
+        "source_url": "https://www.data.go.kr/data/15013117/standard.do",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전남광주통합특별시",
+        "district": "광산구",
+        "dong": "수완동",
+        "office_name": "수완동행정복지센터",
+        "road_address": "전남광주통합특별시 광산구 하남대로54번길 15",
+        "latitude": "35.1792744",
+        "longitude": "126.7997922",
+        "source": "OFFICE-DATA-15013117-20260831",
+        "source_url": "https://www.data.go.kr/data/15013117/standard.do",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전남광주통합특별시",
+        "district": "광산구",
+        "dong": "수완동",
+        "office_name": "수완동행정복지센터",
+        "road_address": "전남광주통합특별시 광산구 목련로 156",
+        "latitude": "35.1704109",
+        "longitude": "126.8166443",
+        "source": "OFFICE-DATA-15013117-20260831",
+        "source_url": "https://www.data.go.kr/data/15013117/standard.do",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 1341,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "전남광주통합특별시",
+        "district": "광산구",
+        "dong": "운남동",
+        "office_name": "운남동행정복지센터",
+        "road_address": "전남광주통합특별시 광산구 우산로 17",
+        "latitude": "35.1595678",
+        "longitude": "126.8027728",
+        "source": "OFFICE-DATA-15013117-20260831",
+        "source_url": "https://www.data.go.kr/data/15013117/standard.do",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전남광주통합특별시",
+        "district": "광산구",
+        "dong": "운남동",
+        "office_name": "운남동행정복지센터",
+        "road_address": "전남광주통합특별시 광산구 오운로 433-1",
+        "latitude": "35.1621309",
+        "longitude": "126.6975795",
+        "source": "OFFICE-DATA-15013117-20260831",
+        "source_url": "https://www.data.go.kr/data/15013117/standard.do",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전남광주통합특별시",
+        "district": "광산구",
+        "dong": "운남동",
+        "office_name": "운남동행정복지센터",
+        "road_address": "전남광주통합특별시 광산구 비아중앙로31번길 8-6",
+        "latitude": "35.2220329",
+        "longitude": "126.8243552",
+        "source": "OFFICE-DATA-15013117-20260831",
+        "source_url": "https://www.data.go.kr/data/15013117/standard.do",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 2979,
+    "reason": "SHARED_POINT_WITH_DIFFERENT_ADDRESSES"
+  },
+  {
+    "regionId": 2980,
+    "reason": "SHARED_POINT_WITH_DIFFERENT_ADDRESSES"
+  },
+  {
+    "regionId": 2982,
+    "reason": "SHARED_POINT_WITH_DIFFERENT_ADDRESSES"
+  },
+  {
+    "regionId": 2983,
+    "reason": "SHARED_POINT_WITH_DIFFERENT_ADDRESSES"
+  },
+  {
+    "regionId": 2565,
+    "reason": "SHARED_POINT_WITH_DIFFERENT_ADDRESSES"
+  },
+  {
+    "regionId": 1135,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "인천광역시",
+        "district": "남동구",
+        "dong": "간석2동",
+        "office_name": "간석2동행정복지센터",
+        "road_address": "인천광역시 남동구 남동대로916번길 47 (간석동)",
+        "latitude": "37.4639815",
+        "longitude": "126.7109443",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "인천광역시",
+        "district": "남동구",
+        "dong": "간석2동",
+        "office_name": "간석2동행정복지센터",
+        "road_address": "인천광역시 남동구 석촌로 13 (간석동)",
+        "latitude": "37.4616760",
+        "longitude": "126.7088078",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 1230,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "인천광역시",
+        "district": "강화군",
+        "dong": "길상면",
+        "office_name": "길상면사무소",
+        "road_address": "인천광역시 강화군 길상면 강화동로 15",
+        "latitude": "37.6403597",
+        "longitude": "126.4910236",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "인천광역시",
+        "district": "강화군",
+        "dong": "길상면",
+        "office_name": "길상면사무소",
+        "road_address": "인천광역시 강화군 길상면 강화동로 15",
+        "latitude": "37.6409096",
+        "longitude": "126.4911135",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "인천광역시",
+        "district": "강화군",
+        "dong": "길상면",
+        "office_name": "길상면사무소",
+        "road_address": "인천광역시 강화군 길상면 강화동로 15",
+        "latitude": "37.6403597",
+        "longitude": "126.4910236",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "인천광역시",
+        "district": "강화군",
+        "dong": "길상면",
+        "office_name": "길상면사무소",
+        "road_address": "인천광역시 강화군 길상면 강화동로 15",
+        "latitude": "37.6409096",
+        "longitude": "126.4911135",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3002,
+    "reason": "SHARED_POINT_WITH_DIFFERENT_ADDRESSES"
+  },
+  {
+    "regionId": 3001,
+    "reason": "SHARED_POINT_WITH_DIFFERENT_ADDRESSES"
+  },
+  {
+    "regionId": 2992,
+    "reason": "SHARED_POINT_WITH_DIFFERENT_ADDRESSES"
+  },
+  {
+    "regionId": 2673,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "전북특별자치도",
+        "district": "전주시 완산구",
+        "dong": "효자4동",
+        "office_name": "효자4동주민센터",
+        "road_address": "전북특별자치도 전주시 완산구 천잠로 186 (효자동2가)",
+        "latitude": "35.8039431",
+        "longitude": "127.0978319",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전북특별자치도",
+        "district": "전주시 완산구",
+        "dong": "효자4동",
+        "office_name": "효자4동주민센터",
+        "road_address": "전북특별자치도 전주시 완산구 천잠로 201 (효자동2가)",
+        "latitude": "35.8053197",
+        "longitude": "127.0945872",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 1428,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "울산광역시",
+        "district": "중구",
+        "dong": "우정동",
+        "office_name": "우정동주민센터",
+        "road_address": "울산광역시 중구 당산5길 41 (우정동)",
+        "latitude": "35.5547659",
+        "longitude": "129.3123902",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "울산광역시",
+        "district": "중구",
+        "dong": "우정동",
+        "office_name": "우정동행정복지센터",
+        "road_address": "울산광역시 중구 장춘로 30 (우정동)",
+        "latitude": "35.5552694",
+        "longitude": "129.3125175",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3109,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "전남광주통합특별시",
+        "district": "해남군",
+        "dong": "문내면",
+        "office_name": "문내면사무소",
+        "road_address": "전남광주통합특별시 해남군 문내면 동영길 10",
+        "latitude": "34.5970811",
+        "longitude": "126.3141905",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전남광주통합특별시",
+        "district": "해남군",
+        "dong": "문내면",
+        "office_name": "문내면사무소",
+        "road_address": "전남광주통합특별시 해남군 문내면 동헌길 37",
+        "latitude": "34.5920637",
+        "longitude": "126.3085815",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전남광주통합특별시",
+        "district": "해남군",
+        "dong": "문내면",
+        "office_name": "문내면사무소",
+        "road_address": "전남광주통합특별시 해남군 문내면 동영길 10",
+        "latitude": "34.5970811",
+        "longitude": "126.3141905",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전남광주통합특별시",
+        "district": "해남군",
+        "dong": "문내면",
+        "office_name": "문내면사무소",
+        "road_address": "전남광주통합특별시 해남군 문내면 동헌길 37",
+        "latitude": "34.5920637",
+        "longitude": "126.3085815",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3846,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "제주특별자치도",
+        "district": "제주시",
+        "dong": "이호동",
+        "office_name": "이호동주민센터",
+        "road_address": "제주특별자치도 제주시 도리로 57 (이호일동)",
+        "latitude": "33.4989325",
+        "longitude": "126.4578723",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "제주특별자치도",
+        "district": "제주시",
+        "dong": "이호동",
+        "office_name": "이호동주민센터",
+        "road_address": "제주특별자치도 제주시 백포서길 9 (이호일동)",
+        "latitude": "33.4998127",
+        "longitude": "126.4581025",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3860,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "제주특별자치도",
+        "district": "서귀포시",
+        "dong": "서홍동",
+        "office_name": "서홍동주민센터",
+        "road_address": "제주특별자치도 서귀포시 중산간동로 8106 (서홍동)",
+        "latitude": "33.2640423",
+        "longitude": "126.5505272",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "제주특별자치도",
+        "district": "서귀포시",
+        "dong": "서홍동",
+        "office_name": "서홍동주민센터",
+        "road_address": "제주특별자치도 서귀포시 중앙로 125 (서홍동)",
+        "latitude": "33.2560780",
+        "longitude": "126.5599846",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 2085,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경기도",
+        "district": "가평군",
+        "dong": "설악면",
+        "office_name": "설악면사무소",
+        "road_address": "경기도 가평군 설악면 한서로 8",
+        "latitude": "37.6761159",
+        "longitude": "127.4940817",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경기도",
+        "district": "가평군",
+        "dong": "설악면",
+        "office_name": "설악면행정복지센터",
+        "road_address": "경기도 가평군 설악면 한서로 8",
+        "latitude": "37.6757853",
+        "longitude": "127.4947740",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경기도",
+        "district": "가평군",
+        "dong": "설악면",
+        "office_name": "설악면사무소",
+        "road_address": "경기도 가평군 설악면 한서로 8",
+        "latitude": "37.6761159",
+        "longitude": "127.4940817",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 1443,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "울산광역시",
+        "district": "남구",
+        "dong": "삼산동",
+        "office_name": "삼산동주민센터",
+        "road_address": "울산광역시 남구 삼산중로131번길 36 (삼산동)",
+        "latitude": "35.5444044",
+        "longitude": "129.3318714",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "울산광역시",
+        "district": "남구",
+        "dong": "삼산동",
+        "office_name": "삼산동행정복지센터",
+        "road_address": "울산광역시 남구 삼산중로146번길 27 (삼산동)",
+        "latitude": "35.5464902",
+        "longitude": "129.3389427",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 1396,
+    "reason": "SHARED_POINT_WITH_DIFFERENT_ADDRESSES"
+  },
+  {
+    "regionId": 3766,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경상남도",
+        "district": "하동군",
+        "dong": "진교면",
+        "office_name": "진교면사무소",
+        "road_address": "경상남도 하동군 진교면 민다리안길 62",
+        "latitude": "35.0302765",
+        "longitude": "127.9007211",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상남도",
+        "district": "하동군",
+        "dong": "진교면",
+        "office_name": "진교면행정복지센터",
+        "road_address": "경상남도 하동군 진교면 진교중앙길 4",
+        "latitude": "35.0297805",
+        "longitude": "127.9042822",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상남도",
+        "district": "하동군",
+        "dong": "진교면",
+        "office_name": "진교면사무소",
+        "road_address": "경상남도 하동군 진교면 민다리안길 62",
+        "latitude": "35.0302765",
+        "longitude": "127.9007211",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3759,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경상남도",
+        "district": "하동군",
+        "dong": "화개면",
+        "office_name": "화개면사무소",
+        "road_address": "경상남도 하동군 화개면 쌍계로 71-9",
+        "latitude": "35.1939241",
+        "longitude": "127.6270411",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상남도",
+        "district": "하동군",
+        "dong": "화개면",
+        "office_name": "화개면사무소",
+        "road_address": "경상남도 하동군 화개면 원탑1길 6",
+        "latitude": "35.1883772",
+        "longitude": "127.6254516",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상남도",
+        "district": "하동군",
+        "dong": "화개면",
+        "office_name": "화개면사무소",
+        "road_address": "경상남도 하동군 화개면 쌍계로 71-9",
+        "latitude": "35.1939241",
+        "longitude": "127.6270411",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상남도",
+        "district": "하동군",
+        "dong": "화개면",
+        "office_name": "화개면사무소",
+        "road_address": "경상남도 하동군 화개면 원탑1길 6",
+        "latitude": "35.1883772",
+        "longitude": "127.6254516",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 2282,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "강원특별자치도",
+        "district": "인제군",
+        "dong": "상남면",
+        "office_name": "상남면행정복지센터",
+        "road_address": "강원특별자치도 인제군 상남면 상남로38번길 10",
+        "latitude": "37.8741146",
+        "longitude": "128.2599851",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "강원특별자치도",
+        "district": "인제군",
+        "dong": "상남면",
+        "office_name": "상남면사무소",
+        "road_address": "강원특별자치도 인제군 상남면 상남로38번길 10",
+        "latitude": "37.8738609",
+        "longitude": "128.2604576",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "강원특별자치도",
+        "district": "인제군",
+        "dong": "상남면",
+        "office_name": "상남면사무소",
+        "road_address": "강원특별자치도 인제군 상남면 상남로38번길 10",
+        "latitude": "37.8738609",
+        "longitude": "128.2604576",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3079,
+    "reason": "SHARED_POINT_WITH_DIFFERENT_ADDRESSES"
+  },
+  {
+    "regionId": 3084,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "전남광주통합특별시",
+        "district": "장흥군",
+        "dong": "부산면",
+        "office_name": "부산면행정복지센터",
+        "road_address": "전남광주통합특별시 장흥군 부산면 내안구룡길 380",
+        "latitude": "34.7205456",
+        "longitude": "126.9025170",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전남광주통합특별시",
+        "district": "장흥군",
+        "dong": "부산면",
+        "office_name": "부산면행정복지센터",
+        "road_address": "전남광주통합특별시 장흥군 부산면 내안구룡길 380",
+        "latitude": "34.7207232",
+        "longitude": "126.9027850",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전남광주통합특별시",
+        "district": "장흥군",
+        "dong": "부산면",
+        "office_name": "부산면사무소",
+        "road_address": "전남광주통합특별시 장흥군 부산면 부유로 30",
+        "latitude": "34.7234039",
+        "longitude": "126.9033979",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전남광주통합특별시",
+        "district": "장흥군",
+        "dong": "부산면",
+        "office_name": "부산면사무소",
+        "road_address": "전남광주통합특별시 장흥군 부산면 부유로 30",
+        "latitude": "34.7234039",
+        "longitude": "126.9033979",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3161,
+    "reason": "SHARED_POINT_WITH_DIFFERENT_ADDRESSES"
+  },
+  {
+    "regionId": 654,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "서울특별시",
+        "district": "서초구",
+        "dong": "서초4동",
+        "office_name": "서초4동주민센터",
+        "road_address": "서울특별시 서초구 서운로26길 3 (서초동)",
+        "latitude": "37.5027156",
+        "longitude": "127.0222100",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "서울특별시",
+        "district": "서초구",
+        "dong": "서초4동",
+        "office_name": "서초4동주민센터",
+        "road_address": "서울특별시 서초구 서초대로55길 13 (서초동)",
+        "latitude": "37.4959533",
+        "longitude": "127.0153285",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 890,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "부산광역시",
+        "district": "금정구",
+        "dong": "구서2동",
+        "office_name": "구서2동행정복지센터",
+        "road_address": "부산광역시 금정구 금강로 584 (구서동)",
+        "latitude": "35.2595345",
+        "longitude": "129.0880544",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "부산광역시",
+        "district": "금정구",
+        "dong": "구서2동",
+        "office_name": "구서2동행정복지센터",
+        "road_address": "부산광역시 금정구 두실로7번길 115 (구서동)",
+        "latitude": "35.2551918",
+        "longitude": "129.0905873",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 926,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "부산광역시",
+        "district": "사상구",
+        "dong": "삼락동",
+        "office_name": "삼락동주민센터",
+        "road_address": "부산광역시 사상구 낙동대로1310번길 19 (삼락동)",
+        "latitude": "35.1770105",
+        "longitude": "128.9776423",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "부산광역시",
+        "district": "사상구",
+        "dong": "삼락동",
+        "office_name": "삼락동행정복지센터",
+        "road_address": "부산광역시 사상구 삼락천로 77 (삼락동)",
+        "latitude": "35.1747700",
+        "longitude": "128.9792872",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 877,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "부산광역시",
+        "district": "사하구",
+        "dong": "감천1동",
+        "office_name": "감천1동행정복지센터",
+        "road_address": "부산광역시 사하구 감천로 97 (감천동)",
+        "latitude": "35.0884020",
+        "longitude": "129.0028853",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "부산광역시",
+        "district": "사하구",
+        "dong": "감천1동",
+        "office_name": "감천1동행정복지센터",
+        "road_address": "부산광역시 사하구 감천로117번길 2 (감천동)",
+        "latitude": "35.0880323",
+        "longitude": "129.0046513",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 944,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "대구광역시",
+        "district": "중구",
+        "dong": "성내1동",
+        "office_name": "성내1동주민센터",
+        "road_address": "대구광역시 중구 동성로2길 7 (봉산동)",
+        "latitude": "35.8666440",
+        "longitude": "128.5957887",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "대구광역시",
+        "district": "중구",
+        "dong": "성내1동",
+        "office_name": "성내1동주민센터",
+        "road_address": "대구광역시 중구 동성로3길 87 (공평동)",
+        "latitude": "35.8692555",
+        "longitude": "128.5980223",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 1246,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "인천광역시",
+        "district": "옹진군",
+        "dong": "영흥면",
+        "office_name": "영흥면사무소",
+        "road_address": "인천광역시 옹진군 영흥면 영흥로251번길 90 (영흥면사무소)",
+        "latitude": "37.2560979",
+        "longitude": "126.4833425",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "인천광역시",
+        "district": "옹진군",
+        "dong": "영흥면",
+        "office_name": "영흥면사무소",
+        "road_address": "인천광역시 옹진군 영흥면 영흥북로35번길 85",
+        "latitude": "37.2597847",
+        "longitude": "126.4983060",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "인천광역시",
+        "district": "옹진군",
+        "dong": "영흥면",
+        "office_name": "영흥면사무소",
+        "road_address": "인천광역시 옹진군 영흥면 영흥로251번길 90 (영흥면사무소)",
+        "latitude": "37.2560979",
+        "longitude": "126.4833425",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "인천광역시",
+        "district": "옹진군",
+        "dong": "영흥면",
+        "office_name": "영흥면사무소",
+        "road_address": "인천광역시 옹진군 영흥면 영흥북로35번길 85",
+        "latitude": "37.2597847",
+        "longitude": "126.4983060",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 1245,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "인천광역시",
+        "district": "옹진군",
+        "dong": "자월면",
+        "office_name": "자월면사무소",
+        "road_address": "인천광역시 옹진군 자월면 자월서로 164 (자월면사무소)",
+        "latitude": "37.2540636",
+        "longitude": "126.3071483",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "인천광역시",
+        "district": "옹진군",
+        "dong": "자월면",
+        "office_name": "자월면사무소",
+        "road_address": "인천광역시 옹진군 자월면 자월서로 164 (자월면사무소 )",
+        "latitude": "37.2547675",
+        "longitude": "126.3077723",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "인천광역시",
+        "district": "옹진군",
+        "dong": "자월면",
+        "office_name": "자월면사무소",
+        "road_address": "인천광역시 옹진군 자월면 자월서로 164 (자월면사무소)",
+        "latitude": "37.2540636",
+        "longitude": "126.3071483",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "인천광역시",
+        "district": "옹진군",
+        "dong": "자월면",
+        "office_name": "자월면사무소",
+        "road_address": "인천광역시 옹진군 자월면 자월서로 164 (자월면사무소 )",
+        "latitude": "37.2547675",
+        "longitude": "126.3077723",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 1655,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경기도",
+        "district": "부천시 원미구",
+        "dong": "상동",
+        "office_name": "상동행정복지센터",
+        "road_address": "경기도 부천시 원미구 석천로 83 (상동)",
+        "latitude": "37.4949150",
+        "longitude": "126.7607905",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경기도",
+        "district": "부천시 원미구",
+        "dong": "상동",
+        "office_name": "상동행정복지센터",
+        "road_address": "경기도 부천시 원미구 조마루로 95 (상동)",
+        "latitude": "37.5006341",
+        "longitude": "126.7541025",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 1634,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경기도",
+        "district": "안양시 동안구",
+        "dong": "평안동",
+        "office_name": "평안동주민센터",
+        "road_address": "경기도 안양시 동안구 관평로138번길 39 (평촌동)",
+        "latitude": "37.3903993",
+        "longitude": "126.9642700",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경기도",
+        "district": "안양시 동안구",
+        "dong": "평안동",
+        "office_name": "평안동행정복지센터",
+        "road_address": "경기도 안양시 동안구 부림로 90 (평촌동)",
+        "latitude": "37.3919490",
+        "longitude": "126.9667298",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 1609,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경기도",
+        "district": "의정부시",
+        "dong": "의정부1동",
+        "office_name": "의정부1동주민센터",
+        "road_address": "경기도 의정부시 가능로152번길 14 (의정부동)",
+        "latitude": "37.7464257",
+        "longitude": "127.0476492",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경기도",
+        "district": "의정부시",
+        "dong": "의정부1동",
+        "office_name": "의정부1동주민센터",
+        "road_address": "경기도 의정부시 경의로 120 (의정부동)",
+        "latitude": "37.7322730",
+        "longitude": "127.0491024",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 2353,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "충청북도",
+        "district": "청주시 서원구",
+        "dong": "사직2동",
+        "office_name": "사직2동행정복지센터",
+        "road_address": "충청북도 청주시 서원구 충렬로53번길 31 (사직동)",
+        "latitude": "36.6316357",
+        "longitude": "127.4737455",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "충청북도",
+        "district": "청주시 서원구",
+        "dong": "사직2동",
+        "office_name": "사직2동행정복지센터",
+        "road_address": "충청북도 청주시 서원구 충렬로76번길 16 (사직동)",
+        "latitude": "36.6330030",
+        "longitude": "127.4716993",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3245,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경상북도",
+        "district": "경주시",
+        "dong": "황오동",
+        "office_name": "황오동행정복지센터",
+        "road_address": "경상북도 경주시 북성로 89 (북부동)",
+        "latitude": "35.8479561",
+        "longitude": "129.2113662",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상북도",
+        "district": "경주시",
+        "dong": "황오동",
+        "office_name": "황오동행정복지센터",
+        "road_address": "경상북도 경주시 북성로 130 (성동동)",
+        "latitude": "35.8469252",
+        "longitude": "129.2160182",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3259,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경상북도",
+        "district": "김천시",
+        "dong": "부항면",
+        "office_name": "부항면행정복지센터",
+        "road_address": "경상북도 김천시 부항면 부항로 834",
+        "latitude": "35.9900930",
+        "longitude": "127.9552968",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상북도",
+        "district": "김천시",
+        "dong": "부항면",
+        "office_name": "부항면사무소",
+        "road_address": "경상북도 김천시 부항면 사등1길 133",
+        "latitude": "35.9764176",
+        "longitude": "127.9660344",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상북도",
+        "district": "김천시",
+        "dong": "부항면",
+        "office_name": "부항면사무소",
+        "road_address": "경상북도 김천시 부항면 사등1길 133",
+        "latitude": "35.9764176",
+        "longitude": "127.9660344",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3287,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경상북도",
+        "district": "안동시",
+        "dong": "평화동",
+        "office_name": "평화동행정복지센터",
+        "road_address": "경상북도 안동시 안기천로 117 (평화동)",
+        "latitude": "36.5678243",
+        "longitude": "128.7180505",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상북도",
+        "district": "안동시",
+        "dong": "평화동",
+        "office_name": "평화동행정복지센터",
+        "road_address": "경상북도 안동시 평화3길 5 (평화동)",
+        "latitude": "36.5691267",
+        "longitude": "128.7131290",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3281,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경상북도",
+        "district": "안동시",
+        "dong": "도산면",
+        "office_name": "도산면행정복지센터",
+        "road_address": "경상북도 안동시 도산면 퇴계로 2547",
+        "latitude": "36.7419565",
+        "longitude": "128.8333303",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상북도",
+        "district": "안동시",
+        "dong": "도산면",
+        "office_name": "도산면행정복지센터",
+        "road_address": "경상북도 안동시 도산면 퇴계로 2580",
+        "latitude": "36.7451556",
+        "longitude": "128.8338137",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3351,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경상북도",
+        "district": "영천시",
+        "dong": "완산동",
+        "office_name": "완산동행정복지센터",
+        "road_address": "경상북도 영천시 시장로 151 (완산동)",
+        "latitude": "35.9641476",
+        "longitude": "128.9468554",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상북도",
+        "district": "영천시",
+        "dong": "완산동",
+        "office_name": "완산동주민센터",
+        "road_address": "경상북도 영천시 완산2길 9 (완산동)",
+        "latitude": "35.9648540",
+        "longitude": "128.9395957",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3208,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경상북도",
+        "district": "포항시 남구",
+        "dong": "해도동",
+        "office_name": "해도동주민센터",
+        "road_address": "경상북도 포항시 남구 상공로 235 (해도동)",
+        "latitude": "36.0232790",
+        "longitude": "129.3714357",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상북도",
+        "district": "포항시 남구",
+        "dong": "해도동",
+        "office_name": "해도동주민센터",
+        "road_address": "경상북도 포항시 남구 해동로72번길 13-3 (해도동)",
+        "latitude": "36.0263713",
+        "longitude": "129.3739456",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3222,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경상북도",
+        "district": "포항시 북구",
+        "dong": "중앙동",
+        "office_name": "중앙동주민센터",
+        "road_address": "경상북도 포항시 북구 용당로 142 (신흥동)",
+        "latitude": "36.0397725",
+        "longitude": "129.3639843",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상북도",
+        "district": "포항시 북구",
+        "dong": "중앙동",
+        "office_name": "중앙동주민센터",
+        "road_address": "경상북도 포항시 북구 학산로 54 (학산동)",
+        "latitude": "36.0492799",
+        "longitude": "129.3686743",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3779,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경상남도",
+        "district": "산청군",
+        "dong": "신안면",
+        "office_name": "신안면사무소",
+        "road_address": "경상남도 산청군 신안면 원지로 9",
+        "latitude": "35.3034672",
+        "longitude": "127.9734136",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상남도",
+        "district": "산청군",
+        "dong": "신안면",
+        "office_name": "신안면사무소",
+        "road_address": "경상남도 산청군 신안면 원지로 11-15",
+        "latitude": "35.3046012",
+        "longitude": "127.9740489",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상남도",
+        "district": "산청군",
+        "dong": "신안면",
+        "office_name": "신안면사무소",
+        "road_address": "경상남도 산청군 신안면 원지로 9",
+        "latitude": "35.3034672",
+        "longitude": "127.9734136",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상남도",
+        "district": "산청군",
+        "dong": "신안면",
+        "office_name": "신안면사무소",
+        "road_address": "경상남도 산청군 신안면 원지로 11-15",
+        "latitude": "35.3046012",
+        "longitude": "127.9740489",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3663,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경상남도",
+        "district": "창원시 마산합포구",
+        "dong": "월영동",
+        "office_name": "월영동행정복지센터",
+        "road_address": "경상남도 창원시 마산합포구 월영남1길 13 (해운동)",
+        "latitude": "35.1792750",
+        "longitude": "128.5577604",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상남도",
+        "district": "창원시 마산합포구",
+        "dong": "월영동",
+        "office_name": "월영동행정복지센터",
+        "road_address": "경상남도 창원시 마산합포구 월영마을로 3 (월영동)",
+        "latitude": "35.1741884",
+        "longitude": "128.5580741",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3644,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "경상남도",
+        "district": "창원시 의창구",
+        "dong": "대산면",
+        "office_name": "대산면행정복지센터",
+        "road_address": "경상남도 창원시 의창구 대산면 가술산단동로 10",
+        "latitude": "35.3310298",
+        "longitude": "128.7087068",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상남도",
+        "district": "창원시 의창구",
+        "dong": "대산면",
+        "office_name": "대산면사무소",
+        "road_address": "경상남도 창원시 의창구 대산면 주남로 577",
+        "latitude": "35.3353411",
+        "longitude": "128.7082845",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "경상남도",
+        "district": "창원시 의창구",
+        "dong": "대산면",
+        "office_name": "대산면사무소",
+        "road_address": "경상남도 창원시 의창구 대산면 주남로 577",
+        "latitude": "35.3353411",
+        "longitude": "128.7082845",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 3864,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "제주특별자치도",
+        "district": "서귀포시",
+        "dong": "예래동",
+        "office_name": "예래동주민센터",
+        "road_address": "제주특별자치도 서귀포시 예래로 67 (상예동)",
+        "latitude": "33.2547417",
+        "longitude": "126.3999820",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "제주특별자치도",
+        "district": "서귀포시",
+        "dong": "예래동",
+        "office_name": "예래동주민센터",
+        "road_address": "제주특별자치도 서귀포시 예래로 82 (상예동)",
+        "latitude": "33.2542812",
+        "longitude": "126.3978623",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 2139,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "강원특별자치도",
+        "district": "원주시",
+        "dong": "명륜1동",
+        "office_name": "명륜1동행정복지센터",
+        "road_address": "강원특별자치도 원주시 남원로 607 (명륜동)",
+        "latitude": "37.3377043",
+        "longitude": "127.9506534",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "강원특별자치도",
+        "district": "원주시",
+        "dong": "명륜1동",
+        "office_name": "명륜1동행정복지센터",
+        "road_address": "강원특별자치도 원주시 남원로 653 (명륜동)",
+        "latitude": "37.3412520",
+        "longitude": "127.9532838",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 2802,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "전북특별자치도",
+        "district": "김제시",
+        "dong": "금구면",
+        "office_name": "금구면사무소",
+        "road_address": "전북특별자치도 김제시 금구면 금구로 44",
+        "latitude": "35.7743858",
+        "longitude": "127.0113079",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전북특별자치도",
+        "district": "김제시",
+        "dong": "금구면",
+        "office_name": "금구면행정복지센터",
+        "road_address": "전북특별자치도 김제시 금구면 봉두로 105",
+        "latitude": "35.7768018",
+        "longitude": "127.0122792",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전북특별자치도",
+        "district": "김제시",
+        "dong": "금구면",
+        "office_name": "금구면사무소",
+        "road_address": "전북특별자치도 김제시 금구면 금구로 44",
+        "latitude": "35.7743858",
+        "longitude": "127.0113079",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 2805,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "전북특별자치도",
+        "district": "김제시",
+        "dong": "금산면",
+        "office_name": "금산면사무소",
+        "road_address": "전북특별자치도 김제시 금산면 원평8길 27",
+        "latitude": "35.7165662",
+        "longitude": "126.9961994",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전북특별자치도",
+        "district": "김제시",
+        "dong": "금산면",
+        "office_name": "금산면행정복지센터",
+        "road_address": "전북특별자치도 김제시 금산면 원평8길 29-64",
+        "latitude": "35.7170861",
+        "longitude": "126.9973219",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전북특별자치도",
+        "district": "김제시",
+        "dong": "금산면",
+        "office_name": "금산면사무소",
+        "road_address": "전북특별자치도 김제시 금산면 원평8길 27",
+        "latitude": "35.7165662",
+        "longitude": "126.9961994",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  },
+  {
+    "regionId": 2763,
+    "reason": "CONFLICTING_OFFICE_POINTS",
+    "candidates": [
+      {
+        "province": "전북특별자치도",
+        "district": "정읍시",
+        "dong": "내장상동",
+        "office_name": "내장상동주민센터",
+        "road_address": "전북특별자치도 정읍시 대석1길 13-16 (금붕동)",
+        "latitude": "35.5347148",
+        "longitude": "126.8910095",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      },
+      {
+        "province": "전북특별자치도",
+        "district": "정읍시",
+        "dong": "내장상동",
+        "office_name": "내장상동주민센터",
+        "road_address": "전북특별자치도 정읍시 신경2길 12-2 (상동)",
+        "latitude": "35.5572506",
+        "longitude": "126.8688452",
+        "source": "OFFICE-JUSO-20261103",
+        "source_url": "https://www.juso.go.kr/map/totalMapView",
+        "verified_at": "2026-11-03"
+      }
+    ]
+  }
+]

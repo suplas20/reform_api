@@ -1,0 +1,64 @@
+province,district,dong,office_name,road_address,latitude,longitude,source,source_url,verified_at
+경기도,성남시 분당구,분당동,분당동주민센터,경기도 성남시 분당구 불정로 312(분당동 42),37.3702161,127.1311480,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+경기도,성남시 분당구,정자1동,정자1동주민센터,경기도 성남시 분당구 성남대로407번길 12(정자동),37.3727616,127.1063236,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+경기도,성남시 분당구,야탑3동,야탑3동주민센터,경기 성남시 분당구 벌말로30번길 43(야탑동),37.4102524,127.1431600,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,부여군,석성면,석성면주민센터,충청남도 부여군 석성면 증산로 61-1 석성면사무소,36.2532737,127.0023326,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+대구광역시,수성구,만촌2동,만촌2동주민센터,대구광역시 수성구 무열로 12(만촌동),35.8598591,128.6472263,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+대구광역시,수성구,황금2동,황금2동주민센터,대구광역시 수성구 청솔로2길 64(황금동),35.8471947,128.6237245,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+대구광역시,수성구,파동,파동주민센터,대구광역시 수성구 파동로 136(파동),35.8154528,128.6151275,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+대구광역시,수성구,두산동,두산동주민센터,대구광역시 수성구 상화로 95(두산동),35.8353136,128.6175259,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+전북특별자치도,남원시,주천면,주천면행정복지센터,전북특별자치도 남원시 주천면 정령치로 61,35.3912516,127.4422119,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+전북특별자치도,남원시,송동면,송동면행정복지센터,전북특별자치도 남원시 송동면 송기길 56,35.3544579,127.3372469,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+전북특별자치도,남원시,산내면,산내면행정복지센터,전북특별자치도 남원시 산내면 대정길 21,35.4191043,127.6228637,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+전북특별자치도,임실군,임실읍,임실읍사무소,전라북도 임실군 임실읍 봉황로 144,35.6134867,127.2794060,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+대전광역시,유성구,신성동,신성동주민센터,대전광역시 유성구 신성로 55(하기동),36.3891063,127.3473512,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+대전광역시,대덕구,송촌동,송촌동행정복지센터,대전광역시 대덕구 동춘당로94번길 11,36.3657088,127.4398585,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,홍성군,광천읍,광천읍행정복지센터,충청남도 홍성군 광천읍 광천로 342,36.5045939,126.6254752,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,홍성군,금마면,금마면행정복지센터,충청남도 홍성군 금마면 광금북로 478,36.6117934,126.7326876,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,홍성군,홍동면,홍동면행정복지센터,충청남도 홍성군 홍동면 홍장남로 712,36.5591477,126.6883666,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,홍성군,장곡면,장곡면행정복지센터,충청남도 홍성군 장곡면 홍남동로 461,36.5051580,126.6912865,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,홍성군,은하면,은하면행정복지센터,충청남도 홍성군 은하면 은하로 258,36.5319535,126.5904906,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,홍성군,결성면,결성면행정복지센터,충청남도 홍성군 결성면 홍남서로738번길 5,36.5241365,126.5467455,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,홍성군,서부면,서부면행정복지센터,충청남도 홍성군 서부면 서부로544번길 17-2,36.5803516,126.5172295,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,홍성군,갈산면,갈산면행정복지센터,충청남도 홍성군 갈산면 갈산로 93,36.6051951,126.5500457,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,홍성군,구항면,구항면행정복지센터,충청남도 홍성군 구항면 구항길 109,36.5879527,126.6106571,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+경기도,남양주시,퇴계원읍,퇴계원읍주민센터,경기도 남양주시 퇴계원읍 도제원로 13,37.6491837,127.1447400,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+경기도,남양주시,별내면,별내면주민센터,경기도 남양주시 별내면 청학로8번길 22,37.7026774,127.1248906,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+경기도,남양주시,다산2동,다산2동주민센터,경기도 남양주시 다산지금로16번길 75,37.6077010,127.1694742,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+전남광주통합특별시,서구,농성2동,농성2동행정복지센터,광주광역시 서구 화정로 314 (농성동),35.1503790,126.8902211,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+대전광역시,중구,석교동,석교동행정복지센터,대전광역시 중구 대종로 267 (부사동),36.3110252,127.4382659,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+대전광역시,중구,대사동,대사동행정복지센터,대전광역시 중구 충무로74번길 14 (대사동),36.3164192,127.4247712,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,천안시 동남구,북면,북면행정복지센터,충청남도 천안시 동남구 북면 위례성로 724,36.8274728,127.2732435,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,천안시 동남구,동면,동면행정복지센터,충청남도 천안시 동남구 동면 동산1길 15,36.7761964,127.3443010,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,천안시 서북구,직산읍,직산읍행정복지센터,충청남도 천안시 서북구 직산읍 삼은4길 2,36.8790065,127.1504675,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,천안시 서북구,백석동,백석동행정복지센터,충청남도 천안시 서북구 번영로 208,36.8190973,127.1133052,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,천안시 서북구,불당2동,불당2동행정복지센터,충청남도 천안시 서북구 불당25로 182,36.8173065,127.1087019,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,천안시 서북구,부성1동,부성1동행정복지센터,충청남도 천안시 서북구 부대중앙길 51,36.8427475,127.1522299,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,천안시 서북구,부성2동,부성2동행정복지센터,충청남도 천안시 서북구 부성7길 39-5,36.8373371,127.1379230,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,공주시,이인면,이인면행정복지센터,충청남도 공주시 이인면 검바위로 217,36.3620086,127.0632331,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,공주시,계룡면,계룡면행정복지센터,충청남도 공주시 계룡면 영규대사로 489,36.3603564,127.1417625,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,공주시,우성면,우성면행정복지센터,충청남도 공주시 우성면 동대리길 51,36.4709631,127.0499560,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,보령시,천북면,천북면사무소,충청남도 보령시 천북면 홍보로 462,36.4787561,126.5272892,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,보령시,청소면,청소면행정복지센터,충청남도 보령시 청소면 청소큰길 167,36.4454522,126.5895393,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,보령시,주산면,주산면사무소,충청남도 보령시 주산면 충서로 389-6,36.1983673,126.6316951,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,보령시,미산면,미산면사무소,충청남도 보령시 미산면 내평봉성길 5,36.2106053,126.6764501,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,아산시,염치읍,염치읍행정복지센터,충청남도 아산시 염치읍 염치로 37,36.8165077,126.9766255,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,아산시,배방읍,배방읍행정복지센터,충청남도 아산시배방읍 배방로 38,36.7738675,127.0538846,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,아산시,송악면,송악면행정복지센터,충청남도 아산시 송악면 송악로 790,36.7316252,127.0090574,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,아산시,인주면,인주면행정복지센터,충청남도 아산시 인주면 현대로 1295,36.8690114,126.8846068,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,아산시,선장면,선장면행정복지센터,충청남도 아산시 선장면 선장로 137,36.7914332,126.8615724,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,아산시,도고면,도고면행정복지센터,충청남도 아산시 도고면 도고면로 91,36.7572835,126.8771651,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,서산시,지곡면,지곡면행정복지센터,충청남도 서산시 지곡면 화천1로 76,36.8635213,126.4369004,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,서산시,동문1동,동문1동행정복지센터,충청남도 서산시 학동3로 53,36.7900374,126.4592115,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,서산시,수석동,수석동행정복지센터,충청남도 서산시 무석1로 2,36.7713624,126.4672478,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,논산시,강경읍,강경읍사무소,충청남도 논산시 강경읍 계백로 162,36.1580760,127.0179649,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,논산시,연무읍,연무읍사무소,충청남도 논산시 연무읍 안심로 50,36.1251240,127.0990305,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,논산시,노성면,노성면사무소,충청남도 논산시 노성면 노성로585번길 12-8,36.2781843,127.1302395,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,논산시,양촌면,양촌면사무소,충청남도 논산시 양촌면 매죽헌로1665번길 28,36.1385449,127.2326545,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,논산시,부창동,부창동행정복지센터,충청남도 논산시 시민로 389,36.1996244,127.0870497,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,계룡시,두마면,두마면사무소,충청남도 계룡시 두마면 팥거리2길 14,36.2668955,127.2727553,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,당진시,순성면,순성면사무소,충청남도 당진시 순성면 순성로 535,36.8453821,126.7144219,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,금산군,금산읍,금산읍행정복지센터,충청남도 금산군 금산읍 비호로 69,36.1071628,127.4908992,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,금산군,군북면,군북면행정복지센터,충청남도 금산군 군북면 산꽃로 17,36.1690461,127.5277601,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,서천군,시초면,시초면행정복지센터,충청남도 서천군 시초면 시초북로 37,36.1215869,126.7526989,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03
+충청남도,청양군,목면,목면행정복지센터,충청남도 청양군 목면 안심길 107,36.4190235,127.0038696,OFFICE-JUSO-ADDR-20261103,https://www.juso.go.kr/map/totalMapView,2026-11-03

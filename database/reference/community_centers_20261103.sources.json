@@ -1,0 +1,104 @@
+[
+  {
+    "dataset": "DDM-MUNICIPAL-MAP",
+    "source_url": "https://www.ddm.go.kr/www/contents.do?key=293",
+    "sha256": "4605701da2d2526ed39bdf96e681f7c50392f6cd18525f8e55eb4207dec87167",
+    "rows": 15
+  },
+  {
+    "dataset": 15116616,
+    "title": "서울특별시 송파구_동주민센터 현황.csv",
+    "source_url": "https://www.data.go.kr/data/15116616/fileData.do",
+    "download": "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000002765430&fileDetailSn=1&insertDataPrcus=N",
+    "sha256": "12bbc8214858e299616a7085b5d4e11169c4f4454f3d698d9f3cb3ca46b1851f",
+    "rows": 27
+  },
+  {
+    "dataset": 15116920,
+    "title": "서울특별시_강동구_동주민센터현황_20230720.csv",
+    "source_url": "https://www.data.go.kr/data/15116920/fileData.do",
+    "download": "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000002769208&fileDetailSn=1&insertDataPrcus=N",
+    "sha256": "67914ac6a337664c28c08180b4daf76562a3f5aa827ed860172a6287d3f7ced2",
+    "rows": 19
+  },
+  {
+    "dataset": 15040310,
+    "title": "서울특별시_성북구_동주민센터현황_20230717.csv",
+    "source_url": "https://www.data.go.kr/data/15040310/fileData.do",
+    "download": "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000002767040&fileDetailSn=1&insertDataPrcus=N",
+    "sha256": "7420b159be8822e38010aa924b2dec8aa317749ba6aa6d564589a2595cdc909b",
+    "rows": 20
+  },
+  {
+    "dataset": 15116713,
+    "title": "서울특별시 서초구_동주민센터 현황_20250226.csv",
+    "source_url": "https://www.data.go.kr/data/15116713/fileData.do",
+    "download": "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003103354&fileDetailSn=1&insertDataPrcus=N",
+    "sha256": "b305331b11acd61ad002ce62e55b1c7fce971af5e13254e108c67c9117e77390",
+    "rows": 21
+  },
+  {
+    "dataset": 15116896,
+    "title": "서울특별시 강남구_동주민센터 현황_20230719.csv",
+    "source_url": "https://www.data.go.kr/data/15116896/fileData.do",
+    "download": "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000002768952&fileDetailSn=1&insertDataPrcus=N",
+    "sha256": "8cfd0e556f3356e1e58c0db2646eac657dbbaf2d4b6fef6f75ca9fa98374cf84",
+    "rows": 22
+  },
+  {
+    "dataset": 15113963,
+    "title": "대구광역시 북구_동행정복지센터_20260701.csv",
+    "source_url": "https://www.data.go.kr/data/15113963/fileData.do",
+    "download": "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003669061&fileDetailSn=1&insertDataPrcus=N",
+    "sha256": "47148da4195f103e7e72695df5a595525c8c72baa415fc1c5fef4694e7dcc81b",
+    "rows": 23
+  },
+  {
+    "dataset": 15116534,
+    "title": "서울특별시 마포구 동주민센터 공간정보데이터_20260701",
+    "source_url": "https://www.mapo.go.kr/site/main/openData/view?dataId=199",
+    "download": "https://www.mapo.go.kr/site/main/file/download/uu/783a3a7e02d84ac48be0bb711746ae26",
+    "sha256": "a23250bb87956a204a8a5623cb564564133e322b4f1d7198bcad7b718e5c3675",
+    "rows": 16
+  },
+  {
+    "dataset": 15013117,
+    "source_url": "https://www.data.go.kr/data/15013117/standard.do",
+    "sha256": "8e8b31a81cb99539c8079197fbaec28adbd591156f1b033149103f4b73ae19b5",
+    "rows": 7333
+  },
+  {
+    "dataset": 15034533,
+    "source_url": "https://www.data.go.kr/data/15034533/standard.do",
+    "sha256": "a9a6b876d2761764721d10b0a1e846d6b0ff43aa4fe75a76bea8c8eb7bff23f5",
+    "rows": 4402
+  },
+  {
+    "dataset": "JUSO-OFFICE-BUILDINGS",
+    "source_url": "https://www.juso.go.kr/map/totalMapView",
+    "snapshot": "community_centers_juso_20261103.csv",
+    "sha256": "6527ca59da51ac055a855f570bd5ebbd4402ee38ced2fe3aeec8924f2e9cb48c",
+    "rows": 3037
+  },
+  {
+    "dataset": "JUSO-OFFICE-BUILDINGS",
+    "source_url": "https://www.juso.go.kr/map/totalMapView",
+    "snapshot": "community_centers_juso_myeon_20261103.csv",
+    "sha256": "b87fe5fe992271936ff04d363e19342d1579347c85c212d30650fb6115c66676",
+    "rows": 704
+  },
+  {
+    "dataset": "JUSO-OFFICE-BUILDINGS",
+    "source_url": "https://www.juso.go.kr/map/totalMapView",
+    "snapshot": "community_centers_juso_eup_20261103.csv",
+    "sha256": "338d379de1e0cec063b0e638fed51e86de82fc7da05bd70a676ef31ec1105a97",
+    "rows": 1
+  },
+  {
+    "dataset": "JUSO-OFFICE-BUILDINGS",
+    "source_url": "https://www.juso.go.kr/map/totalMapView",
+    "snapshot": "community_centers_address_points_20261103.csv",
+    "sha256": "b119677f2166ca2fa5b0a5afd62f596381aa30af0e6758e7395175fbe878d62c",
+    "rows": 63
+  }
+]

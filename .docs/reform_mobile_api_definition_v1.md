@@ -526,9 +526,9 @@ GET /api/v1/regions?level=3&query=역삼
       "level": 2,
       "sortOrder": 10,
       "hasChildren": true,
-      "latitude": 37.5145750,
-      "longitude": 127.0495556,
-      "centerSource": "KMA-20260701"
+      "latitude": null,
+      "longitude": null,
+      "centerSource": null
     }
   ]
 }
@@ -539,14 +539,17 @@ GET /api/v1/regions?level=3&query=역삼
 열 때 사용한다. 기준 자료의 누락·개편 때문에 false일 수도 있으므로 전국 최신 데이터의
 완전성을 나타내는 값은 아니다. 위치 선택 자체는 사용자 위치를 DB에 저장하지 않는다.
 
-`latitude`·`longitude`는 지역 선택의 거리 기준점으로 사용하는 대표좌표이며 `centerSource`는
-제공기관과 기준일이다. KMA-20260701은 기상청 동네예보 지점 좌표(2026-07-01 기준)로,
-동사무소 등을 중심으로 한 대표지점이다. 기하학적 중심이나 사용자 GPS 위치가 아니다.
-자료와 대응이 확인되지 않은 지역의 좌표·출처는 null이다.
+`latitude`·`longitude`는 선택한 읍면동 주민센터(행정복지센터·읍면사무소)의 실제 위치이며
+`centerSource`는 공식 자료 제공기관과 기준일을 식별한다. `OFFICE-DDM-20261103`은
+동대문구청 공식 지도에서 확인한 주민센터 좌표다. `OFFICE-DATA-` 출처는 공공데이터포털의
+주민센터 또는 주민센터 건물로 명시된 시설 자료다. `OFFICE-JUSO-`는 주소정보누리집의
+주민센터 건물명으로 확인한 좌표이며 `OFFICE-JUSO-ADDR-`는 공식 기관 주소와 정확히 같은
+건물을 대조한 좌표다. 예보 좌표나 행정경계 중앙점은 사용하지 않는다.
+주민센터 위치가 확인되지 않은 동의 좌표·출처는 null이다. 과거 데이터의 다른 출처 좌표도 숨긴다.
 
 이 API는 지역 선택용 참조 데이터를 제공한다. 현재 업체의 `region_id` 연결은 시군구 단위여서
 읍면동을 선택한 뒤 그 읍면동의 업체를 정확히 검색하려면 별도의 업체–읍면동 연결 보완이 필요하다.
-현재 업체 목록 API는 선택한 동의 검색 결과가 없으면 구, 시 순서로 검색 범위를 자동 확대한다.
+업체 목록은 선택한 동 주민센터를 기준으로 구·시 경계 없이 기본 5km, 최대 20km 반경을 검색한다.
 
 ---
 
@@ -617,11 +620,11 @@ Bearer Token이 있으면 `isFavorite` 값을 사용자 기준으로 채울 수 
 | keyword | string | N | 업체명/검색 Keyword |
 | categoryId | integer | N | 물품 카테고리 |
 | serviceId | integer | N | 작업 종류 |
-| regionId | integer | N | 선택한 지역 ID. 결과가 없으면 동→구→시로 자동 확장 |
+| regionId | integer | N | 거리 기준점인 읍면동 주민센터 ID. 행정구역 경계 필터 없음 |
 | brandId | integer | N | 취급 브랜드 |
 | lat | decimal | N | 현재/지도 중심 Latitude |
 | lng | decimal | N | 현재/지도 중심 Longitude |
-| radiusKm | decimal | N | 거리 반경 |
+| radiusKm | decimal | N | 기본 5km, 0km 초과 최대 20km |
 | verifiedOnly | boolean | N | 인증 업체만 |
 | sort | string | N | 정렬 |
 | page | integer | N | 기본 1 |
@@ -629,61 +632,38 @@ Bearer Token이 있으면 `isFavorite` 값을 사용자 기준으로 채울 수 
 
 ### Radius
 
-스토리보드 기본 UI:
+자동·수동 위치 모두 기본 5km에서 시작하며 0km 초과 최대 20km까지 지정한다.
+앱의 반경 선택은 1·3·5·10·20km다. 반경 생략은 위치가 있는 경우 5km를 의미하며 무제한 검색이 아니다.
+위치와 regionId가 모두 없는 일반 목록은 기존대로 조회한다.
 
-```text
-1km
-3km
-5km
-10km
-전체
-```
+### 행정구역 경계 없는 위치 검색
 
-`전체` 선택 시 `radiusKm`을 전달하지 않는다.
+자동 위치는 요청 좌표, 수동 위치는 선택한 읍면동의 검증된 주민센터 좌표를 기준으로 한다.
+좌표가 같으면 두 방식의 업체·거리·정렬·페이지 결과가 동일하다. 업체가 속한 동·구·시는 제한하지
+않으며 동→구→시 단계별 확장은 수행하지 않는다. 결과가 없어도 반경을 자동으로 늘리지 않는다.
+검색어·카테고리·서비스·브랜드·인증·정렬·페이지네이션 조건은 유지한다.
+기본 recommended는 두 방식 모두 가까운 거리순이며 별도로 지정한 정렬은 유지한다.
 
-### 빈 지역의 검색 범위 확장
+요청 좌표가 있으면 주민센터 좌표보다 우선한다. 선택한 동의 주민센터 좌표를 확인할 수 없으면
+422 `LOCATION_COORDINATES_UNAVAILABLE`을 반환하며 부모 좌표로 대체하지 않는다.
+지역 목록 API에서 미확인 동의 좌표는 null이다.
 
-선택한 `regionId`와 그 하위 지역을 먼저 조회한다. 동일한 검색 조건의 전체 결과 수가 0이면
-동→구→시 순서로 검색 범위를 넓히고, 결과가 있는 첫 범위에서 멈춘다. 시도 필터는 동 단위에
-연결된 업체까지 포함한다. 현재 업체가 시군구에만 연결되어 있는 경우에도 동 선택 후 해당
-시군구의 업체를 조회할 수 있다.
-
-서울의 `역삼1동 → 강남구 → 서울특별시`, 일반구가 있는 시의
-`파장동 → 수원시 장안구 → 수원시 전체 구`와 같이 처리한다. 수원시를 넘어 경기도 전체로
-확대하지 않는다. 춘천시처럼 시군구 행이 시 전체를 나타내면 그 시에서 멈춘다.
-존재하지 않는 지역 또는 비활성 부모를 통해서는 범위를 확대하지 않는다.
-
-검색어·카테고리·서비스·브랜드·인증·반경 조건은 모든 단계에서 유지한다. 거리 기준점이 있으면
-확장된 결과는 `sort`와 관계없이 거리순으로 정렬하고 좌표가 없는 업체는 마지막에 표시한다.
-요청 좌표가 없으면 최초 선택한 지역의 저장된 대표좌표를 거리 기준점으로 사용한다.
-**동→구→시로 결과 범위를 넓혀도 처음 선택한 동의 좌표를 그대로 유지한다.** 기본 recommended는
-지역 대표좌표가 있으면 거리순을 사용하고, 별도로 요청한 이름순·별점순 등은 직접 검색에서 유지한다.
-요청 좌표와 선택 지역의 대표좌표가 모두 없으면 거리 값은 null이며, 거리순·반경 요청은
-422 `LOCATION_COORDINATES_UNAVAILABLE`을 반환한다. 부모 좌표로 임의 대체하지 않는다.
-페이지의 결과가 비었다는
-이유로 범위를 확장하지 않으며, `total`과 `totalPages`는 실제 적용된 범위에 대한 값이다.
-
-`regionId`가 있는 요청에는 다음처럼 `meta.regionSearch`를 포함한다. 결과가 없으면 마지막으로
-검색한 범위를 나타내며, `regionId`를 생략한 요청에는 이 필드가 없다.
+`regionId`가 있는 요청에는 호환성을 위해 `meta.regionSearch`를 유지한다.
+행정구역 필터가 없으므로 값은 다음과 같다.
 
 ```json
 {
   "requestedRegionId": 677,
-  "appliedRegionIds": [32],
-  "appliedRegionName": "강남구",
-  "expanded": true
+  "appliedRegionIds": [],
+  "appliedRegionName": null,
+  "expanded": false
 }
 ```
 
-일반구를 묶어서 시 전체로 검색하면 `appliedRegionIds`에는 같은 시의 구 ID들이 들어간다.
-앱은 `expanded`와 `appliedRegionName`으로 “선택한 동에 업체가 없어 강남구의 업체를 표시합니다”를
-안내할 수 있다. 위치 좌표는 저장하지 않는다.
-
 `meta.distanceOrigin`은 계산에 사용한 기준점이다. `type=COORDINATES`는 요청 좌표,
-`type=REGION_CENTER`는 처음 선택한 지역의 대표좌표이며 `regionId`, `regionName`,
-`latitude`, `longitude`, `source`를 포함한다. 기준점을 확인하지 못하면 null이다.
-요청에 좌표가 있으면 지역 대표좌표보다 우선한다. 저장되는 대표좌표는 공공 참조 데이터이고
-사용자 좌표는 요청 중에만 사용한다.
+`type=REGION_CENTER`는 선택한 동 주민센터 좌표이며 `regionId`, `regionName`,
+`latitude`, `longitude`, `source`를 포함한다. 위치 없는 일반 목록에서는 null이다.
+사용자 위치는 요청 중에만 사용하고 DB에 저장하지 않는다.
 
 ### Sort
 

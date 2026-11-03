@@ -37,7 +37,7 @@ try {
     ];
     $ids = [];
     foreach ($fixtures as $index => [$name, $rating, $reviews, $offset]) {
-        $business->execute(['name' => $name, 'slug' => $suffix . '-' . $index, 'status' => 'ACTIVE', 'published_at' => $now, 'created_at' => $now, 'updated_at' => $now]);
+        $business->execute(['name' => $suffix . '-' . $name, 'slug' => $suffix . '-' . $index, 'status' => 'ACTIVE', 'published_at' => $now, 'created_at' => $now, 'updated_at' => $now]);
         $id = (int) $connection->lastInsertId();
         $ids[] = $id;
         $stats->execute(['business_id' => $id, 'rating_avg' => $rating, 'review_count' => $reviews, 'updated_at' => $now]);
@@ -53,21 +53,22 @@ try {
     ];
     $service = new BusinessService(new BusinessRepository($connection));
     foreach ($expected as $sort => $indexes) {
-        $expectedIds = array_map(static fn (int $index): int => $ids[$index], $indexes);
-        $criteria = ['regionId' => $regionId, 'lat' => 37.5, 'lng' => 127.03, 'sort' => $sort];
+        $allExpectedIds = array_map(static fn (int $index): int => $ids[$index], $indexes);
+        $expectedIds = array_values(array_filter($allExpectedIds, static fn (int $id): bool => $id !== $ids[2]));
+        $criteria = ['keyword' => $suffix, 'regionId' => $regionId, 'lat' => 37.5, 'lng' => 127.03, 'sort' => $sort];
         $all = $service->getPublicList(1, 100, $criteria);
         assertBusinessSorting(array_column($all['items'], 'id') === $expectedIds, $sort . ': order, null handling or stable tie-breaker is incorrect.');
         $pagedIds = [];
         for ($page = 1; $page <= 3; ++$page) {
             $result = $service->getPublicList($page, 2, $criteria);
-            assertBusinessSorting($result['total'] === 6 && $result['totalPages'] === 3, $sort . ': pagination totals are incorrect.');
+            assertBusinessSorting($result['total'] === 5 && $result['totalPages'] === 3, $sort . ': pagination totals are incorrect.');
             $pagedIds = array_merge($pagedIds, array_column($result['items'], 'id'));
         }
         assertBusinessSorting($pagedIds === $expectedIds, $sort . ': sorting must happen before pagination.');
-        assertBusinessSorting(count(array_unique($pagedIds)) === 6, $sort . ': pages must not duplicate or omit businesses.');
+        assertBusinessSorting(count(array_unique($pagedIds)) === 5, $sort . ': pages must not duplicate or omit businesses.');
         if ($sort !== 'distance') {
-            $withoutLocation = $service->getPublicList(1, 100, ['regionId' => $regionId, 'sort' => $sort]);
-            assertBusinessSorting(array_column($withoutLocation['items'], 'id') === $expectedIds, $sort . ': manual-region search must support sorting without user coordinates.');
+            $withoutLocation = $service->getPublicList(1, 100, ['keyword' => $suffix, 'sort' => $sort]);
+            assertBusinessSorting(array_column($withoutLocation['items'], 'id') === $allExpectedIds, $sort . ': nationwide searches must support sorting without an origin.');
         }
     }
     $connection->rollBack();

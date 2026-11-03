@@ -70,9 +70,9 @@ final class ReferenceService implements ReferenceDataProvider
                 'level' => (int) $region['level'],
                 'sortOrder' => (int) $region['sort_order'],
                 'hasChildren' => (bool) $region['has_children'],
-                'latitude' => $region['center_latitude'] === null ? null : (float) $region['center_latitude'],
-                'longitude' => $region['center_longitude'] === null ? null : (float) $region['center_longitude'],
-                'centerSource' => $region['center_source'],
+                'latitude' => !str_starts_with((string) $region['center_source'], 'OFFICE-') || $region['center_latitude'] === null ? null : (float) $region['center_latitude'],
+                'longitude' => !str_starts_with((string) $region['center_source'], 'OFFICE-') || $region['center_longitude'] === null ? null : (float) $region['center_longitude'],
+                'centerSource' => str_starts_with((string) $region['center_source'], 'OFFICE-') ? $region['center_source'] : null,
             ],
             $this->regionRepository->findActive($parentId, $level, $keyword),
         );
